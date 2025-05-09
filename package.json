@@ -1,4 +1,17 @@
 {
   "name": "codespaces-blank",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Limeojin <2002eojin@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "yarn workspace client dev & yarn workspace server dev",
+    "build": "yarn workspace client build & yarn workspace server build",
+    "serve": "yarn workspace client serve & yarn workspace server serve"
+  },
   "packageManager": "yarn@4.9.1"
 }
