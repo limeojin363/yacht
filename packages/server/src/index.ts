@@ -9,10 +9,10 @@ app.get("/welcome", (req: Request, res: Response, next: NextFunction) => {
   res.send("welcome!");
 });
 
-app.listen("3333", () => {
+app.listen("3000", () => {
   console.log(`
   ################################################
-  🛡️  Server listening on port: 3333🛡️
+  🛡️  Server listening on port: 3000🛡️
   ################################################
 `);
 });
