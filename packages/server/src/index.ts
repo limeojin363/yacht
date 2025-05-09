@@ -23,3 +23,7 @@ app.get("/api", (req: Request, res: Response, next: NextFunction) => {
   console.log(req);
   res.json("API is working!");
 });
+app.get("/", (req: Request, res: Response, next: NextFunction) => {
+  console.log(req);
+  res.json("API is working!");
+});
