@@ -1,3 +1,4 @@
+import _ from "lodash";
 import ScoreCalculator from "./ScoreCalculator";
 import {
   GameStatus,
@@ -9,6 +10,9 @@ import {
   AvailableDiceObject,
   UserActionMapType,
   RenderUnitUpdateAction,
+  UserActionName,
+  UserActionPayloadTypes,
+  RemainingRoll,
 } from "./types";
 
 export const HAND_LIST: AvailableHand[] = [
@@ -43,6 +47,7 @@ export const getInitialGameStatus = (): GameStatus => {
       CHOICE: null,
     },
   });
+
   const getDicesInitialStatus = (): UnavailableDices => [
     null,
     null,
@@ -65,8 +70,12 @@ const getSingleDiceEye = (): AvailableDiceEye => {
 };
 
 const UserActionMap: UserActionMapType = {
-  select: ({ hand, dices }, { currentUser }) => {
-    const diceValues = dices.map((dice) => dice.eye);
+  select: (hand, { currentUser, dices, users }) => {
+    if (dices.some((dice) => dice === null)) return [];
+    const isHandAlreadySelected = users[currentUser].scores[hand] !== null;
+    if (isHandAlreadySelected) return [];
+
+    const diceValues = dices.map((dice) => dice!.eye);
 
     const calcuatedScore = calculator[hand](diceValues);
     const scoreUpdateAction: RenderUnitUpdateAction = {
@@ -101,18 +110,24 @@ const UserActionMap: UserActionMapType = {
       currentUserAction,
     ];
   },
-  roll: (_, { dices }) => {
+  roll: (_, { dices, remainingRoll }) => {
     const diceUpdateActions: RenderUnitUpdateAction[] = [];
 
-    const fixedDiceIndexes = dices
-      .filter((dice) => dice && dice.fixed)
-      .map((_, index) => index as DiceIndex);
+    const heldDiceIndexes = (() => {
+      const heldIndexes: DiceIndex[] = [];
+      for (let i = 0; i < 5; i++) {
+        if (dices[i] && dices[i]?.held) {
+          heldIndexes.push(i as DiceIndex);
+        }
+      }
+      return heldIndexes;
+    })();
 
     for (let i = 0; i < 5; i++) {
-      if (fixedDiceIndexes.includes(i as DiceIndex)) continue;
+      if (heldDiceIndexes.includes(i as DiceIndex)) continue;
       const newDice: AvailableDiceObject = {
         eye: getSingleDiceEye(),
-        fixed: false,
+        held: false,
       };
       diceUpdateActions.push({
         type: "dice",
@@ -120,30 +135,107 @@ const UserActionMap: UserActionMapType = {
       });
     }
 
-    return diceUpdateActions;
+    const decreaseRollCount: RenderUnitUpdateAction = {
+      type: "remainingRoll",
+      payload: (remainingRoll > 0 ? remainingRoll - 1 : 0) as RemainingRoll,
+    };
+
+    return [...diceUpdateActions, decreaseRollCount];
   },
-  "toggle-dice": (index, { dices }) => {
+  "toggle-dice-holding": (index, { dices }) => {
     const diceUpdateAction: RenderUnitUpdateAction = {
       type: "dice",
       payload: {
-        index: index as DiceIndex,
-        dice: dices[index] ? null : { eye: getSingleDiceEye(), fixed: false },
+        index,
+        dice: !dices[index]
+          ? null
+          : { eye: dices[index].eye, held: !dices[index].held },
       },
     };
 
     return [diceUpdateAction];
   },
 };
- 
 
 const calculator = new ScoreCalculator();
 
-export const Game = (() => {
-  const data: GameStatus = getInitialGameStatus();
+export const Game = {
+  getUpdateActionsFromUserAction: <P extends UserActionName>(
+    type: P,
+    payload: UserActionPayloadTypes[P],
+    statusData: GameStatus
+  ) => UserActionMap[type](payload, statusData),
+  dispatch: (actions: RenderUnitUpdateAction[], statusData: GameStatus) => {
+    const newStatusData = _.cloneDeep(statusData);
+
+    actions.forEach((action) => {
+      switch (action.type) {
+        case "score":
+          newStatusData.users[newStatusData.currentUser].scores[
+            action.payload.hand
+          ] = action.payload.score;
+          break;
+        case "dice":
+          newStatusData.dices[action.payload.index] = action.payload.dice;
+          break;
+        case "remainingRoll":
+          newStatusData.remainingRoll = action.payload;
+          break;
+        case "currentUser":
+          newStatusData.currentUser = action.payload;
+          break;
+      }
+    });
+
+    return newStatusData;
+  },
+};
+
+// For Server
+const _Game = (() => {
+  let statusData: GameStatus = getInitialGameStatus();
+
+  const getUpdateActionsFromUserAction = <P extends UserActionName>(
+    type: P,
+    payload: UserActionPayloadTypes[P]
+  ) => UserActionMap[type](payload, statusData);
+
+  const dispatch = (actions: RenderUnitUpdateAction[]) => {
+    const newStatusData = _.cloneDeep(statusData);
+
+    actions.forEach((action) => {
+      switch (action.type) {
+        case "score":
+          newStatusData.users[newStatusData.currentUser].scores[
+            action.payload.hand
+          ] = action.payload.score;
+          break;
+        case "dice":
+          newStatusData.dices[action.payload.index] = action.payload.dice;
+          break;
+        case "remainingRoll":
+          newStatusData.remainingRoll = action.payload;
+          break;
+        case "currentUser":
+          newStatusData.currentUser = action.payload;
+          break;
+      }
+    });
+
+    return newStatusData;
+  };
+
+  const getStatus = () => statusData;
+
+  const setStatus = (newStatus: GameStatus) => {
+    statusData = newStatus;
+  };
 
   return {
-    getData: () => data,
-    
+    getStatus,
+    setStatus,
+    getUpdateActionsFromUserAction,
+    dispatch,
   };
 })();
 

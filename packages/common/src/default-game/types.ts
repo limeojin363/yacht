@@ -1,8 +1,12 @@
+export type UserNum = 0 | 1;
+
+export type RemainingRoll = 3 | 2 | 1 | 0;
+
 export type AvailableDiceEye = 1 | 2 | 3 | 4 | 5 | 6;
 
 export type AvailableDiceObject = {
   eye: AvailableDiceEye;
-  fixed: boolean;
+  held: boolean;
 };
 
 export type AvailableHand =
@@ -36,14 +40,14 @@ export type Dices = AvailableDices | UnavailableDices;
 export type GameStatus = {
   users: [SingleUser, SingleUser];
   dices: Dices;
-  currentUser: 0 | 1;
-  remainingRoll: 3 | 2 | 1 | 0;
+  currentUser: UserNum;
+  remainingRoll: RemainingRoll;
 };
 
-type UserActionPayloadTypes = {
-  select: { hand: AvailableHand; dices: AvailableDices };
+export type UserActionPayloadTypes = {
+  select: AvailableHand; 
   roll: void;
-  "toggle-dice": DiceIndex;
+  "toggle-dice-holding": DiceIndex;
 };
 
 export type UserActionName = keyof UserActionPayloadTypes;
@@ -58,8 +62,8 @@ export type UserActionMapType = {
 type RenderUnitPayloadTypes = {
   dice: { index: DiceIndex; dice: null | AvailableDiceObject };
   score: { hand: AvailableHand; score: number };
-  remainingRoll: 3 | 2 | 1 | 0;
-  currentUser: 1 | 0;
+  remainingRoll: RemainingRoll;
+  currentUser: UserNum;
 };
 
 export type RenderUnitUpdateActionName = keyof RenderUnitPayloadTypes;

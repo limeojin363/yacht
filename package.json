@@ -23,9 +23,16 @@
         "module": "ESNext",
         "baseUrl": "./packages",
         "paths": {
-            "common/default-game": ["common/src/default-game/index.ts"],
-            "common/custom-game": ["common/src/custom-game/index.ts"]
+            "common/default-game": [
+                "common/src/default-game/index.ts"
+            ],
+            "common/custom-game": [
+                "common/src/custom-game/index.ts"
+            ]
         }
+    },
+    "dependencies": {
+        "@types/lodash": "^4.17.20",
+        "lodash": "^4.17.21"
     }
-
 }

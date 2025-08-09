@@ -1,5 +1,7 @@
+import Game from "./client-mode/components/Game";
+
 const App = () => {
-  return <></>;
+  return <Game />;
 };
 
 export default App;
