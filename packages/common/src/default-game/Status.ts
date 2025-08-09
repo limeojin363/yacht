@@ -1,6 +1,6 @@
 import _ from "lodash";
 import ScoreCalculator from "./ScoreCalculator";
-import {
+import type {
   GameStatus,
   AvailableHand,
   SingleUser,
@@ -192,52 +192,52 @@ export const Game = {
 };
 
 // For Server
-const _Game = (() => {
-  let statusData: GameStatus = getInitialGameStatus();
+// const _Game = (() => {
+//   let statusData: GameStatus = getInitialGameStatus();
 
-  const getUpdateActionsFromUserAction = <P extends UserActionName>(
-    type: P,
-    payload: UserActionPayloadTypes[P]
-  ) => UserActionMap[type](payload, statusData);
+//   const getUpdateActionsFromUserAction = <P extends UserActionName>(
+//     type: P,
+//     payload: UserActionPayloadTypes[P]
+//   ) => UserActionMap[type](payload, statusData);
 
-  const dispatch = (actions: RenderUnitUpdateAction[]) => {
-    const newStatusData = _.cloneDeep(statusData);
+//   const dispatch = (actions: RenderUnitUpdateAction[]) => {
+//     const newStatusData = _.cloneDeep(statusData);
 
-    actions.forEach((action) => {
-      switch (action.type) {
-        case "score":
-          newStatusData.users[newStatusData.currentUser].scores[
-            action.payload.hand
-          ] = action.payload.score;
-          break;
-        case "dice":
-          newStatusData.dices[action.payload.index] = action.payload.dice;
-          break;
-        case "remainingRoll":
-          newStatusData.remainingRoll = action.payload;
-          break;
-        case "currentUser":
-          newStatusData.currentUser = action.payload;
-          break;
-      }
-    });
+//     actions.forEach((action) => {
+//       switch (action.type) {
+//         case "score":
+//           newStatusData.users[newStatusData.currentUser].scores[
+//             action.payload.hand
+//           ] = action.payload.score;
+//           break;
+//         case "dice":
+//           newStatusData.dices[action.payload.index] = action.payload.dice;
+//           break;
+//         case "remainingRoll":
+//           newStatusData.remainingRoll = action.payload;
+//           break;
+//         case "currentUser":
+//           newStatusData.currentUser = action.payload;
+//           break;
+//       }
+//     });
 
-    return newStatusData;
-  };
+//     return newStatusData;
+//   };
 
-  const getStatus = () => statusData;
+//   const getStatus = () => statusData;
 
-  const setStatus = (newStatus: GameStatus) => {
-    statusData = newStatus;
-  };
+//   const setStatus = (newStatus: GameStatus) => {
+//     statusData = newStatus;
+//   };
 
-  return {
-    getStatus,
-    setStatus,
-    getUpdateActionsFromUserAction,
-    dispatch,
-  };
-})();
+//   return {
+//     getStatus,
+//     setStatus,
+//     getUpdateActionsFromUserAction,
+//     dispatch,
+//   };
+// })();
 
 export const isGameStatusEqual = (a: GameStatus, b: GameStatus) => {
   const isDicesOk = [0, 1, 2, 3, 4].every((i) => a.dices[i] === b.dices[i]);

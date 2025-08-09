@@ -1,30 +1,30 @@
-import { AvailableDiceEye, AvailableHand } from "./types";
+import type { AvailableDiceEye, AvailableHand } from "./types";
 
 const count = (handInput: AvailableDiceEye[], number: number) =>
   handInput.filter((n) => n === number).length;
 
-enum EYES {
-  ONE = 1,
-  TWO,
-  THREE,
-  FOUR,
-  FIVE,
-  SIX,
-}
+const EYES  = {
+  ONE: 1,
+  TWO: 2,
+  THREE: 3,
+  FOUR: 4,
+  FIVE: 5,
+  SIX: 6,
+} as const
 
-enum COUNT {
-  ONE = 1,
-  TWO,
-  THREE,
-  FOUR,
-  FIVE,
-}
+const COUNT = {
+  ONE: 1,
+  TWO: 2,
+  THREE: 3,
+  FOUR: 4,
+  FIVE: 5,
+} as const
 
-enum SCORES {
-  FULLHOUSE = 25,
-  STRAIGHT = 40,
-  YACHT = 50,
-}
+const SCORES = {
+  FULLHOUSE: 25,
+  STRAIGHT: 40,
+  YACHT: 50,
+} as const
 
 type AbstractCalculator = {
   [key in AvailableHand]: (handInput: AvailableDiceEye[]) => number;
