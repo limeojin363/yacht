@@ -1,17 +1,31 @@
 {
-  "name": "codespaces-blank",
-  "version": "1.0.0",
-  "main": "index.js",
-  "author": "Limeojin <2002eojin@gmail.com>",
-  "license": "MIT",
-  "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
-  "scripts": {
-    "dev": "yarn workspace client dev & yarn workspace server dev",
-    "build": "yarn workspace client build & yarn workspace server build",
-    "serve": "yarn workspace client serve & yarn workspace server serve"
-  },
-  "packageManager": "yarn@4.9.1"
+    "name": "codespaces-blank",
+    "version": "1.0.0",
+    "main": "index.js",
+    "author": "Limeojin <2002eojin@gmail.com>",
+    "license": "MIT",
+    "private": true,
+    "workspaces": [
+        "packages/*"
+    ],
+    "moduleResolution": "NodeNext",
+    "target": "ESNext",
+    "module": "ESNext",
+    "scripts": {
+        "dev": "yarn workspace client dev & yarn workspace server dev",
+        "build": "yarn workspace client build & yarn workspace server build",
+        "serve": "yarn workspace client serve & yarn workspace server serve"
+    },
+    "packageManager": "yarn@4.9.1",
+    "compilerOptions": {
+        "moduleResolution": "NodeNext",
+        "target": "ESNext",
+        "module": "ESNext",
+        "baseUrl": "./packages",
+        "paths": {
+            "common/default-game": ["common/src/default-game/index.ts"],
+            "common/custom-game": ["common/src/custom-game/index.ts"]
+        }
+    }
+
 }
