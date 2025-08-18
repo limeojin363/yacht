@@ -1,4 +1,4 @@
-import Game from "./client-mode/components/Game";
+import Game from "./games/DefaultMode_SingleDivice/components/Game";
 
 const App = () => {
   return <Game />;

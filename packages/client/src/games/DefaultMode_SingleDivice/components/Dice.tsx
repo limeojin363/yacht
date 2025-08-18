@@ -1,9 +1,8 @@
-import { Game, type DiceIndex } from "common/default-game";
+import { Game, type DiceIndex } from "common/default-mode";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useMemo } from "react";
 import gameRootAtom, { diceAtomFamily } from "../stores";
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
+import SingleDiceView from "../../../components/SingleDiceView";
 
 const Dice = ({ index }: { index: DiceIndex }) => {
   const diceData = useAtomValue(useMemo(() => diceAtomFamily(index), [index]));
@@ -26,25 +25,11 @@ const Dice = ({ index }: { index: DiceIndex }) => {
     });
   };
 
-  return <S.Root isHeld={isHeld} onClick={onClick}>{content}</S.Root>;
+  return (
+    <SingleDiceView isHeld={isHeld} onClick={onClick}>
+      {content}
+    </SingleDiceView>
+  );
 };
 
 export default Dice;
-
-const S = {
-  Root: styled.div<{isHeld?: boolean}>`
-    width: 50px;
-    height: 50px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    ${({isHeld}) => isHeld && css`
-        transform: scale(1.1);
-        border: 1px solid #007bff;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    `}
-  `,
-};

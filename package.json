@@ -23,8 +23,8 @@
         "module": "ESNext",
         "baseUrl": "./packages",
         "paths": {
-            "common/default-game": [
-                "common/src/default-game/index.ts"
+            "common/default-mode": [
+                "common/src/default-mode/index.ts"
             ],
             "common/custom-game": [
                 "common/src/custom-game/index.ts"

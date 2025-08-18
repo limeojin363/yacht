@@ -1,5 +1,4 @@
-import styled from "@emotion/styled";
-import { Game, type AvailableHand } from "common/default-game";
+import { Game, type AvailableHand } from "common/default-mode";
 import gameRootAtom, {
   currentUserNumAtom,
   diceSetAtom,
@@ -7,7 +6,10 @@ import gameRootAtom, {
 } from "../stores";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useMemo } from "react";
-import ScoreCalculator from "../../../../common/src/default-game/ScoreCalculator";
+import ScoreCalculator from "../../../../../common/src/default-mode/ScoreCalculator";
+import ScoreCellView, {
+  type ViewStatus,
+} from "../../../components/ScoreCellView";
 
 interface ScoreCellProps {
   userNum: 0 | 1;
@@ -33,12 +35,13 @@ const ScoreCell = ({ userNum, hand }: ScoreCellProps) => {
     if (!isDicesAvailable) return;
 
     setGame((prev) => {
-      const updateAction =
-        Game.getUpdateActionsFromUserAction("select", hand, prev);
-
-      return Game.dispatch(
-        updateAction, prev
+      const updateAction = Game.getUpdateActionsFromUserAction(
+        "select",
+        hand,
+        prev
       );
+
+      return Game.dispatch(updateAction, prev);
     });
   };
 
@@ -51,37 +54,18 @@ const ScoreCell = ({ userNum, hand }: ScoreCellProps) => {
     return "EMPTY";
   })();
 
-  const content = (()=>{
+  const content = (() => {
     if (currentScore) return currentScore;
     if (!isDicesAvailable) return;
 
     const diceEyes = diceSet.map((dice) => dice.eye);
 
     if (isCurrentUser) return calculator[hand](diceEyes);
-  })()
+  })();
 
   return (
-    <S.Root onClick={onClick} selectable={viewStatus !== "SELECTABLE"}>
-      <S.InnerText viewStatus={viewStatus}>{content}</S.InnerText>
-    </S.Root>
+    <ScoreCellView label={content} viewStatus={viewStatus} onClick={onClick} />
   );
 };
 
-type ViewStatus = "EMPTY" | "SELECTABLE" | "SELECTED";
-
 export default ScoreCell;
-
-const S = {
-  Root: styled.div<{ selectable: boolean }>`
-    height: 80px;
-    width: 120px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
-    background-color: ${({ selectable }) => (selectable ? "#f0f0f0" : "#fff")};
-  `,
-  InnerText: styled.div<{ viewStatus: ViewStatus }>``,
-};

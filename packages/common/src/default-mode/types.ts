@@ -1,4 +1,6 @@
-export type UserNum = 0 | 1;
+export type TotalPlayer = 2 | 3 | 4;
+
+export type PlayerIdType = 0 | 1 | 2 | 3;
 
 export type RemainingRoll = 3 | 2 | 1 | 0;
 
@@ -18,7 +20,7 @@ export type AvailableHand =
   | "YACHT"
   | "CHOICE";
 
-export type SingleUser = {
+export type SinglePlayerType = {
   scores: Record<AvailableHand, number | null>;
 };
 
@@ -37,15 +39,20 @@ export type DiceIndex = 0 | 1 | 2 | 3 | 4;
 
 export type Dices = AvailableDices | UnavailableDices;
 
+type AvailablePlayerList =
+  | [SinglePlayerType, SinglePlayerType]
+  | [SinglePlayerType, SinglePlayerType, SinglePlayerType]
+  | [SinglePlayerType, SinglePlayerType, SinglePlayerType, SinglePlayerType];
+
 export type GameStatus = {
-  users: [SingleUser, SingleUser];
+  playerList: AvailablePlayerList;
   dices: Dices;
-  currentUser: UserNum;
+  currentUser: PlayerIdType;
   remainingRoll: RemainingRoll;
 };
 
 export type UserActionPayloadTypes = {
-  select: AvailableHand; 
+  select: AvailableHand;
   roll: void;
   "toggle-dice-holding": DiceIndex;
 };
@@ -63,7 +70,7 @@ type RenderUnitPayloadTypes = {
   dice: { index: DiceIndex; dice: null | AvailableDiceObject };
   score: { hand: AvailableHand; score: number };
   remainingRoll: RemainingRoll;
-  currentUser: UserNum;
+  currentUser: PlayerIdType;
 };
 
 export type RenderUnitUpdateActionName = keyof RenderUnitPayloadTypes;
@@ -79,5 +86,5 @@ export type RenderUnitUpdateAction = {
   [K in keyof RenderUnitPayloadTypes]: {
     type: K;
     payload: RenderUnitPayloadTypes[K];
-  }
+  };
 }[keyof RenderUnitPayloadTypes];

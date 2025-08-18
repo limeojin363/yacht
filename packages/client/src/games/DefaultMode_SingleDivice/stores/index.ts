@@ -4,7 +4,7 @@ import {
   type AvailableHand,
   type DiceIndex,
   type GameStatus,
-} from "common/default-game";
+} from "common/default-mode";
 import type { Atom } from "jotai";
 import { atom } from "jotai";
 import { atomFamily, atomWithLazy } from "jotai/utils";
@@ -15,7 +15,7 @@ const scoreAtomFamily = atomFamily<
   { userNum: 0 | 1; hand: AvailableHand },
   Atom<number | null>
 >(({ hand, userNum }) =>
-  atom((get) => get(gameRootAtom).users[userNum].scores[hand])
+  atom((get) => get(gameRootAtom).playerList[userNum].scores[hand])
 );
 
 const currentUserNumAtom = atom((get) => get(gameRootAtom).currentUser);

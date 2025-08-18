@@ -3,13 +3,14 @@ import HandNameColumn from "./HandNameColumn";
 import UserColumn from "./UserColumn";
 import DiceArea from "./DiceArea";
 
-const userNums = [0, 1] as const;
 
 const Game = () => {
+  const playerIdList = [0, 1] as const;
+  
   return (
     <S.Root>
       <HandNameColumn />
-      {userNums.map((userNum) => (
+      {playerIdList.map((userNum) => (
         <UserColumn key={`user-${userNum}`} userNum={userNum} />
       ))}
       <DiceArea />

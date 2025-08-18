@@ -1,4 +1,4 @@
-import { HAND_LIST } from "common/default-game";
+import { HAND_LIST } from "common/default-mode";
 import ScoreCell from "./ScoreCell";
 import styled from "@emotion/styled";
 

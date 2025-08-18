@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { HAND_LIST } from "common/default-game";
+import { HAND_LIST } from "common/default-mode";
 
 const HandNameColumn = () => {
   return (

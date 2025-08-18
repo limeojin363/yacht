@@ -3,7 +3,7 @@ import ScoreCalculator from "./ScoreCalculator";
 import type {
   GameStatus,
   AvailableHand,
-  SingleUser,
+  SinglePlayerType,
   UnavailableDices,
   AvailableDiceEye,
   DiceIndex,
@@ -31,7 +31,7 @@ export const HAND_LIST: AvailableHand[] = [
 ];
 
 export const getInitialGameStatus = (): GameStatus => {
-  const getUserInitialStatus = (): SingleUser => ({
+  const getUserInitialStatus = (): SinglePlayerType => ({
     scores: {
       NUMBERS_1: null,
       NUMBERS_2: null,
@@ -57,7 +57,7 @@ export const getInitialGameStatus = (): GameStatus => {
   ];
 
   return {
-    users: [getUserInitialStatus(), getUserInitialStatus()],
+    playerList: [getUserInitialStatus(), getUserInitialStatus()],
     dices: getDicesInitialStatus(),
     currentUser: 0,
     remainingRoll: 3,
@@ -70,7 +70,7 @@ const getSingleDiceEye = (): AvailableDiceEye => {
 };
 
 const UserActionMap: UserActionMapType = {
-  select: (hand, { currentUser, dices, users }) => {
+  select: (hand, { currentUser, dices, playerList: users }) => {
     if (dices.some((dice) => dice === null)) return [];
     const isHandAlreadySelected = users[currentUser].scores[hand] !== null;
     if (isHandAlreadySelected) return [];
@@ -171,7 +171,7 @@ export const Game = {
     actions.forEach((action) => {
       switch (action.type) {
         case "score":
-          newStatusData.users[newStatusData.currentUser].scores[
+          newStatusData.playerList[newStatusData.currentUser].scores[
             action.payload.hand
           ] = action.payload.score;
           break;
@@ -245,8 +245,8 @@ export const isGameStatusEqual = (a: GameStatus, b: GameStatus) => {
   const isRemainingRerollOk = a.remainingRoll === b.remainingRoll;
   const isUsersOk = HAND_LIST.every(
     (hand) =>
-      a.users[0].scores[hand] === b.users[0].scores[hand] &&
-      a.users[1].scores[hand] === b.users[1].scores[hand]
+      a.playerList[0].scores[hand] === b.playerList[0].scores[hand] &&
+      a.playerList[1].scores[hand] === b.playerList[1].scores[hand]
   );
 
   return isDicesOk && isCurrentUserOk && isRemainingRerollOk && isUsersOk;
