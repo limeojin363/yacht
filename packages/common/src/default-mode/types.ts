@@ -39,29 +39,25 @@ export type DiceIndex = 0 | 1 | 2 | 3 | 4;
 
 export type Dices = AvailableDices | UnavailableDices;
 
-type AvailablePlayerList =
-  | [SinglePlayerType, SinglePlayerType]
-  | [SinglePlayerType, SinglePlayerType, SinglePlayerType]
-  | [SinglePlayerType, SinglePlayerType, SinglePlayerType, SinglePlayerType];
-
 export type GameStatus = {
-  playerList: AvailablePlayerList;
+  totalPlayer: TotalPlayer;
+  playerList: SinglePlayerType[];
   dices: Dices;
-  currentUser: PlayerIdType;
+  currentPlayerId: PlayerIdType;
   remainingRoll: RemainingRoll;
 };
 
-export type UserActionPayloadTypes = {
+export type PlayerActionPayloadTypes = {
   select: AvailableHand;
   roll: void;
   "toggle-dice-holding": DiceIndex;
 };
 
-export type UserActionName = keyof UserActionPayloadTypes;
+export type PlayerActionName = keyof PlayerActionPayloadTypes;
 
-export type UserActionMapType = {
-  [P in keyof UserActionPayloadTypes]: (
-    payload: UserActionPayloadTypes[P],
+export type PlayerActionMapType = {
+  [P in keyof PlayerActionPayloadTypes]: (
+    payload: PlayerActionPayloadTypes[P],
     status: GameStatus
   ) => RenderUnitUpdateAction[];
 };
@@ -70,7 +66,7 @@ type RenderUnitPayloadTypes = {
   dice: { index: DiceIndex; dice: null | AvailableDiceObject };
   score: { hand: AvailableHand; score: number };
   remainingRoll: RemainingRoll;
-  currentUser: PlayerIdType;
+  currentPlayerId: PlayerIdType;
 };
 
 export type RenderUnitUpdateActionName = keyof RenderUnitPayloadTypes;

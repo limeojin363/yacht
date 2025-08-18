@@ -8,11 +8,12 @@ import type {
   AvailableDiceEye,
   DiceIndex,
   AvailableDiceObject,
-  UserActionMapType,
+  PlayerActionMapType,
   RenderUnitUpdateAction,
-  UserActionName,
-  UserActionPayloadTypes,
+  PlayerActionName,
+  PlayerActionPayloadTypes,
   RemainingRoll,
+  TotalPlayer,
 } from "./types";
 
 export const HAND_LIST: AvailableHand[] = [
@@ -30,7 +31,7 @@ export const HAND_LIST: AvailableHand[] = [
   "CHOICE",
 ];
 
-export const getInitialGameStatus = (): GameStatus => {
+export const getInitialGameStatus = (totalPlayer: TotalPlayer): GameStatus => {
   const getUserInitialStatus = (): SinglePlayerType => ({
     scores: {
       NUMBERS_1: null,
@@ -56,10 +57,15 @@ export const getInitialGameStatus = (): GameStatus => {
     null,
   ];
 
+  const getInitialPlayerList = (): SinglePlayerType[] => {
+    return Array.from({ length: totalPlayer }, getUserInitialStatus);
+  };
+
   return {
-    playerList: [getUserInitialStatus(), getUserInitialStatus()],
+    totalPlayer,
+    playerList: getInitialPlayerList(),
     dices: getDicesInitialStatus(),
-    currentUser: 0,
+    currentPlayerId: 0,
     remainingRoll: 3,
   };
 };
@@ -69,10 +75,10 @@ const getSingleDiceEye = (): AvailableDiceEye => {
   return eyes[Math.floor(Math.random() * eyes.length)];
 };
 
-const UserActionMap: UserActionMapType = {
-  select: (hand, { currentUser, dices, playerList: users }) => {
+const UserActionMap: PlayerActionMapType = {
+  select: (hand, { currentPlayerId: currentPlayerId, dices, playerList: users }) => {
     if (dices.some((dice) => dice === null)) return [];
-    const isHandAlreadySelected = users[currentUser].scores[hand] !== null;
+    const isHandAlreadySelected = users[currentPlayerId].scores[hand] !== null;
     if (isHandAlreadySelected) return [];
 
     const diceValues = dices.map((dice) => dice!.eye);
@@ -99,8 +105,8 @@ const UserActionMap: UserActionMapType = {
     };
 
     const currentUserAction: RenderUnitUpdateAction = {
-      type: "currentUser",
-      payload: ((currentUser + 1) % 2) as 1 | 0,
+      type: "currentPlayerId",
+      payload: ((currentPlayerId + 1) % 2) as 1 | 0,
     };
 
     return [
@@ -160,9 +166,9 @@ const UserActionMap: UserActionMapType = {
 const calculator = new ScoreCalculator();
 
 export const Game = {
-  getUpdateActionsFromUserAction: <P extends UserActionName>(
+  getUpdateActionsFromUserAction: <P extends PlayerActionName>(
     type: P,
-    payload: UserActionPayloadTypes[P],
+    payload: PlayerActionPayloadTypes[P],
     statusData: GameStatus
   ) => UserActionMap[type](payload, statusData),
   dispatch: (actions: RenderUnitUpdateAction[], statusData: GameStatus) => {
@@ -171,7 +177,7 @@ export const Game = {
     actions.forEach((action) => {
       switch (action.type) {
         case "score":
-          newStatusData.playerList[newStatusData.currentUser].scores[
+          newStatusData.playerList[newStatusData.currentPlayerId].scores[
             action.payload.hand
           ] = action.payload.score;
           break;
@@ -181,8 +187,8 @@ export const Game = {
         case "remainingRoll":
           newStatusData.remainingRoll = action.payload;
           break;
-        case "currentUser":
-          newStatusData.currentUser = action.payload;
+        case "currentPlayerId":
+          newStatusData.currentPlayerId = action.payload;
           break;
       }
     });
@@ -241,7 +247,7 @@ export const Game = {
 
 export const isGameStatusEqual = (a: GameStatus, b: GameStatus) => {
   const isDicesOk = [0, 1, 2, 3, 4].every((i) => a.dices[i] === b.dices[i]);
-  const isCurrentUserOk = a.currentUser === b.currentUser;
+  const isCurrentUserOk = a.currentPlayerId === b.currentPlayerId;
   const isRemainingRerollOk = a.remainingRoll === b.remainingRoll;
   const isUsersOk = HAND_LIST.every(
     (hand) =>
