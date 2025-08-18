@@ -1,6 +1,6 @@
-import { Game, type AvailableHand } from "common/default-mode";
+import { Game, type AvailableHand, type PlayerIdType } from "common/default-mode";
 import gameRootAtom, {
-  currentUserNumAtom,
+  currentPlayerIdAtom,
   diceSetAtom,
   scoreAtomFamily,
 } from "../stores";
@@ -12,30 +12,30 @@ import ScoreCellView, {
 } from "../../../components/ScoreCellView";
 
 interface ScoreCellProps {
-  userNum: 0 | 1;
+  playerId: PlayerIdType;
   hand: AvailableHand;
 }
 
 const calculator = new ScoreCalculator();
 
-const ScoreCell = ({ userNum, hand }: ScoreCellProps) => {
+const ScoreCell = ({ playerId, hand }: ScoreCellProps) => {
   const setGame = useSetAtom(gameRootAtom);
-  const isCurrentUser = userNum === useAtomValue(currentUserNumAtom);
+  const isCurrentPlayer = playerId === useAtomValue(currentPlayerIdAtom);
   const diceSet = useAtomValue(diceSetAtom);
 
   // Does infinite rerendering occur?
   const currentScore = useAtomValue(
-    useMemo(() => scoreAtomFamily({ userNum, hand }), [userNum, hand])
+    useMemo(() => scoreAtomFamily({ playerId, hand }), [playerId, hand])
   );
 
   const isDicesAvailable = diceSet.every((dice) => !!dice);
 
   const onClick = () => {
-    if (!isCurrentUser) return;
+    if (!isCurrentPlayer) return;
     if (!isDicesAvailable) return;
 
     setGame((prev) => {
-      const updateAction = Game.getUpdateActionsFromUserAction(
+      const updateAction = Game.getUpdateActionsFromPlayerAction(
         "select",
         hand,
         prev
@@ -49,7 +49,7 @@ const ScoreCell = ({ userNum, hand }: ScoreCellProps) => {
     // 이미 선택된 핸드
     if (currentScore) return "SELECTED";
     // 선택되지 않았고, 현재 유저 -> 선택 가능
-    if (isCurrentUser) return "SELECTABLE";
+    if (isCurrentPlayer) return "SELECTABLE";
     // 선택되지 않았고, 현재 유저도 아님 -> 표시 X
     return "EMPTY";
   })();
@@ -60,7 +60,7 @@ const ScoreCell = ({ userNum, hand }: ScoreCellProps) => {
 
     const diceEyes = diceSet.map((dice) => dice.eye);
 
-    if (isCurrentUser) return calculator[hand](diceEyes);
+    if (isCurrentPlayer) return calculator[hand](diceEyes);
   })();
 
   return (

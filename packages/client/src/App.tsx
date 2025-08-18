@@ -1,7 +1,7 @@
-import Game from "./games/DefaultMode_SingleDivice/components/Game";
+import DefaultMode_SingleDevice from "./games/DefaultMode_SingleDevice";
 
 const App = () => {
-  return <Game />;
+  return <DefaultMode_SingleDevice />;
 };
 
 export default App;

@@ -1,14 +1,14 @@
-import { HAND_LIST } from "common/default-mode";
+import { HAND_LIST, type PlayerIdType } from "common/default-mode";
 import ScoreCell from "./ScoreCell";
 import styled from "@emotion/styled";
 
-const UserColumn = ({ userNum }: { userNum: 0 | 1 }) => {
+const PlayerColumn = ({ playerId }: { playerId: PlayerIdType }) => {
   return (
     <S.Root>
       {HAND_LIST.map((hand) => (
         <ScoreCell
-          key={`user${userNum}-${hand}`}
-          userNum={userNum}
+          key={`player${playerId}-${hand}`}
+          playerId={playerId}
           hand={hand}
         />
       ))}
@@ -16,7 +16,7 @@ const UserColumn = ({ userNum }: { userNum: 0 | 1 }) => {
   );
 };
 
-export default UserColumn;
+export default PlayerColumn;
 
 const S = {
   Root: styled.div`

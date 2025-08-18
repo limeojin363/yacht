@@ -1,4 +1,4 @@
-export type TotalPlayer = 2 | 3 | 4;
+export type TotalPlayers = 2 | 3 | 4;
 
 export type PlayerIdType = 0 | 1 | 2 | 3;
 
@@ -40,7 +40,7 @@ export type DiceIndex = 0 | 1 | 2 | 3 | 4;
 export type Dices = AvailableDices | UnavailableDices;
 
 export type GameStatus = {
-  totalPlayer: TotalPlayer;
+  totalPlayers: TotalPlayers;
   playerList: SinglePlayerType[];
   dices: Dices;
   currentPlayerId: PlayerIdType;

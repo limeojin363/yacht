@@ -13,7 +13,7 @@ const RollButton = () => {
     if (remainingRollData <= 0) return;
     
     setGame((prev) => {
-      const updateActions = Game.getUpdateActionsFromUserAction(
+      const updateActions = Game.getUpdateActionsFromPlayerAction(
         "roll",
         void 0,
         prev

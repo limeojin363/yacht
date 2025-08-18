@@ -4,32 +4,32 @@ import {
   type AvailableHand,
   type DiceIndex,
   type GameStatus,
+  type PlayerIdType,
 } from "common/default-mode";
 import type { Atom } from "jotai";
 import { atom } from "jotai";
-import { atomFamily, atomWithLazy } from "jotai/utils";
+import { atomFamily } from "jotai/utils";
 
-const gameRootAtom = atomWithLazy<GameStatus>(getInitialGameStatus);
+const gameRootAtom = atom<GameStatus>(getInitialGameStatus(4));
 
 const scoreAtomFamily = atomFamily<
-  { userNum: 0 | 1; hand: AvailableHand },
+  { playerId: PlayerIdType; hand: AvailableHand },
   Atom<number | null>
->(({ hand, userNum }) =>
-  atom((get) => get(gameRootAtom).playerList[userNum].scores[hand])
+>(({ hand, playerId }) =>
+  atom((get) => get(gameRootAtom).playerList[playerId].scores[hand])
 );
 
-const currentUserNumAtom = atom((get) => get(gameRootAtom).currentUser);
+const currentPlayerIdAtom = atom((get) => get(gameRootAtom).currentPlayerId);
 
-export { scoreAtomFamily, currentUserNumAtom };
+export { scoreAtomFamily, currentPlayerIdAtom };
 
 const diceSetAtom = atom((get) => get(gameRootAtom).dices);
 
 const diceAtomFamily = atomFamily<DiceIndex, Atom<AvailableDiceObject | null>>(
-  (index) =>
-    atom((get) => get(diceSetAtom)[index])
+  (index) => atom((get) => get(diceSetAtom)[index])
 );
 
-export {diceSetAtom, diceAtomFamily};
+export { diceSetAtom, diceAtomFamily };
 
 export default gameRootAtom;
 

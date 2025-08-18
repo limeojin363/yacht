@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
 
-const DefaultMode_SingleDivice = () => {
+const DefaultMode_MultipleDevice = () => {
     return <S.Root>{/* FILL HERE */}</S.Root>;
 };
 
@@ -10,4 +10,4 @@ const S = {
     `,
 }
 
-export default DefaultMode_SingleDivice;
+export default DefaultMode_MultipleDevice;

@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import gameRootAtom, { diceAtomFamily } from "../stores";
 import SingleDiceView from "../../../components/SingleDiceView";
 
-const Dice = ({ index }: { index: DiceIndex }) => {
+const SingleDice = ({ index }: { index: DiceIndex }) => {
   const diceData = useAtomValue(useMemo(() => diceAtomFamily(index), [index]));
   const setGame = useSetAtom(gameRootAtom);
 
@@ -15,7 +15,7 @@ const Dice = ({ index }: { index: DiceIndex }) => {
     if (diceData === null) return;
 
     setGame((prev) => {
-      const updateActions = Game.getUpdateActionsFromUserAction(
+      const updateActions = Game.getUpdateActionsFromPlayerAction(
         "toggle-dice-holding",
         index,
         prev
@@ -32,4 +32,4 @@ const Dice = ({ index }: { index: DiceIndex }) => {
   );
 };
 
-export default Dice;
+export default SingleDice;

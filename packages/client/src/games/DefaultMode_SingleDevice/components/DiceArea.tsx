@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import Dice from "./Dice";
+import SingleDice from "./SingleDice";
 import RollButton from "./RollButton";
 import RemainingRollDisplay from "./RemainingRollDisplay";
 
@@ -9,7 +9,7 @@ const DiceArea = () => {
   return (
     <S.Root>
       {diceIndexes.map((index) => (
-        <Dice key={index} index={index} />
+        <SingleDice key={index} index={index} />
       ))}
       <RollButton />
       <RemainingRollDisplay />

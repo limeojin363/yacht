@@ -13,7 +13,7 @@ import type {
   PlayerActionName,
   PlayerActionPayloadTypes,
   RemainingRoll,
-  TotalPlayer,
+  TotalPlayers,
 } from "./types";
 
 export const HAND_LIST: AvailableHand[] = [
@@ -31,8 +31,8 @@ export const HAND_LIST: AvailableHand[] = [
   "CHOICE",
 ];
 
-export const getInitialGameStatus = (totalPlayer: TotalPlayer): GameStatus => {
-  const getUserInitialStatus = (): SinglePlayerType => ({
+export const getInitialGameStatus = (totalPlayers: TotalPlayers): GameStatus => {
+  const getPlayerInitialStatus = (): SinglePlayerType => ({
     scores: {
       NUMBERS_1: null,
       NUMBERS_2: null,
@@ -58,11 +58,11 @@ export const getInitialGameStatus = (totalPlayer: TotalPlayer): GameStatus => {
   ];
 
   const getInitialPlayerList = (): SinglePlayerType[] => {
-    return Array.from({ length: totalPlayer }, getUserInitialStatus);
+    return Array.from({ length: totalPlayers }, getPlayerInitialStatus);
   };
 
   return {
-    totalPlayer,
+    totalPlayers,
     playerList: getInitialPlayerList(),
     dices: getDicesInitialStatus(),
     currentPlayerId: 0,
@@ -75,10 +75,10 @@ const getSingleDiceEye = (): AvailableDiceEye => {
   return eyes[Math.floor(Math.random() * eyes.length)];
 };
 
-const UserActionMap: PlayerActionMapType = {
-  select: (hand, { currentPlayerId: currentPlayerId, dices, playerList: users }) => {
+const PlayerActionMap: PlayerActionMapType = {
+  select: (hand, { currentPlayerId, dices, playerList, totalPlayers }) => {
     if (dices.some((dice) => dice === null)) return [];
-    const isHandAlreadySelected = users[currentPlayerId].scores[hand] !== null;
+    const isHandAlreadySelected = playerList[currentPlayerId].scores[hand] !== null;
     if (isHandAlreadySelected) return [];
 
     const diceValues = dices.map((dice) => dice!.eye);
@@ -104,16 +104,16 @@ const UserActionMap: PlayerActionMapType = {
       payload: 3,
     };
 
-    const currentUserAction: RenderUnitUpdateAction = {
+    const currentPlayerAction: RenderUnitUpdateAction = {
       type: "currentPlayerId",
-      payload: ((currentPlayerId + 1) % 2) as 1 | 0,
+      payload: ((currentPlayerId + 1) % totalPlayers) as 1 | 0,
     };
 
     return [
       scoreUpdateAction,
       ...diceUpdateActions,
       remainingRollAction,
-      currentUserAction,
+      currentPlayerAction,
     ];
   },
   roll: (_, { dices, remainingRoll }) => {
@@ -166,11 +166,11 @@ const UserActionMap: PlayerActionMapType = {
 const calculator = new ScoreCalculator();
 
 export const Game = {
-  getUpdateActionsFromUserAction: <P extends PlayerActionName>(
+  getUpdateActionsFromPlayerAction: <P extends PlayerActionName>(
     type: P,
     payload: PlayerActionPayloadTypes[P],
     statusData: GameStatus
-  ) => UserActionMap[type](payload, statusData),
+  ) => PlayerActionMap[type](payload, statusData),
   dispatch: (actions: RenderUnitUpdateAction[], statusData: GameStatus) => {
     const newStatusData = _.cloneDeep(statusData);
 
@@ -246,14 +246,14 @@ export const Game = {
 // })();
 
 export const isGameStatusEqual = (a: GameStatus, b: GameStatus) => {
-  const isDicesOk = [0, 1, 2, 3, 4].every((i) => a.dices[i] === b.dices[i]);
-  const isCurrentUserOk = a.currentPlayerId === b.currentPlayerId;
+  const areDicesOk = [0, 1, 2, 3, 4].every((i) => a.dices[i] === b.dices[i]);
+  const isCurrentPlayerOk = a.currentPlayerId === b.currentPlayerId;
   const isRemainingRerollOk = a.remainingRoll === b.remainingRoll;
-  const isUsersOk = HAND_LIST.every(
+  const arePlayersOk = HAND_LIST.every(
     (hand) =>
       a.playerList[0].scores[hand] === b.playerList[0].scores[hand] &&
       a.playerList[1].scores[hand] === b.playerList[1].scores[hand]
   );
 
-  return isDicesOk && isCurrentUserOk && isRemainingRerollOk && isUsersOk;
+  return areDicesOk && isCurrentPlayerOk && isRemainingRerollOk && arePlayersOk;
 };
