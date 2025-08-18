@@ -1,8 +1,8 @@
 import { Game, type DiceIndex } from "common/default-mode";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useMemo } from "react";
-import gameRootAtom, { diceAtomFamily } from "../stores";
-import SingleDiceView from "../../../components/SingleDiceView";
+import gameRootAtom, { diceAtomFamily } from "../../stores";
+import SingleDiceView from "../../../../components/SingleDiceView";
 
 const SingleDice = ({ index }: { index: DiceIndex }) => {
   const diceData = useAtomValue(useMemo(() => diceAtomFamily(index), [index]));

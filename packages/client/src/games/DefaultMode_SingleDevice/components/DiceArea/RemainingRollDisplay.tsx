@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { remainingRollAtom } from "../stores/remainigRoll";
+import { remainingRollAtom } from "../../stores/remainigRoll";
 import { useAtomValue } from "jotai";
 
 const RemainingRollDisplay = () => {

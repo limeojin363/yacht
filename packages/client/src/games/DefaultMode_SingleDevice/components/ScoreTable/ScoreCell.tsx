@@ -3,13 +3,13 @@ import gameRootAtom, {
   currentPlayerIdAtom,
   diceSetAtom,
   scoreAtomFamily,
-} from "../stores";
+} from "../../stores";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useMemo } from "react";
-import ScoreCalculator from "../../../../../common/src/default-mode/ScoreCalculator";
+import ScoreCalculator from "../../../../../../common/src/default-mode/ScoreCalculator";
 import ScoreCellView, {
   type ViewStatus,
-} from "../../../components/ScoreCellView";
+} from "../../../../components/ScoreCellView";
 
 interface ScoreCellProps {
   playerId: PlayerIdType;

@@ -15,10 +15,16 @@ const ScoreCellView = ({ viewStatus, label, ...props }: ScoreCellViewProps) => {
   );
 };
 
+const BGCOLOR = {
+  FILLED: {
+    DEFAULT: "#ffffff0",
+    HOVER: "#",
+  },
+};
+
 const S = {
   Root: styled.div<{ selectable: boolean }>`
-    height: 80px;
-    width: 120px;
+    flex: 1;
 
     display: flex;
     align-items: center;

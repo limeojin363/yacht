@@ -15,12 +15,13 @@ export default HandNameColumn;
 
 const S = {
   Root: styled.div`
+    height: 100%;
+    flex: 1;
     display: flex;
     flex-direction: column;
   `,
   Cell: styled.div`
-    height: 80px;
-    width: 120px;
+    flex: 1;
 
     display: flex;
     align-items: center;

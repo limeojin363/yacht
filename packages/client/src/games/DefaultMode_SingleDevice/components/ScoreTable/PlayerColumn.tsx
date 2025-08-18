@@ -20,7 +20,9 @@ export default PlayerColumn;
 
 const S = {
   Root: styled.div`
+    flex: 1;
     display: flex;
     flex-direction: column;
+    height: 100%;
   `,
 };
