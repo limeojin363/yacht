@@ -32,7 +32,11 @@ export default GameRootComponent;
 
 const S = {
   Root: styled.div`
+    height: 100vh;
+
     display: flex;
     flex-direction: column;
+
+    user-select: none;
   `,
 };

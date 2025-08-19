@@ -1,4 +1,8 @@
-import { Game, type AvailableHand, type PlayerIdType } from "common/default-mode";
+import {
+  Game,
+  type AvailableHand,
+  type PlayerIdType,
+} from "common/default-mode";
 import gameRootAtom, {
   currentPlayerIdAtom,
   diceSetAtom,
@@ -47,7 +51,7 @@ const ScoreCell = ({ playerId, hand }: ScoreCellProps) => {
 
   const viewStatus: ViewStatus = (() => {
     // 이미 선택된 핸드
-    if (currentScore) return "SELECTED";
+    if (currentScore !== null) return "SELECTED";
     // 선택되지 않았고, 현재 유저 -> 선택 가능
     if (isCurrentPlayer) return "SELECTABLE";
     // 선택되지 않았고, 현재 유저도 아님 -> 표시 X
@@ -55,7 +59,7 @@ const ScoreCell = ({ playerId, hand }: ScoreCellProps) => {
   })();
 
   const content = (() => {
-    if (currentScore) return currentScore;
+    if (currentScore !== null) return currentScore;
     if (!isDicesAvailable) return;
 
     const diceEyes = diceSet.map((dice) => dice.eye);

@@ -21,7 +21,7 @@ const S = {
   Root: styled.div<{ isHeld?: boolean }>`
     width: 50px;
     height: 50px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.486);
 
     display: flex;
     align-items: center;
@@ -31,8 +31,7 @@ const S = {
       isHeld &&
       css`
         transform: scale(1.1);
-        border: 1px solid #007bff;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        box-shadow: inset 0 0 0 3px #007bff;
       `}
   `,
 };

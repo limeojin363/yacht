@@ -12,7 +12,7 @@ export default RemainingRollDisplay;
 
 const S = {
     Root: styled.div`
-        padding: 12px 16px;
+        padding: 8px;
         background-color: #f8f9fa;
         color: #212529;
         border: 1px solid #dee2e6;

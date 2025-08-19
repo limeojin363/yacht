@@ -18,15 +18,17 @@ const S = {
     height: 100%;
     flex: 1;
     display: flex;
+    gap: 3px;
     flex-direction: column;
   `,
   Cell: styled.div`
-    flex: 1;
+    flex: 0.5;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.2);
+    background-color: #c2c2c2;
   `,
 };
