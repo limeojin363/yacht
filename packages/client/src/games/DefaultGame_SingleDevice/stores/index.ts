@@ -5,7 +5,7 @@ import {
   type DiceIndex,
   type GameStatus,
   type PlayerIdType,
-} from "common/default-mode";
+} from "common/default-game";
 import type { Atom } from "jotai";
 import { atom } from "jotai";
 import { atomFamily } from "jotai/utils";

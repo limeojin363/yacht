@@ -2,7 +2,7 @@ import {
   Game,
   type AvailableHand,
   type PlayerIdType,
-} from "common/default-mode";
+} from "common/default-game";
 import gameRootAtom, {
   currentPlayerIdAtom,
   diceSetAtom,
@@ -10,7 +10,7 @@ import gameRootAtom, {
 } from "../../stores";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useMemo } from "react";
-import ScoreCalculator from "../../../../../../common/src/default-mode/ScoreCalculator";
+import ScoreCalculator from "../../../../../../common/src/default-game/ScoreCalculator";
 import ScoreCellView, {
   type ViewStatus,
 } from "../../../../components/ScoreCellView";
@@ -26,8 +26,6 @@ const ScoreCell = ({ playerId, hand }: ScoreCellProps) => {
   const setGame = useSetAtom(gameRootAtom);
   const isCurrentPlayer = playerId === useAtomValue(currentPlayerIdAtom);
   const diceSet = useAtomValue(diceSetAtom);
-
-  // Does infinite rerendering occur?
   const currentScore = useAtomValue(
     useMemo(() => scoreAtomFamily({ playerId, hand }), [playerId, hand])
   );

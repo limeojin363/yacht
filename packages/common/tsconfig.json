@@ -9,7 +9,7 @@
     "baseUrl": ".",
     "paths": {
       "common/custom/*": ["src/common/custom/*"],
-      "common/default-mode/*": ["src/common/default-mode/*"]
+      "common/default-game/*": ["src/common/default-game/*"]
     }
   }
 }

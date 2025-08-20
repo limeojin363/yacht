@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { useAtomValue, useSetAtom } from "jotai";
 import gameRootAtom from "../../stores";
 import { remainingRollAtom } from "../../stores/remainigRoll";
-import { Game } from "common/default-mode";
+import { Game } from "common/default-game";
 
 const RollButton = () => {
   const remainingRollData = useAtomValue(remainingRollAtom);

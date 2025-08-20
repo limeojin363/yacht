@@ -3,6 +3,6 @@
     "version": "1.0.0",
     "license": "MIT",
     "exports": {
-        "./default-mode": "./src/default-mode/index.ts"
+        "./default-game": "./src/default-game/index.ts"
     }
 }

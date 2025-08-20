@@ -1,4 +1,4 @@
-import { Game, type DiceIndex } from "common/default-mode";
+import { Game, type DiceIndex } from "common/default-game";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useMemo } from "react";
 import gameRootAtom, { diceAtomFamily } from "../../stores";

@@ -1,8 +1,8 @@
-import type { TotalPlayers } from "common/default-mode";
+import type { TotalPlayers } from "common/default-game";
 import { useState } from "react";
 import GameRootComponent from "./components/GameRoot";
 
-const DefaultMode_SingleDevice = () => {
+const DefaultGame_SingleDevice = () => {
   const [tp, setTp] = useState<TotalPlayers | null>(null);
 
   if (!tp) return (
@@ -18,4 +18,4 @@ const DefaultMode_SingleDevice = () => {
   return <GameRootComponent totalPlayers={tp} />
 };
 
-export default DefaultMode_SingleDevice;
+export default DefaultGame_SingleDevice;

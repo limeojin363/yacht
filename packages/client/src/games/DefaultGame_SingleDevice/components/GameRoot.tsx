@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { getInitialGameStatus, type TotalPlayers } from "common/default-mode";
+import { getInitialGameStatus, type TotalPlayers } from "common/default-game";
 import { createStore, Provider } from "jotai";
 import { useMemo } from "react";
 import gameRootAtom from "../stores";
@@ -33,6 +33,7 @@ export default GameRootComponent;
 const S = {
   Root: styled.div`
     height: 100vh;
+    width: 100vw;
 
     display: flex;
     flex-direction: column;

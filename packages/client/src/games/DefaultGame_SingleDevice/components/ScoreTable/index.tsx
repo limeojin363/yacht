@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import HandNameColumn from "./HandNameColumn";
-import type { PlayerIdType, TotalPlayers } from "common/default-mode";
+import type { PlayerIdType, TotalPlayers } from "common/default-game";
 import PlayerColumn from "./PlayerColumn";
 
 const ScoreTable = ({ totalPlayers }: { totalPlayers: TotalPlayers }) => {
@@ -25,6 +25,7 @@ const ScoreTable = ({ totalPlayers }: { totalPlayers: TotalPlayers }) => {
 
 const S = {
   Root: styled.div`
+    padding: 8px 16px;
     display: flex;
     flex-direction: row;
     justify-content: center;
