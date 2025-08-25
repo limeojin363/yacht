@@ -1,0 +1,53 @@
+import { RequestHandler } from "express";
+import z from "zod";
+import { pool } from "..";
+import { createHashedPassword } from "./signup";
+import { generateAccessToken, generateRefreshToken } from "../auths/auth";
+
+const loginReqBody = z.object({
+  username: z.string().min(3).max(20),
+  password: z.string().min(6).max(20),
+});
+
+const UserRows = z.array(
+  z.object({
+    id: z.number(),
+    username: z.string(),
+    password: z.string(),
+    salt: z.string(),
+    authorityLevel: z.number().min(0).max(3),
+  })
+);
+
+export const login: RequestHandler = async (req, res) => {
+  const result = loginReqBody.safeParse(req.body);
+  if (!result.success) {
+    return res
+      .status(400)
+      .json({ message: "Invalid request body", error: result.error });
+  }
+
+  const { username, password: plainPassword } = result.data;
+
+  const [rows] = await pool.query(
+    "SELECT salt FROM `users` WHERE `username` = ?",
+    [username]
+  );
+
+  const parsed = UserRows.safeParse(rows);
+
+  if (!parsed.success)
+    return res.status(401).json({ message: "Invalid username or password" });
+
+  const { salt, password, id } = parsed.data[0];
+  if (password === (await createHashedPassword(plainPassword, salt))) {
+    // If we reach this point, the user is authenticated
+    const accessToken = generateAccessToken(id);
+    const refreshToken = generateRefreshToken(id);
+    res
+      .status(200)
+      .json({ message: "Login successful", accessToken, refreshToken });
+  } else {
+    res.status(401).json({ message: "Invalid username or password" });
+  }
+};

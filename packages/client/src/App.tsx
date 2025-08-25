@@ -1,7 +1,7 @@
-import DefaultGame_SingleDevice from "./games/DefaultGame_SingleDevice";
+import DefaultMode_MultipleDevice from "./games/DefaultGame_MultipleDevice";
 
 const App = () => {
-  return <DefaultGame_SingleDevice />;
+  return <DefaultMode_MultipleDevice />;
 };
 
 export default App;

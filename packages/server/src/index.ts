@@ -1,29 +1,37 @@
-import express, { Request, Response, NextFunction } from "express";
+import mysql from "mysql2/promise";
+import express from "express";
 import cors from "cors";
+import { WebSocketServer } from "ws";
+import http from "http";
+import dotenv from "dotenv";
+import { signup } from "./routes/signup";
+import { login } from "./routes/login";
+import { refresh } from "./routes/refresh";
+
+dotenv.config();
 
 const app = express();
 
-app.use(cors());
+const server = http.createServer(app);
 
-app.get("/welcome", (req: Request, res: Response, next: NextFunction) => {
-  res.send("welcome!");
-});
+export const wss = new WebSocketServer({ server });
+
+app.use(cors());
 
 const PORT = 3000;
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`
-  ################################################
-  🛡️  Server listening on port: ${PORT} 🛡️
-  ################################################
-`);
+export const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 3306,
 });
 
-app.get("/api", (req: Request, res: Response, next: NextFunction) => {
-  console.log(req);
-  res.json("API is working!");
+server.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
 });
-app.get("/", (req: Request, res: Response, next: NextFunction) => {
-  console.log(req);
-  res.json("API is working!");
-});
+
+app.post("/user", signup);
+app.post("/login", login);
+app.post("/refresh", refresh);
+

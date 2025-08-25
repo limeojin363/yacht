@@ -13,7 +13,7 @@ import { useMemo } from "react";
 import ScoreCalculator from "../../../../../../common/src/default-game/ScoreCalculator";
 import ScoreCellView, {
   type ViewStatus,
-} from "../../../../components/ScoreCellView";
+} from "../../../../general/components/ScoreCellView";
 
 interface ScoreCellProps {
   playerId: PlayerIdType;

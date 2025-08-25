@@ -25,14 +25,14 @@
         "paths": {
             "common/default-game": [
                 "common/src/default-game/index.ts"
-            ],
-            "common/custom-game": [
-                "common/src/custom-game/index.ts"
             ]
         }
     },
     "dependencies": {
+        "@types/jsonwebtoken": "^9.0.10",
         "@types/lodash": "^4.17.20",
+        "dotenv": "^17.2.1",
+        "jsonwebtoken": "^9.0.2",
         "lodash": "^4.17.21"
     }
 }
