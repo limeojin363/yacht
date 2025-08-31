@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
-import { pool } from "..";
 import z from "zod";
 import crypto from "crypto";
+import { pool } from "../..";
 
 const SignupReqBody = z.object({
   username: z.string().min(3).max(20),
@@ -9,7 +9,8 @@ const SignupReqBody = z.object({
   authorityLevel: z.number().min(0).max(3),
 });
 
-const createSalt = (): Promise<string> =>
+// TODO: auth 폴더로 이동
+export const createSalt = (): Promise<string> =>
   new Promise((resolve, reject) => {
     crypto.randomBytes(64, (err, buf) => {
       if (err) reject(err);

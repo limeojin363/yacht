@@ -1,17 +1,18 @@
 import { RequestHandler } from "express";
 import z from "zod";
-import { pool } from "..";
+import { pool } from "../..";
 import { createHashedPassword } from "./signup";
-import { generateAccessToken, generateRefreshToken } from "../auths/auth";
+import { generateAccessToken, generateRefreshToken } from "../../auths/auth";
 
-const loginReqBody = z.object({
+const ZLoginReqBody = z.object({
   username: z.string().min(3).max(20),
   password: z.string().min(6).max(20),
 });
 
-const UserRows = z.array(
+export const ZUserRows = z.array(
   z.object({
     id: z.number(),
+    inGame: z.number().min(0).max(2),
     username: z.string(),
     password: z.string(),
     salt: z.string(),
@@ -20,7 +21,7 @@ const UserRows = z.array(
 );
 
 export const login: RequestHandler = async (req, res) => {
-  const result = loginReqBody.safeParse(req.body);
+  const result = ZLoginReqBody.safeParse(req.body);
   if (!result.success) {
     return res
       .status(400)
@@ -30,12 +31,11 @@ export const login: RequestHandler = async (req, res) => {
   const { username, password: plainPassword } = result.data;
 
   const [rows] = await pool.query(
-    "SELECT salt FROM `users` WHERE `username` = ?",
+    "SELECT * FROM `users` WHERE `username` = ?",
     [username]
   );
 
-  const parsed = UserRows.safeParse(rows);
-
+  const parsed = ZUserRows.safeParse(rows);
   if (!parsed.success)
     return res.status(401).json({ message: "Invalid username or password" });
 

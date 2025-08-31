@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 import z from "zod";
-import { generateAccessToken, generateRefreshToken } from "../auths/auth";
+import { generateAccessToken, generateRefreshToken } from "../../auths/auth";
 
 const ZReqBody = z.object({
     refreshToken: z.string()
