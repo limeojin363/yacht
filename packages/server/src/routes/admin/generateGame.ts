@@ -29,7 +29,7 @@ export const generateGame: RequestHandler = async (req, res) => {
     ]);
     res.status(201).json({ message: "Game created successfully" });
   } catch (error) {
-    console.log(error);
-    res.status(401).json({ message: "Unauthorized" });
+    console.error(error);
+    res.status(401).json({ error });
   }
 };
