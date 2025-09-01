@@ -7,6 +7,8 @@ import { login } from "./routes/user/login";
 import { refresh } from "./routes/user/refresh";
 import { generateGame } from "./routes/admin/generateGame";
 import { createHashedPassword, createSalt, signup } from "./routes/user/signup";
+import { enterTheGame } from "./routes/game/enter";
+import { exitTheGame } from "./routes/game/exit";
 
 dotenv.config();
 
@@ -62,7 +64,9 @@ server.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
 
-app.post("/user", signup);
-app.post("/login", login);
-app.post("/refresh", refresh);
+app.post("/user/signup", signup);
+app.post("/user/login", login);
+app.post("/user/refresh", refresh);
 app.post("/admin/generate-game", generateGame);
+app.post("/game/enter", enterTheGame);
+app.delete("/game/exit", exitTheGame);
