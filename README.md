@@ -1,5 +1,14 @@
 # 작업 목록(250901 update)
 
+## 지금하고있는것
+
+- Tanstack Query + ky 세팅 + common에의 API 코드 통합
+
+## common 구조개편 어카지?
+
+1. types + validators
+2. 
+
 ## admin 기능들
 
 - 게임 목록 보기(API, 프론트)

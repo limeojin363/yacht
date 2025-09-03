@@ -1,31 +1,23 @@
 import styled from "@emotion/styled";
-import DefaultMode_MultipleDevice from "./games/DefaultGame_MultipleDevice";
-import DefaultGame_SingleDevice from "./games/DefaultGame_SingleDevice";
 import { useState } from "react";
+import DefaultMode_MultipleDevice from "./pages/games/DefaultGame_MultipleDevice";
+import DefaultGame_SingleDevice from "./pages/games/DefaultGame_SingleDevice";
 
 const App = () => {
   const [gameName, setGameName] = useState<
     "DefaultMode_MultipleDevice" | "DefaultGame_SingleDevice"
   >();
 
-  if (!gameName)
-    return (
-      <S.Root>
-        <S.Select onClick={() => setGameName("DefaultGame_SingleDevice")}>
-          DefaultGame_SingleDevice
-        </S.Select>
-        <S.Select onClick={() => setGameName("DefaultMode_MultipleDevice")}>
-          DefaultMode_MultipleDevice
-        </S.Select>
-      </S.Root>
-    );
-
-  switch (gameName) {
-    case "DefaultMode_MultipleDevice":
-      return <DefaultMode_MultipleDevice />;
-    case "DefaultGame_SingleDevice":
-      return <DefaultGame_SingleDevice />;
-  }
+  return (
+    <S.Root>
+      <S.Select onClick={() => setGameName("DefaultGame_SingleDevice")}>
+        DefaultGame_SingleDevice
+      </S.Select>
+      <S.Select onClick={() => setGameName("DefaultMode_MultipleDevice")}>
+        DefaultMode_MultipleDevice
+      </S.Select>
+    </S.Root>
+  );
 };
 
 export default App;
