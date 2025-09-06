@@ -1,0 +1,14 @@
+{
+  "name": "@yacht/communications",
+  "version": "1.0.0",
+  "license": "MIT",
+  "exports": {
+    "./rest": "./rest/index.ts",
+    "./websocket": "./websocket/index.ts"
+  },
+  "type": "module",
+  "dependencies": {
+    "@yacht/games": "workspace:^",
+    "zod": "^4.1.5"
+  }
+}

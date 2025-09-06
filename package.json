@@ -1,39 +1,26 @@
 {
-    "name": "codespaces-blank",
-    "version": "1.0.0",
-    "main": "index.js",
-    "author": "Limeojin <2002eojin@gmail.com>",
-    "license": "MIT",
-    "private": true,
-    "workspaces": [
-        "packages/*"
-    ],
+  "name": "codespaces-blank",
+  "version": "1.0.0",
+  "author": "Limeojin <2002eojin@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "packageManager": "yarn@4.9.1",
+  "moduleResolution": "NodeNext",
+  "target": "ESNext",
+  "module": "ESNext",
+  "scripts": {
+    "dev": "yarn workspace @yacht/client dev & yarn workspace @yacht/server dev",
+    "build": "yarn workspace @yacht/client build & yarn workspace @yacht/server build",
+    "serve": "yarn workspace @yacht/client serve & yarn workspace @yacht/server serve"
+  },
+  "compilerOptions": {
     "moduleResolution": "NodeNext",
     "target": "ESNext",
     "module": "ESNext",
-    "scripts": {
-        "dev": "yarn workspace client dev & yarn workspace server dev",
-        "build": "yarn workspace client build & yarn workspace server build",
-        "serve": "yarn workspace client serve & yarn workspace server serve"
-    },
-    "packageManager": "yarn@4.9.1",
-    "compilerOptions": {
-        "moduleResolution": "NodeNext",
-        "target": "ESNext",
-        "module": "ESNext",
-        "baseUrl": "./packages",
-        "paths": {
-            "common/default-game": [
-                "common/src/default-game/index.ts"
-            ]
-        }
-    },
-    "dependencies": {
-        "@types/jsonwebtoken": "^9.0.10",
-        "@types/lodash": "^4.17.20",
-        "dotenv": "^17.2.1",
-        "jsonwebtoken": "^9.0.2",
-        "lodash": "^4.17.21",
-        "socket.io": "^4.8.1"
-    }
+    "baseUrl": "./"
+  }
 }
