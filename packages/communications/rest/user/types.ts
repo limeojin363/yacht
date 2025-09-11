@@ -8,7 +8,7 @@ import {
   SignupResBodySchema,
   LogoutReqBodySchema,
   LogoutResBodySchema,
-} from "./schemas";
+} from "./schemas.js";
 
 export type LoginReqBody = z.infer<typeof LoginReqBodySchema>;
 

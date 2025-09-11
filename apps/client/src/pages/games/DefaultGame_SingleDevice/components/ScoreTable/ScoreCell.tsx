@@ -1,8 +1,9 @@
 import {
+  GetScoreOf,
   getUpdatedGameStatus,
   type AvailableHand,
   type PlayerId,
-} from "@yacht/games/default";
+} from "@yacht/games";
 import gameRootAtom, {
   currentPlayerIdAtom,
   diceSetAtom,
@@ -11,7 +12,6 @@ import gameRootAtom, {
 import { useAtomValue, useSetAtom } from "jotai";
 import { useMemo } from "react";
 import type { ViewStatus } from "../../../../../components/games/ScoreCellView";
-import GetScoreOf from "../../../../../../../../packages/games/default/features/score";
 import ScoreCellView from "../../../../../components/games/ScoreCellView";
 
 interface ScoreCellProps {

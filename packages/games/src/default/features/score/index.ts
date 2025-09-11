@@ -4,7 +4,7 @@ import type { AvailableDiceEye, AvailableHand } from "../status/types";
 const count = (handInput: AvailableDiceEye[], number: number) =>
   handInput.filter((n) => n === number).length;
 
-const GetScoreOf: Record<
+export const GetScoreOf: Record<
   AvailableHand,
   (handInput: AvailableDiceEye[]) => number
 > = {
@@ -53,5 +53,3 @@ const GetScoreOf: Record<
   NUMBERS_6: (handInput: AvailableDiceEye[]) =>
     count(handInput, EYES.SIX) * EYES.SIX,
 };
-
-export default GetScoreOf;

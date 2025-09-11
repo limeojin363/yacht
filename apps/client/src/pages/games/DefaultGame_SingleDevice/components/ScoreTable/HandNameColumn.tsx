@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { HAND_LIST } from "@yacht/games/default";
+import { HAND_LIST } from "@yacht/games";
 
 const HandNameColumn = () => {
   return (

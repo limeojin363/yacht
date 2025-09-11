@@ -1,27 +1,37 @@
-import { RequestHandler } from "express";
+import { type RequestHandler } from "express";
 import z from "zod";
-import { pool } from "../..";
+import { pool } from "../../index.js";
+import type {
+  GetGamesReqBody,
+  GetGamesResBody,
+} from "@yacht/communications/rest";
 
-export const getGames: RequestHandler = (req, res) => {
-    try {
-        
-    } catch (error) {
-        
-    }
+export const getGames: RequestHandler<
+  {},
+  GetGamesResBody,
+  GetGamesReqBody
+> = async (req, res) => {
+  try {
+    const rows = await FromDB.getRows();
+  } catch (error) {}
 };
 
 const SchemaOf = {
-    Rows: z.array(z.object({
-        id: z.number(),
-        in_progress: z.number().min(0).max(1),
-        name: z.string(),
-    }))
-}
+  Rows: z.array(
+    z.object({
+      id: z.number(),
+      in_progress: z.number().min(0).max(1),
+      name: z.string(),
+      u_id_list: z.string(), // JSON_ARRAYAGG 결과는 문자열로 옴
+      u_name_list: z.string(), // JSON_ARRAYAGG 결과는 문자열로 옴
+    })
+  ),
+};
 
 const FromDB = {
-    getRows: async () => {
-        const [rows] = await pool.query(
-            `SELECT g.id, g.in_progress, g.name,
+  getRows: async () => {
+    const [rows] = await pool.query(
+      `SELECT g.id, g.in_progress, g.name,
              JSON_ARRAYAGG(u.id) AS u_id_list,
              JSON_ARRAYAGG(u.name) AS u_name_list
             FROM games g
@@ -29,8 +39,8 @@ const FromDB = {
             WHERE u.id IS NOT NULL
             GROUP BY g.id, g.in_progress, g.name
             LIMIT 10`
-        );
-        const parsedRows = SchemaOf.Rows.parse(rows);
-        return parsedRows;
-    }
+    );
+    const parsedRows = SchemaOf.Rows.parse(rows);
+    return parsedRows;
+  },
 };

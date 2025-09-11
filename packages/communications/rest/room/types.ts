@@ -4,7 +4,7 @@ import {
   EnterTheRoomResBodySchema,
   ExitTheRoomReqBodySchema,
   ExitTheRoomResBodySchema,
-} from "./schemas";
+} from "./schemas.js";
 
 export type EnterTheRoomReqBody = z.infer<typeof EnterTheRoomReqBodySchema>;
 

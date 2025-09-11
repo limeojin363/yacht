@@ -3,13 +3,13 @@ import express from "express";
 import cors from "cors";
 import http from "http";
 import dotenv from "dotenv";
-import { login } from "./routes/user/login";
-import { refresh } from "./routes/user/refresh";
-import { generateGame } from "./routes/admin/generateGame";
-import { createHashedPassword, createSalt, signup } from "./routes/user/signup";
-import { enterTheGame } from "./routes/room/enter";
-import { exitTheGame } from "./routes/room/exit";
-import { getUsers } from "./routes/admin/getUsers";
+import { login } from "./routes/user/login.js";
+import { refresh } from "./routes/user/refresh.js";
+import { generateGame } from "./routes/admin/generateGame.js";
+import { createHashedPassword, createSalt, signup } from "./routes/user/signup.js";
+import { enterTheGame } from "./routes/room/enter.js";
+import { exitTheGame } from "./routes/room/exit.js";
+import { getUsers } from "./routes/admin/getUsers.js";
 
 dotenv.config();
 

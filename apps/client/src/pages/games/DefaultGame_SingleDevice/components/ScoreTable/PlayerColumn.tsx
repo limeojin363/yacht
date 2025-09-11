@@ -1,4 +1,4 @@
-import { HAND_LIST, type PlayerId } from "@yacht/games/default";
+import { HAND_LIST, type PlayerId } from "@yacht/games";
 import ScoreCell from "./ScoreCell";
 import styled from "@emotion/styled";
 
@@ -7,6 +7,7 @@ const PlayerColumn = ({ playerId }: { playerId: PlayerId }) => {
     <S.Root>
       {HAND_LIST.map((hand) => (
         <ScoreCell
+        
           key={`player${playerId}-${hand}`}
           playerId={playerId}
           hand={hand}

@@ -9,18 +9,12 @@
     "packages/*"
   ],
   "packageManager": "yarn@4.9.1",
-  "moduleResolution": "NodeNext",
-  "target": "ESNext",
-  "module": "ESNext",
   "scripts": {
     "dev": "yarn workspace @yacht/client dev & yarn workspace @yacht/server dev",
-    "build": "yarn workspace @yacht/client build & yarn workspace @yacht/server build",
+    "build": "yarn workspaces foreach -A run build",
     "serve": "yarn workspace @yacht/client serve & yarn workspace @yacht/server serve"
   },
-  "compilerOptions": {
-    "moduleResolution": "NodeNext",
-    "target": "ESNext",
-    "module": "ESNext",
-    "baseUrl": "./"
+  "dependencies": {
+    "typescript": "^5.9.2"
   }
 }

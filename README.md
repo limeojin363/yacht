@@ -1,19 +1,8 @@
-# 작업 목록(250901 update)
+# 작업 목록
 
 ## 지금하고있는것
 
 - Tanstack Query + ky 세팅 + common에의 API 코드 통합
-
-## common 구조개편 어카지?
-
-여기 들어가는거
-1. 게임별(Default, Lucky) 상태정보 생성과 업데이트를 위한 정보 취합, 적용
- - 기능 코드
- - 스키마
- - 타입
-2. HTTP, WebSocket 통신 인터페이스 규격(클라이언트에서의 호출/서버에서의 처리 및 응답은 각 프로젝트에서 진행)
- - 스키마
- - 타입
 
 ## admin 기능들
 
@@ -32,4 +21,26 @@
 - 스키마
 - API req, res
 
-# 프로젝트 구조
+# 프로젝트 구조(250908 Update)
+
+## apps/client
+
+- 클라이언트 앱
+
+## apps/server
+
+- 서버 앱
+
+## packages/game
+
+게임 상태정보 생성과 업데이트를 위한 정보 취합, 적용
+ - 기능 코드
+ - 스키마
+ - 타입
+
+## packages/communication
+
+HTTP, WebSocket 통신 인터페이스
+ - 스키마
+ - 타입
+

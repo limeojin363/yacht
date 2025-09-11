@@ -1,5 +1,5 @@
-import { GameStatusSchema } from "@yacht/games/default";
-import { pool } from "../..";
+import { GameStatusSchema } from "@yacht/games";
+import { pool } from "../../index.js";
 import z from "zod";
 
 export const getGame = async (gameId: number) => {

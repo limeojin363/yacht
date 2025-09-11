@@ -1,4 +1,4 @@
-import { getUpdatedGameStatus, type DiceIndex } from "@yacht/games/default";
+import { getUpdatedGameStatus, type DiceIndex } from "@yacht/games";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useMemo } from "react";
 import gameRootAtom, { diceAtomFamily } from "../../stores";

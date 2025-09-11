@@ -1,6 +1,6 @@
 import { useState } from "react";
 import GameRootComponent from "./components/GameRoot";
-import type { TotalPlayersNum } from "@yacht/games/default";
+import type { TotalPlayersNum } from "@yacht/games";
 
 const DefaultGame_SingleDevice = () => {
   const [tp, setTp] = useState<TotalPlayersNum | null>(null);

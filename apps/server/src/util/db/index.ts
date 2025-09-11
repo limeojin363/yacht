@@ -1,5 +1,5 @@
-import { getGame } from "./getGame";
-import { getUser } from "./getUser";
+import { getGame } from "./getGame.js";
+import { getUser } from "./getUser.js";
 
 const FromDB = {
   getUser,

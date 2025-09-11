@@ -1,6 +1,6 @@
 import z from "zod";
 import jwt from "jsonwebtoken";
-import { pool } from "..";
+import { pool } from "../index.js";
 
 const SchemaOf = {
   AuthHeader: z.string().regex(/^Bearer\s+(\S+)$/),
@@ -29,7 +29,7 @@ const verifyAuthHeader = async (
     throw new Error("Invalid authorization header");
   }
 
-  const token = authResult.data.split(" ")[1];
+  const token = authResult.data.split(" ")[1]!;
   const decodedInfo = jwt.verify(
     token,
     process.env.ACCESS_TOKEN_SECRET as string
@@ -46,9 +46,9 @@ const verifyAuthHeader = async (
   const userInfoResult = SchemaOf.UserRows.safeParse(rows);
   if (!userInfoResult.success) throw new Error("User not found");
 
-  const userInfo = userInfoResult.data[0];
+  const userInfo = userInfoResult.data[0]!;
 
-  if (userInfo.authority_level !== 0 && isAdmin)
+  if (userInfo!.authority_level !== 0 && isAdmin)
     throw new Error("User is not admin");
 
   return userInfo;

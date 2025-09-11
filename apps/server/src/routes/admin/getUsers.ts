@@ -1,7 +1,7 @@
-import { RequestHandler } from "express";
-import { pool } from "../..";
+import { type RequestHandler } from "express";
+import { pool } from "../../index.js";
 import z from "zod";
-import verifyAuthHeader from "../../auths/verifyUser";
+import verifyAuthHeader from "../../auths/verifyUser.js";
 
 export const getUsers: RequestHandler = async (req, res) => {
   try {

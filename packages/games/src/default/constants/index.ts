@@ -1,4 +1,4 @@
-import { type AvailableHand } from "../features/status";
+import { type AvailableHand } from "../features/status/index.js";
 
 export const EYES = {
   ONE: 1,

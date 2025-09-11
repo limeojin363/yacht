@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import gameRootAtom from "../stores";
 import ScoreTable from "./ScoreTable";
 import DiceArea from "./DiceArea";
-import { getInitialGameStatus, type TotalPlayersNum } from "@yacht/games/default";
+import { getInitialGameStatus, type TotalPlayersNum } from "@yacht/games";
 
 const GameRootComponent = ({
   totalPlayers,

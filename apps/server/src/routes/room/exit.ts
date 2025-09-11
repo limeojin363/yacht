@@ -1,7 +1,7 @@
-import { RequestHandler } from "express";
+import { type RequestHandler } from "express";
 import z from "zod";
-import verifyAuthHeader from "../../auths/verifyUser";
-import { pool } from "../..";
+import verifyAuthHeader from "../../auths/verifyUser.js";
+import { pool } from "../../index.js";
 
 export const exitTheGame: RequestHandler = async (req, res) => {
   try {

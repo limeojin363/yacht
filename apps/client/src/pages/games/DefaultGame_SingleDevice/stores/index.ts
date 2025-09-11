@@ -5,8 +5,7 @@ import {
   type DiceIndex,
   type GameStatus,
   type PlayerId,
-} from "@yacht/games/default";
-import {} from "@yacht/games/default";
+} from "@yacht/games";
 
 import type { Atom } from "jotai";
 import { atom } from "jotai";

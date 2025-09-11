@@ -1,4 +1,4 @@
-import GetScoreOf from "../score";
+import { GetScoreOf } from "../score/index.js";
 import type {
   AvailableDiceEye,
   AvailableDiceSet,
@@ -6,8 +6,8 @@ import type {
   PlayerId,
   RemainingRoll,
   UnavailableDiceSet,
-} from "../status/types";
-import type { UserAction, UserActionName } from "./types";
+} from "../status/types.js";
+import type { UserAction, UserActionName } from "./types.js";
 
 const generateDiceEye = (): AvailableDiceEye => {
   const eyes = [1, 2, 3, 4, 5, 6] as const;
@@ -46,7 +46,7 @@ export const updateOnSelect: ActionFunction<"SELECT"> = (
 ) => {
   if (isUnavailableDiceSet(diceSet))
     throw new Error("Dice have not been rolled yet");
-  if (playerList[currentPlayerId].scores[hand] !== null)
+  if (playerList[currentPlayerId]['scores'][hand] !== null)
     throw new Error("Hand already selected");
 
   return {

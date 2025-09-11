@@ -1,7 +1,7 @@
-import { RequestHandler } from "express";
+import { type RequestHandler } from "express";
 import z from "zod";
 import crypto from "crypto";
-import { pool } from "../..";
+import { pool } from "../../index.js";
 
 const SignupReqBody = z.object({
   username: z.string().min(3).max(20),

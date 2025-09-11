@@ -1,5 +1,5 @@
 import z from "zod";
-import { pool } from "../..";
+import { pool } from "../../index.js";
 
 export const getUser = async (userId: number) => {
     const [rows] = await pool.query(`SELECT * FROM users WHERE id = $1`, [

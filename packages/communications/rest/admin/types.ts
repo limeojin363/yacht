@@ -6,7 +6,7 @@ import {
   GetGamesResBodySchema,
   GetUsersReqBodySchema,
   GetUsersResBodySchema,
-} from "./schemas";
+} from "./schemas.js";
 
 export type GenerateGameReqBody = z.infer<typeof GenerateGameReqBodySchema>;
 

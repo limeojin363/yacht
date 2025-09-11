@@ -4,14 +4,14 @@ import {
   type SinglePlayer,
   type TotalPlayersNum,
   type UnavailableDiceSet,
-} from "./types";
-import { type UserAction } from "../actions/types";
+} from "./types.js";
+import { type UserAction } from "../actions/types.js";
 import {
   updateOnRoll,
   updateOnSelect,
   updateOnToggleDiceHolding,
-} from "../actions/main";
-import { HAND_LIST } from "../../constants";
+} from "../actions/main.js";
+import { HAND_LIST } from "../../constants/index.js";
 
 export const getInitialGameStatus = (
   totalPlayers: TotalPlayersNum

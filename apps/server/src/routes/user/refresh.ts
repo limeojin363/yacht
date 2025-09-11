@@ -1,33 +1,39 @@
-import { RequestHandler } from "express";
+import { type RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 import z from "zod";
-import { generateAccessToken, generateRefreshToken } from "../../auths/auth";
+import { generateAccessToken, generateRefreshToken } from "../../auths/auth.js";
 
 const ZReqBody = z.object({
-    refreshToken: z.string()
-})
+  refreshToken: z.string(),
+});
 
 const ZUser = z.object({
-    id: z.number()
+  id: z.number(),
 });
 
 export const refresh: RequestHandler = (req, res) => {
-    const body = ZReqBody.safeParse(req.body);
-    if (!body.success) {
-        return res.status(400).json({ message: "Invalid request body", error: body.error });
+  const body = ZReqBody.safeParse(req.body);
+  if (!body.success) {
+    return res
+      .status(400)
+      .json({ message: "Invalid request body", error: body.error });
+  }
+
+  const { refreshToken } = body.data;
+
+  jwt.verify(
+    refreshToken,
+    process.env.REFRESH_TOKEN_SECRET as string,
+    (err, payload) => {
+      if (err) return res.sendStatus(403); // Invalid token
+
+      const user = ZUser.safeParse(payload);
+      if (!user.success) return res.sendStatus(403); // Invalid token
+
+      const accessToken = generateAccessToken(user.data.id);
+      const refreshToken = generateRefreshToken(user.data.id);
+
+      res.status(200).json({ accessToken, refreshToken });
     }
-
-    const { refreshToken } = body.data;
-
-    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string, (err, payload) => {
-        if (err) return res.sendStatus(403); // Invalid token
-
-        const user = ZUser.safeParse(payload);
-        if (!user.success) return res.sendStatus(403); // Invalid token
-
-        const accessToken = generateAccessToken(user.data.id);
-        const refreshToken = generateRefreshToken(user.data.id);
-
-        res.status(200).json({ accessToken, refreshToken });
-    });
+  );
 };

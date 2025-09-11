@@ -1,8 +1,8 @@
-import { RequestHandler } from "express";
+import { type RequestHandler } from "express";
 import z from "zod";
-import { pool } from "../..";
-import { createHashedPassword } from "./signup";
-import { generateAccessToken, generateRefreshToken } from "../../auths/auth";
+import { pool } from "../../index.js";
+import { createHashedPassword } from "./signup.js";
+import { generateAccessToken, generateRefreshToken } from "../../auths/auth.js";
 
 const ZLoginReqBody = z.object({
   username: z.string().min(3).max(20),
@@ -39,7 +39,7 @@ export const login: RequestHandler = async (req, res) => {
   if (!parsed.success)
     return res.status(401).json({ message: "Invalid username or password" });
 
-  const { salt, password, id } = parsed.data[0];
+  const { salt, password, id } = parsed.data[0]!;
   if (password === (await createHashedPassword(plainPassword, salt))) {
     // If we reach this point, the user is authenticated
     const accessToken = generateAccessToken(id);

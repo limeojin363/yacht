@@ -1,6 +1,6 @@
-import { GameStatusSchema, type GameStatus } from "@yacht/games/default";
-import { pool, server } from "..";
-import verifyAuthHeader from "../auths/verifyUser";
+import { GameStatusSchema, type GameStatus } from "@yacht/games";
+import { pool, server } from "../index.js";
+import verifyAuthHeader from "../auths/verifyUser.js";
 import { Server } from "socket.io";
 import z from "zod";
 
@@ -21,7 +21,7 @@ gameIo.on("connection", async (socket) => {
     const referer = socket.request.headers.referer;
     if (!referer) throw new Error("No referer");
     const gameId = Number(
-      referer.split("/")[referer.split("/").length - 1].replace(/\?.+/, "")
+      referer.split("/")[referer.split("/").length - 1]!.replace(/\?.+/, "")
     );
 
     socket.join(`${gameId}`);
@@ -67,7 +67,7 @@ const FromDB = {
     const parseResult = SchemaOf.GameRows.safeParse(rows);
     if (!parseResult.success) throw new Error("Invalid game status");
 
-    return parseResult.data[0].gameObject;
+    return parseResult.data[0]!.gameObject;
   },
   setGameStatus: async (gameId: number, gameStatus: GameStatus) => {
     await pool.query("UPDATE games SET gameObject = ? WHERE id = ?", [
