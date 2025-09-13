@@ -1,5 +1,5 @@
-import { GameStatusSchema, type GameStatus } from "@yacht/games";
-import { pool, server } from "../index.js";
+import { GameStatusSchema, type GameStatus } from "@yacht/default-game";
+import { pool, server } from "../index";
 import verifyAuthHeader from "../auths/verifyUser.js";
 import { Server } from "socket.io";
 import z from "zod";

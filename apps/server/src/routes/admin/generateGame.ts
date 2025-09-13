@@ -1,7 +1,7 @@
 import { type RequestHandler } from "express";
-import verifyAuthHeader from "../../auths/verifyUser.js";
-import { pool } from "../../index.js";
-import { getInitialGameStatus } from "@yacht/games";
+import verifyAuthHeader from "../../auths/verifyUser";
+import { pool } from "../../index";
+import { getInitialGameStatus } from "@yacht/default-game";
 import z from "zod";
 
 const SchemaOf = {

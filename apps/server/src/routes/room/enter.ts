@@ -2,7 +2,7 @@ import { type RequestHandler } from "express";
 import z from "zod";
 import verifyAuthHeader from "../../auths/verifyUser.js";
 import { pool } from "../../index.js";
-import { GameStatusSchema } from "@yacht/games/default";
+import { GameStatusSchema } from "@yacht/default-game";
 
 export const enterTheGame: RequestHandler = async (req, res) => {
   try {

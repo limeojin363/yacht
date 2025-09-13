@@ -1,0 +1,36 @@
+{
+  "name": "@yacht/default-game",
+  "packageManager": "yarn@4.9.1",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "dependencies": {
+    "rollup-plugin-dts": "^6.2.3",
+    "zod": "^4.1.5"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-multi-entry": "^6.0.1",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-typescript": "^12.1.4",
+    "rollup": "^4.50.1"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && rollup -c rollup.config.mjs"
+  }
+}

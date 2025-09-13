@@ -6,19 +6,40 @@ import dotenv from "dotenv";
 import { login } from "./routes/user/login.js";
 import { refresh } from "./routes/user/refresh.js";
 import { generateGame } from "./routes/admin/generateGame.js";
-import { createHashedPassword, createSalt, signup } from "./routes/user/signup.js";
+import {
+  createHashedPassword,
+  createSalt,
+  signup,
+} from "./routes/user/signup.js";
 import { enterTheGame } from "./routes/room/enter.js";
 import { exitTheGame } from "./routes/room/exit.js";
-import { getUsers } from "./routes/admin/getUsers.js";
+import { getUsers } from "./routes/admin/getUsers";
+import { getInitialGameStatus } from "@yacht/default-game";
 
 dotenv.config();
 
 const app = express();
 export const server = http.createServer(app);
 
+const PORT = 3000;
+
 app.use(cors());
 
-const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
+
+app.get("/", (req, res) => {
+  res.json(getInitialGameStatus(3));
+});
+
+app.post("/user/signup", signup);
+app.post("/user/login", login);
+app.post("/user/refresh", refresh);
+app.post("/admin/generate-game", generateGame);
+app.get("/admin/get-users", getUsers);
+app.post("/game/enter", enterTheGame);
+app.delete("/game/exit", exitTheGame);
 
 export const pool = mysql.createPool({
   host: process.env.DB_HOST,
@@ -85,15 +106,3 @@ export const pool = mysql.createPool({
     console.error(error);
   }
 })();
-
-server.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
-});
-
-app.post("/user/signup", signup);
-app.post("/user/login", login);
-app.post("/user/refresh", refresh);
-app.post("/admin/generate-game", generateGame);
-app.get("/admin/get-users", getUsers);
-app.post("/game/enter", enterTheGame);
-app.delete("/game/exit", exitTheGame);

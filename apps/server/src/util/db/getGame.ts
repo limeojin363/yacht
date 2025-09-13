@@ -1,4 +1,4 @@
-import { GameStatusSchema } from "@yacht/games";
+import { GameStatusSchema } from "@yacht/default-game";
 import { pool } from "../../index.js";
 import z from "zod";
 
