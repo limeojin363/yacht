@@ -1,13 +1,23 @@
 import styled from "@emotion/styled";
-    /* FILL HERE */
+import Header from "./components/Header";
+import GameSelector from "./components/GameSelector";
+import { useAuth } from "../../auth";
 
 const HomePage = () => {
-  return <S.Root>{/* FILL HERE */}</S.Root>;
+  const {user} = useAuth();
+
+  console.log({user})
+
+  return (
+    <S.Root>
+      <Header />
+      <GameSelector />
+    </S.Root>
+  );
 };
 
 const S = {
   Root: styled.div``,
-  Header: styled.div``,
 };
 
 export default HomePage;

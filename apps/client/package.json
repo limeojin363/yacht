@@ -19,7 +19,6 @@
     "@types/cors": "^2.8.18",
     "@yacht/communications": "workspace:^",
     "@yacht/default-game": "workspace:^",
-    "@yacht/default-game": "workspace:^",
     "jotai": "^2.12.5",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"

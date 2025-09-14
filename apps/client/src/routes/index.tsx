@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
-import GameRootComponent from '../pages/games/DefaultGame_SingleDevice/components/GameRoot'
+import HomePage from '../pages/home'
 
 export const Route = createFileRoute('/')({
-  component: () => <GameRootComponent totalPlayers={3} />,
+  component: () => <HomePage />,
 })

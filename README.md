@@ -1,8 +1,9 @@
 # 작업 목록
 
-## 순서별 정리
+- 클라이언트 auth와 route 설계
+    - 미인가 구역 접근 시 block 및 강제 navigate
 
-- admin 기능들(API: getUserList, getGameList)
+- admin 모니터링 기능(API: getUserList, getGameList)
     - API 서버 코드 작성
     - ky 패키지 설치
     - 클라이언트 API 호출 코드 작성
@@ -10,29 +11,19 @@
     - user, game 탭과 각각
         - tanstack/query hook
         - UI
-- users 기능들(API: signup, login)
+
+- users 기본(API: signup, login)
     - API 서버 코드 작성
     - 클라이언트 API 호출 코드 작성
     - 회원가입 페이지
         - hook, UI
     - 로그인 페이지
         - hook, UI
+
 - games 진입부
+
 - games 진행부
 
-## 작업 유형별 정리
-
-### admin 기능들
-
-- 게임 목록 보기(API, 프론트)
-- 유저 목록 보기(API, 프론트)
-
-### user 기능들
-
-- 회원가입 UI
-- 로그인 UI
-- 로그아웃 UI
-- 게임 진입 페이지(목록 보기와 입장)
 
 # 프로젝트 구조(250908 Update)
 
