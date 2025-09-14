@@ -8,12 +8,17 @@ import type {
 
 export const getGames: RequestHandler<
   {},
-  GetGamesResBody,
+  any,
   GetGamesReqBody
 > = async (req, res) => {
   try {
     const rows = await FromDB.getRows();
-  } catch (error) {}
+    console.log(rows)
+    res.status(200).json({ games: rows });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
 
 const SchemaOf = {
@@ -33,13 +38,14 @@ const FromDB = {
     const [rows] = await pool.query(
       `SELECT g.id, g.in_progress, g.name,
              JSON_ARRAYAGG(u.id) AS u_id_list,
-             JSON_ARRAYAGG(u.name) AS u_name_list
+             JSON_ARRAYAGG(u.username) AS u_name_list
             FROM games g
             LEFT JOIN users u ON g.id = u.g_id
             WHERE u.id IS NOT NULL
             GROUP BY g.id, g.in_progress, g.name
             LIMIT 10`
     );
+    console.log(rows)
     const parsedRows = SchemaOf.Rows.parse(rows);
     return parsedRows;
   },

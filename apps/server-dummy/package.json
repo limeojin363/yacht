@@ -3,7 +3,7 @@
   "packageManager": "yarn@4.9.1",
   "dependencies": {
     "@yacht/communications": "workspace:^",
-    "@yacht/games": "workspace:^",
+    "@yacht/default-game": "workspace:^",
     "express": "^5.1.0"
   },
   "devDependencies": {

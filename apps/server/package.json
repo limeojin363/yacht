@@ -5,7 +5,7 @@
   "version": "1.0.0",
   "dependencies": {
     "@yacht/communications": "workspace:^",
-    "@yacht/games": "workspace:^",
+    "@yacht/default-game": "workspace:^",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.14.3",

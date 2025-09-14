@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { TotalPlayersNumSchema } from "@yacht/games";
+import { TotalPlayersNumSchema } from "@yacht/default-game";
 
 export const GenerateGameReqBodySchema = z.object({
   totalPlayers: TotalPlayersNumSchema,

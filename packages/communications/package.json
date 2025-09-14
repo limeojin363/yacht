@@ -8,7 +8,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@yacht/games": "workspace:^",
+    "@yacht/default-game": "workspace:^",
     "zod": "^4.1.5"
   }
 }

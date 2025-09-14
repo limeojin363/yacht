@@ -12,11 +12,12 @@ const ZLoginReqBody = z.object({
 export const ZUserRows = z.array(
   z.object({
     id: z.number(),
-    inGame: z.number().min(0).max(2),
     username: z.string(),
     password: z.string(),
+    authority_level: z.number().min(0).max(3),
     salt: z.string(),
-    authorityLevel: z.number().min(0).max(3),
+    g_connected: z.number().min(0).max(2),
+    g_id: z.number().nullable(),
   })
 );
 
@@ -35,9 +36,11 @@ export const login: RequestHandler = async (req, res) => {
     [username]
   );
 
+  console.log(rows);
+
   const parsed = ZUserRows.safeParse(rows);
   if (!parsed.success)
-    return res.status(401).json({ message: "Invalid username or password" });
+    return res.status(401).json({ message: "Invalid user data" });
 
   const { salt, password, id } = parsed.data[0]!;
   if (password === (await createHashedPassword(plainPassword, salt))) {

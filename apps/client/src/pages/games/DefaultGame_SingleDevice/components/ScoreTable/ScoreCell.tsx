@@ -3,7 +3,7 @@ import {
   getUpdatedGameStatus,
   type AvailableHand,
   type PlayerId,
-} from "@yacht/games";
+} from "@yacht/default-game";
 import gameRootAtom, {
   currentPlayerIdAtom,
   diceSetAtom,

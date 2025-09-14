@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import HandNameColumn from "./HandNameColumn";
 import PlayerColumn from "./PlayerColumn";
-import type { PlayerId, TotalPlayersNum } from "@yacht/games";
+import type { PlayerId, TotalPlayersNum } from "@yacht/default-game";
 
 const ScoreTable = ({ totalPlayers }: { totalPlayers: TotalPlayersNum }) => {
   // TODO: 더 세련된 구현과 타입 가드, 유틸리티 함수로의 분리?

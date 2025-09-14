@@ -1,4 +1,4 @@
-import { HAND_LIST, type PlayerId } from "@yacht/games";
+import { HAND_LIST, type PlayerId } from "@yacht/default-game";
 import ScoreCell from "./ScoreCell";
 import styled from "@emotion/styled";
 

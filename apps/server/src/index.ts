@@ -15,6 +15,8 @@ import { enterTheGame } from "./routes/room/enter.js";
 import { exitTheGame } from "./routes/room/exit.js";
 import { getUsers } from "./routes/admin/getUsers";
 import { getInitialGameStatus } from "@yacht/default-game";
+import { getGames } from "./routes/admin/getGames.js";
+
 
 dotenv.config();
 
@@ -24,6 +26,8 @@ export const server = http.createServer(app);
 const PORT = 3000;
 
 app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
@@ -37,7 +41,8 @@ app.post("/user/signup", signup);
 app.post("/user/login", login);
 app.post("/user/refresh", refresh);
 app.post("/admin/generate-game", generateGame);
-app.get("/admin/get-users", getUsers);
+app.get("/admin/users", getUsers);
+app.get("/admin/games", getGames);
 app.post("/game/enter", enterTheGame);
 app.delete("/game/exit", exitTheGame);
 
@@ -85,6 +90,7 @@ export const pool = mysql.createPool({
     );
     console.log("Created default admin user");
   } catch (error) {
+
     console.error(error);
   }
 })();
@@ -101,7 +107,6 @@ export const pool = mysql.createPool({
             GROUP BY g.id, g.in_progress, g.name
             LIMIT 10`
     );
-    console.log(rows);
   } catch (error) {
     console.error(error);
   }
