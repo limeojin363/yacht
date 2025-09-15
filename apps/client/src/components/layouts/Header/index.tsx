@@ -35,7 +35,11 @@ const RightSideArea = () => {
         </S.RightContainer>
       );
     }
-    return <S.RightContainer>Hello, {user.username}</S.RightContainer>;
+    return (
+      <S.RightContainer onClick={() => navigate({ to: "/me" })}>
+        Hello, {user.username}
+      </S.RightContainer>
+    );
   }
 
   return (

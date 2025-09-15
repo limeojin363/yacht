@@ -16,7 +16,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as UnauthenticatedOnlySignupRouteImport } from './routes/_unauthenticated-only/signup'
 import { Route as UnauthenticatedOnlyLoginRouteImport } from './routes/_unauthenticated-only/login'
 import { Route as AdminOnlyAdminRouteImport } from './routes/_admin-only/admin'
-import { Route as AuthenticatedOnlyUserIndexRouteImport } from './routes/_authenticated-only/user/index'
+import { Route as AuthenticatedOnlyMeIndexRouteImport } from './routes/_authenticated-only/me/index'
 import { Route as RegardlessOfAuthSingleDeviceDefaultGameRouteImport } from './routes/_regardless-of-auth/single-device/default-game'
 import { Route as RegardlessOfAuthSingleDeviceAlteredGameRouteImport } from './routes/_regardless-of-auth/single-device/altered-game'
 import { Route as AuthenticatedOnlyMultipleDeviceDefaultGameRouteImport } from './routes/_authenticated-only/multiple-device/default-game'
@@ -57,10 +57,10 @@ const AdminOnlyAdminRoute = AdminOnlyAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedOnlyUserIndexRoute =
-  AuthenticatedOnlyUserIndexRouteImport.update({
-    id: '/user/',
-    path: '/user/',
+const AuthenticatedOnlyMeIndexRoute =
+  AuthenticatedOnlyMeIndexRouteImport.update({
+    id: '/me/',
+    path: '/me/',
     getParentRoute: () => AuthenticatedOnlyRouteRoute,
   } as any)
 const RegardlessOfAuthSingleDeviceDefaultGameRoute =
@@ -97,7 +97,7 @@ export interface FileRoutesByFullPath {
   '/multiple-device/default-game': typeof AuthenticatedOnlyMultipleDeviceDefaultGameRoute
   '/single-device/altered-game': typeof RegardlessOfAuthSingleDeviceAlteredGameRoute
   '/single-device/default-game': typeof RegardlessOfAuthSingleDeviceDefaultGameRoute
-  '/user': typeof AuthenticatedOnlyUserIndexRoute
+  '/me': typeof AuthenticatedOnlyMeIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -108,7 +108,7 @@ export interface FileRoutesByTo {
   '/multiple-device/default-game': typeof AuthenticatedOnlyMultipleDeviceDefaultGameRoute
   '/single-device/altered-game': typeof RegardlessOfAuthSingleDeviceAlteredGameRoute
   '/single-device/default-game': typeof RegardlessOfAuthSingleDeviceDefaultGameRoute
-  '/user': typeof AuthenticatedOnlyUserIndexRoute
+  '/me': typeof AuthenticatedOnlyMeIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -123,7 +123,7 @@ export interface FileRoutesById {
   '/_authenticated-only/multiple-device/default-game': typeof AuthenticatedOnlyMultipleDeviceDefaultGameRoute
   '/_regardless-of-auth/single-device/altered-game': typeof RegardlessOfAuthSingleDeviceAlteredGameRoute
   '/_regardless-of-auth/single-device/default-game': typeof RegardlessOfAuthSingleDeviceDefaultGameRoute
-  '/_authenticated-only/user/': typeof AuthenticatedOnlyUserIndexRoute
+  '/_authenticated-only/me/': typeof AuthenticatedOnlyMeIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -136,7 +136,7 @@ export interface FileRouteTypes {
     | '/multiple-device/default-game'
     | '/single-device/altered-game'
     | '/single-device/default-game'
-    | '/user'
+    | '/me'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -147,7 +147,7 @@ export interface FileRouteTypes {
     | '/multiple-device/default-game'
     | '/single-device/altered-game'
     | '/single-device/default-game'
-    | '/user'
+    | '/me'
   id:
     | '__root__'
     | '/'
@@ -161,7 +161,7 @@ export interface FileRouteTypes {
     | '/_authenticated-only/multiple-device/default-game'
     | '/_regardless-of-auth/single-device/altered-game'
     | '/_regardless-of-auth/single-device/default-game'
-    | '/_authenticated-only/user/'
+    | '/_authenticated-only/me/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -223,11 +223,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminOnlyAdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated-only/user/': {
-      id: '/_authenticated-only/user/'
-      path: '/user'
-      fullPath: '/user'
-      preLoaderRoute: typeof AuthenticatedOnlyUserIndexRouteImport
+    '/_authenticated-only/me/': {
+      id: '/_authenticated-only/me/'
+      path: '/me'
+      fullPath: '/me'
+      preLoaderRoute: typeof AuthenticatedOnlyMeIndexRouteImport
       parentRoute: typeof AuthenticatedOnlyRouteRoute
     }
     '/_regardless-of-auth/single-device/default-game': {
@@ -264,7 +264,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedOnlyRouteRouteChildren {
   AuthenticatedOnlyMultipleDeviceAlteredGameRoute: typeof AuthenticatedOnlyMultipleDeviceAlteredGameRoute
   AuthenticatedOnlyMultipleDeviceDefaultGameRoute: typeof AuthenticatedOnlyMultipleDeviceDefaultGameRoute
-  AuthenticatedOnlyUserIndexRoute: typeof AuthenticatedOnlyUserIndexRoute
+  AuthenticatedOnlyMeIndexRoute: typeof AuthenticatedOnlyMeIndexRoute
 }
 
 const AuthenticatedOnlyRouteRouteChildren: AuthenticatedOnlyRouteRouteChildren =
@@ -273,7 +273,7 @@ const AuthenticatedOnlyRouteRouteChildren: AuthenticatedOnlyRouteRouteChildren =
       AuthenticatedOnlyMultipleDeviceAlteredGameRoute,
     AuthenticatedOnlyMultipleDeviceDefaultGameRoute:
       AuthenticatedOnlyMultipleDeviceDefaultGameRoute,
-    AuthenticatedOnlyUserIndexRoute: AuthenticatedOnlyUserIndexRoute,
+    AuthenticatedOnlyMeIndexRoute: AuthenticatedOnlyMeIndexRoute,
   }
 
 const AuthenticatedOnlyRouteRouteWithChildren =
