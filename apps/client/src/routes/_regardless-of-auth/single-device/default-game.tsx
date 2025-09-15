@@ -1,11 +1,8 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
+import DefaultGame_SingleDevice from "../../../pages/games/DefaultGame_SingleDevice";
 
 export const Route = createFileRoute(
-  '/_regardless-of-auth/single-device/default-game',
+  "/_regardless-of-auth/single-device/default-game"
 )({
-  component: RouteComponent,
-})
-
-function RouteComponent() {
-  return <div>Hello "/_regardlessOfAuth/single-mode/default-game"!</div>
-}
+  component: () => <DefaultGame_SingleDevice />,
+});

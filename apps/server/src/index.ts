@@ -3,29 +3,24 @@ import express from "express";
 import cors from "cors";
 import http from "http";
 import dotenv from "dotenv";
-import { login } from "./routes/user/login.js";
-import { refresh } from "./routes/user/refresh.js";
+import { login } from "./routes/auth/login.js";
+import { refresh } from "./routes/auth/refresh.js";
 import { generateGame } from "./routes/admin/generateGame.js";
-import {
-  createHashedPassword,
-  createSalt,
-  signup,
-} from "./routes/user/signup.js";
+import { signup } from "./routes/auth/signup.js";
 import { enterTheGame } from "./routes/room/enter.js";
 import { exitTheGame } from "./routes/room/exit.js";
 import { getUsers } from "./routes/admin/getUsers";
-import { getInitialGameStatus } from "@yacht/default-game";
 import { getGames } from "./routes/admin/getGames.js";
-
+import { createHashedPassword, createSalt } from "./auths/hash.js";
 
 dotenv.config();
 
 const app = express();
+app.use(cors());
+
 export const server = http.createServer(app);
 
 const PORT = 3000;
-
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -34,12 +29,12 @@ app.listen(PORT, () => {
 });
 
 app.get("/", (req, res) => {
-  res.json(getInitialGameStatus(3));
+  res.status(200).json({ message: "Server is running!" });
 });
 
-app.post("/user/signup", signup);
-app.post("/user/login", login);
-app.post("/user/refresh", refresh);
+app.post("/auth/signup", signup);
+app.post("/auth/login", login);
+app.post("/auth/refresh", refresh);
 app.post("/admin/generate-game", generateGame);
 app.get("/admin/users", getUsers);
 app.get("/admin/games", getGames);
@@ -90,7 +85,6 @@ export const pool = mysql.createPool({
     );
     console.log("Created default admin user");
   } catch (error) {
-
     console.error(error);
   }
 })();

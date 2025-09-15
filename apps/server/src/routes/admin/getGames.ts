@@ -4,7 +4,7 @@ import { pool } from "../../index.js";
 import type {
   GetGamesReqBody,
   GetGamesResBody,
-} from "@yacht/communications/rest";
+} from "@yacht/communications";
 
 export const getGames: RequestHandler<
   {},

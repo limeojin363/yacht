@@ -1,7 +1,14 @@
 import { type RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 import z from "zod";
-import { generateAccessToken, generateRefreshToken } from "../../auths/auth.js";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../../auths/token.js";
+import type {
+  RefreshReqBody,
+  RefreshResBody,
+} from "@yacht/communications";
 
 const ZReqBody = z.object({
   refreshToken: z.string(),
@@ -11,12 +18,14 @@ const ZUser = z.object({
   id: z.number(),
 });
 
-export const refresh: RequestHandler = (req, res) => {
+export const refresh: RequestHandler<
+  {},
+  RefreshResBody | { message: string },
+  RefreshReqBody
+> = (req, res) => {
   const body = ZReqBody.safeParse(req.body);
   if (!body.success) {
-    return res
-      .status(400)
-      .json({ message: "Invalid request body", error: body.error });
+    return res.status(400).json({ message: "Invalid request body" });
   }
 
   const { refreshToken } = body.data;

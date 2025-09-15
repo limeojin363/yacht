@@ -1,5 +1,6 @@
-import { createContext, use, useState } from "react";
+import { createContext, use, useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
+import { Login } from "../apis/services/auth/login";
 
 type UserInfo = {
   id: number;
@@ -19,23 +20,32 @@ export type AuthInfo = {
 
 const AuthContext = createContext<AuthInfo | null>(null);
 
-const DUMMY_USER: UserInfo = {
-  id: 1,
-  username: "dummyUser",
-  authority_level: 1,
-  g_connected: false,
-  g_id: null,
-};
-
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<UserInfo | null>(DUMMY_USER);
-  // const [user, setUser] = useState<UserInfo | null>(null);
+  const [user, setUser] = useState<UserInfo | null>(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   const { mutateAsync: login } = useMutation({
     mutationFn: async ({ username, password }: Credentials) => {
-      // Implement login logic
+      const res = await Login({ username, password });
+      return res.json();
     },
-    onSuccess: () => {},
+    onSuccess: ({ user, accessToken, refreshToken }) => {
+      console.log("Login Success!");
+      setUser(user);
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("accessToken", JSON.stringify(accessToken));
+      localStorage.setItem("refreshToken", JSON.stringify(refreshToken));
+      window.location.href = "/";
+    },
+    onError: (error) => {
+      console.error("Login Failed:", error);
+    },
   });
 
   const { mutateAsync: logout } = useMutation({
@@ -56,6 +66,6 @@ const useAuth = () => {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
-}
+};
 
 export { AuthProvider, useAuth };

@@ -5,7 +5,7 @@
 
 - admin 모니터링 기능(API: getUserList, getGameList)
     - API 서버 코드 작성
-    - ky 패키지 설치
+    - ky 패키지 설치와 기본 세팅
     - 클라이언트 API 호출 코드 작성
     - 클라이언트 페이지 파일 생성
     - user, game 탭과 각각
