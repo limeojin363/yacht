@@ -3,7 +3,7 @@ import { pool } from "../../index.js";
 import z from "zod";
 import verifyAuthHeader from "../../auths/verifyUser.js";
 
-export const getUsers: RequestHandler = async (req, res) => {
+export const getUserList: RequestHandler = async (req, res) => {
   try {
     await verifyAuthHeader(req.headers["authorization"], true);
     const rows = await FromDB.getRows();

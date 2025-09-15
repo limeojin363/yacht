@@ -12,9 +12,10 @@ const SchemaOf = {
       id: z.number(),
       username: z.string(),
       password: z.string(),
-      authority_level: z.number().min(0).max(3),
+      authority_level: z.union([z.literal(0), z.literal(1), z.literal(2), z.literal(3)]),
+      g_id: z.number().nullable(),
+      g_connected: z.number().min(0).max(2),
       salt: z.string(),
-      g_connected: z.number().min(0).max(1),
     })
   ),
 };

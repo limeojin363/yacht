@@ -1,13 +1,14 @@
 # 작업 목록
 
-- 클라이언트 auth와 route 설계
-    - 미인가 구역 접근 시 block 및 강제 navigate
-
 - admin 모니터링 기능(API: getUserList, getGameList)
-    - API 서버 코드 작성
-    - ky 패키지 설치와 기본 세팅
-    - 클라이언트 API 호출 코드 작성
-    - 클라이언트 페이지 파일 생성
+    communications
+    - 각 API 스키마/타입 작성
+    back
+    - 각 API 작성
+    front
+    - API 호출 코드 작성
+    - 어드민 페이지 파일 생성
+    - tanstack/table 설치 및 설정
     - user, game 탭과 각각
         - tanstack/query hook
         - UI
@@ -19,6 +20,9 @@
         - hook, UI
     - 로그인 페이지
         - hook, UI
+
+- Notification
+    - 
 
 - games 진입부
 

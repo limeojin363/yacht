@@ -31,10 +31,43 @@ export const RefreshResBodySchema = z.object({
   refreshToken: z.string(),
 });
 
-export const SignupReqBodySchema = z.object({});
+export const SignupReqBodySchema = z.object({
+  username: z.string(),
+  password: z.string(),
+});
 
-export const SignupResBodySchema = z.object({});
+export const SignupResBodySchema = z.object({
+  accessToken: z.string(),
+  refreshToken: z.string(),
+  user: z.object({
+    id: z.number(),
+    username: z.string(),
+    authority_level: z.union([
+      z.literal(0),
+      z.literal(1),
+      z.literal(2),
+      z.literal(3),
+    ]),
+    g_connected: z.boolean(),
+    g_id: z.number().nullable(),
+  }),
+});
 
 export const LogoutReqBodySchema = z.object({});
 
 export const LogoutResBodySchema = z.object({});
+
+export const GetMyInfoResBodySchema = z.object({
+  id: z.number(),
+  username: z.string(),
+  authority_level: z.union([
+    z.literal(0),
+    z.literal(1),
+    z.literal(2),
+    z.literal(3),
+  ]),
+  g_connected: z.boolean(),
+  g_id: z.number().nullable(),
+});
+
+export const GetMyInfoReqBodySchema = z.object({});

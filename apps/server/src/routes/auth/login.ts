@@ -52,6 +52,7 @@ export const login: RequestHandler<
 
   const { salt, password, id, g_connected, authority_level, g_id } =
     parsed.data[0]!;
+
   if (password === (await createHashedPassword(plainPassword, salt))) {
     // If we reach this point, the user is authenticated
     const accessToken = generateAccessToken(id);

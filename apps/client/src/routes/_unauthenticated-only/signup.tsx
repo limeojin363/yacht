@@ -1,9 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
+import SignupPage from '../../pages/signup'
 
 export const Route = createFileRoute('/_unauthenticated-only/signup')({
-  component: RouteComponent,
+  component: SignupPage,
 })
-
-function RouteComponent() {
-  return <div>Hello "/_unauthenticated-only/signup"!</div>
-}

@@ -29,12 +29,25 @@ const RightSideArea = () => {
   if (user) {
     const isAdmin = user.authority_level === 0;
     if (isAdmin) {
-      return <S.RightContainer onClick={() => navigate({ to: "/admin" })}>Admin Page</S.RightContainer>;
+      return (
+        <S.RightContainer onClick={() => navigate({ to: "/admin" })}>
+          Admin Page
+        </S.RightContainer>
+      );
     }
     return <S.RightContainer>Hello, {user.username}</S.RightContainer>;
   }
 
-  return <S.RightContainer onClick={() => navigate({ to: "/login" })}>Login</S.RightContainer>;
+  return (
+    <S.RightContainer>
+      <S.RightItem onClick={() => navigate({ to: "/login" })}>
+        Login
+      </S.RightItem>
+      <S.RightItem onClick={() => navigate({ to: "/signup" })}>
+        Signup
+      </S.RightItem>
+    </S.RightContainer>
+  );
 };
 
 const S = {
@@ -45,7 +58,11 @@ const S = {
     padding: 16px;
   `,
   LeftContainer: styled.div``,
-  RightContainer: styled.div``,
+  RightContainer: styled.div`
+    display: flex;
+    gap: 16px;
+  `,
+  RightItem: styled.div``,
 };
 
 export default Header;

@@ -7,10 +7,10 @@ import { login } from "./routes/auth/login.js";
 import { refresh } from "./routes/auth/refresh.js";
 import { generateGame } from "./routes/admin/generateGame.js";
 import { signup } from "./routes/auth/signup.js";
-import { enterTheGame } from "./routes/room/enter.js";
-import { exitTheGame } from "./routes/room/exit.js";
-import { getUsers } from "./routes/admin/getUsers";
-import { getGames } from "./routes/admin/getGames.js";
+import { enterTheGame } from "./routes/game/enter.js";
+import { exitTheGame } from "./routes/game/exit.js";
+import { getUserList } from "./routes/admin/getUserList.js";
+import { getGameList } from "./routes/admin/getGameList.js";
 import { createHashedPassword, createSalt } from "./auths/hash.js";
 
 dotenv.config();
@@ -35,9 +35,9 @@ app.get("/", (req, res) => {
 app.post("/auth/signup", signup);
 app.post("/auth/login", login);
 app.post("/auth/refresh", refresh);
-app.post("/admin/generate-game", generateGame);
-app.get("/admin/users", getUsers);
-app.get("/admin/games", getGames);
+app.post("/admin/game", generateGame);
+app.get("/admin/user/list", getUserList);
+app.get("/admin/game/list", getGameList);
 app.post("/game/enter", enterTheGame);
 app.delete("/game/exit", exitTheGame);
 

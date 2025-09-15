@@ -6,7 +6,7 @@ import type {
   GetGamesResBody,
 } from "@yacht/communications";
 
-export const getGames: RequestHandler<
+export const getGameList: RequestHandler<
   {},
   any,
   GetGamesReqBody
