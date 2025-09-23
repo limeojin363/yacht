@@ -8,8 +8,14 @@ import {
   SignupResBodySchema,
   LogoutReqBodySchema,
   LogoutResBodySchema,
-  type GetMyInfoReqBodySchema,
-  type GetMyInfoResBodySchema,
+  GetMyInfoReqBodySchema,
+  GetMyInfoResBodySchema,
+  GetUserListReqBodySchema,
+  GetUserListResBodySchema,
+  DeleteUserReqBodySchema,
+  DeleteUserResBodySchema,
+  UpdateUserReqBodySchema,
+  UpdateUserResBodySchema,
 } from "./schemas.js";
 
 export type LoginReqBody = z.infer<typeof LoginReqBodySchema>;
@@ -31,3 +37,15 @@ export type LogoutResBody = z.infer<typeof LogoutResBodySchema>;
 export type GetMyInfoReqBody = z.infer<typeof GetMyInfoReqBodySchema>;
 
 export type GetMyInfoResBody = z.infer<typeof GetMyInfoResBodySchema>;
+
+export type GetUserListReqBody = z.infer<typeof GetUserListReqBodySchema>;
+
+export type GetUserListResBody = z.infer<typeof GetUserListResBodySchema>;
+
+export type DeleteUserReqBody = z.infer<typeof DeleteUserReqBodySchema>;
+
+export type DeleteUserResBody = z.infer<typeof DeleteUserResBodySchema>;
+
+export type UpdateUserReqBody = z.infer<typeof UpdateUserReqBodySchema>;
+
+export type UpdateUserResBody = z.infer<typeof UpdateUserResBodySchema>;

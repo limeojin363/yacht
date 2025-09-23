@@ -1,5 +1,5 @@
 import type { ResponsePromise } from "ky";
-import { baseApiClient } from "../../../core/clients";
+import { baseApiClient } from "../../core/clients";
 import {
   type LoginReqBody,
   type LoginResBody,
@@ -10,4 +10,4 @@ type LoginType = (
 ) => ResponsePromise<LoginResBody>;
 
 export const Login: LoginType = (data) =>
-  baseApiClient.post("auth/login", { json: data });
+  baseApiClient.post("user/login", { json: data });

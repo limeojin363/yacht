@@ -3,7 +3,7 @@ import ky, {
   type BeforeRetryHook,
   HTTPError,
 } from "ky";
-import { Refresh } from "../services/auth/refresh";
+import { Refresh } from "../services/user/refresh";
 
 const HOST = import.meta.env.VITE_APP_API_SERVER_URL as string;
 

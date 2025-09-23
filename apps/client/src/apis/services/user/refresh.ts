@@ -1,5 +1,5 @@
 import type { ResponsePromise } from "ky";
-import { baseApiClient } from "../../../core/clients";
+import { baseApiClient } from "../../core/clients";
 import {
   type RefreshReqBody,
   type RefreshResBody,
@@ -10,4 +10,4 @@ type TRefresh = (
 ) => ResponsePromise<RefreshResBody>;
 
 export const Refresh: TRefresh = (data) =>
-  baseApiClient.post("auth/refresh", { json: data });
+  baseApiClient.post("user/refresh", { json: data });

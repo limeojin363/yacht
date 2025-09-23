@@ -5,7 +5,7 @@ import { pool } from "../index.js";
 const SchemaOf = {
   AuthHeader: z.string().regex(/^Bearer\s+(\S+)$/),
   DecodedInfo: z.object({
-    userId: z.string(),
+    userId: z.number(),
   }),
   UserRows: z.array(
     z.object({
@@ -23,7 +23,6 @@ const SchemaOf = {
 // HTTP 요청 / socket 통신에서 이용 가능한 범용 util
 const verifyAuthHeader = async (
   authHeader: string | undefined,
-  isAdmin?: boolean
 ) => {
   const authResult = SchemaOf.AuthHeader.safeParse(authHeader);
   if (!authResult.success) {
@@ -35,12 +34,10 @@ const verifyAuthHeader = async (
     token,
     process.env.ACCESS_TOKEN_SECRET as string
   );
-  const decodeInfoResult = SchemaOf.DecodedInfo.safeParse(decodedInfo);
-  if (!decodeInfoResult.success) {
-    throw new Error("Invalid access token payload");
-  }
+  console.log({decodedInfo});
+  const decodeInfoResult = SchemaOf.DecodedInfo.parse(decodedInfo);
 
-  const { userId } = decodeInfoResult.data;
+  const { userId } = decodeInfoResult;
   const [rows] = await pool.query("SELECT * FROM `users` WHERE `id` = ?", [
     userId,
   ]);
@@ -48,9 +45,6 @@ const verifyAuthHeader = async (
   if (!userInfoResult.success) throw new Error("User not found");
 
   const userInfo = userInfoResult.data[0]!;
-
-  if (userInfo!.authority_level !== 0 && isAdmin)
-    throw new Error("User is not admin");
 
   return userInfo;
 };

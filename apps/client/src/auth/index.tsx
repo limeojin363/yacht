@@ -1,7 +1,7 @@
 import { createContext, use, useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { Login } from "../apis/services/auth/login";
-import { Signup } from "../apis/services/auth/signup";
+import { Login } from "../apis/services/user/login";
+import { Signup } from "../apis/services/user/signup";
 
 type UserInfo = {
   id: number;

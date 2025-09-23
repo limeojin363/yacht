@@ -2,14 +2,24 @@ import { type RequestHandler } from "express";
 import { pool } from "../../index.js";
 import z from "zod";
 import verifyAuthHeader from "../../auths/verifyUser.js";
+import type {
+  GetUserListReqBody,
+  GetUserListResBody,
+} from "@yacht/communications";
 
-export const getUserList: RequestHandler = async (req, res) => {
+export const getUserList: RequestHandler<
+  {},
+  GetUserListResBody | { message: string },
+  GetUserListReqBody
+> = async (req, res) => {
   try {
-    await verifyAuthHeader(req.headers["authorization"], true);
+    await verifyAuthHeader(req.headers["authorization"]);
     const rows = await FromDB.getRows();
-    res.status(200).json({ users: rows });
+    res.status(200).json({
+      users: rows
+    });
   } catch (error) {
-    res.status(401).json({ error: "Unauthorized" });
+    res.status(401).json({ message: "Unauthorized" });
   }
 };
 

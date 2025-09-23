@@ -3,14 +3,14 @@ import express from "express";
 import cors from "cors";
 import http from "http";
 import dotenv from "dotenv";
-import { login } from "./routes/auth/login.js";
-import { refresh } from "./routes/auth/refresh.js";
-import { generateGame } from "./routes/admin/generateGame.js";
-import { signup } from "./routes/auth/signup.js";
+import { login } from "./routes/user/login.js";
+import { refresh } from "./routes/user/refresh.js";
+import { generateGame } from "./routes/game/generateGame.js";
+import { signup } from "./routes/user/signup.js";
 import { enterTheGame } from "./routes/game/enter.js";
 import { exitTheGame } from "./routes/game/exit.js";
-import { getUserList } from "./routes/admin/getUserList.js";
-import { getGameList } from "./routes/admin/getGameList.js";
+import { getUserList } from "./routes/user/getUserList.js";
+import { getGameList } from "./routes/game/getGameList.js";
 import { createHashedPassword, createSalt } from "./auths/hash.js";
 
 dotenv.config();
@@ -32,12 +32,12 @@ app.get("/", (req, res) => {
   res.status(200).json({ message: "Server is running!" });
 });
 
-app.post("/auth/signup", signup);
-app.post("/auth/login", login);
-app.post("/auth/refresh", refresh);
-app.post("/admin/game", generateGame);
-app.get("/admin/user/list", getUserList);
-app.get("/admin/game/list", getGameList);
+app.post("/user/signup", signup);
+app.post("/user/login", login);
+app.post("/user/refresh", refresh);
+app.post("/game/generate", generateGame);
+app.get("/user/list", getUserList);
+app.get("/game/list", getGameList);
 app.post("/game/enter", enterTheGame);
 app.delete("/game/exit", exitTheGame);
 
@@ -49,17 +49,8 @@ export const pool = mysql.createPool({
   database: process.env.DB_NAME,
 });
 
-// (async ( )=> {
-//   const res = await pool.query(
-//         `SELECT u.id, u.username, u.authority_level, u.g_connected, u.g_id, g.name AS g_name
-//             FROM users u
-//             LEFT JOIN games g ON u.g_id = g.id
-//             LIMIT 10`
-//       )
-//       console.log(res)
-// })();
+// DB에 admin이 존재하지 않는다면 env에 입력된 DEFAULT 정보를 통해 자동 생성
 (async () => {
-  // DB에 admin이 존재하지 않는다면 env에 입력된 DEFAULT 정보를 통해 자동 생성
   try {
     const [rows] = await pool.query(
       `SELECT * FROM users WHERE authority_level = 0`
@@ -89,19 +80,27 @@ export const pool = mysql.createPool({
   }
 })();
 
-(async () => {
+(async()=>{
   try {
-    const [rows] = await pool.query(
-      `SELECT g.id, g.in_progress, g.name,
-             JSON_ARRAYAGG(u.id) AS u_id_list,
-             JSON_ARRAYAGG(u.username) AS u_name_list
-            FROM games g
-            LEFT JOIN users u ON g.id = u.g_id
-            WHERE u.id IS NOT NULL
-            GROUP BY g.id, g.in_progress, g.name
-            LIMIT 10`
-    );
+    
   } catch (error) {
-    console.error(error);
+    
   }
 })();
+
+// (async () => {
+//   try {
+//     const [rows] = await pool.query(
+//       `SELECT g.id, g.progress_type, g.name,
+//              JSON_ARRAYAGG(u.id) AS u_id_list,
+//              JSON_ARRAYAGG(u.username) AS u_name_list
+//             FROM games g
+//             LEFT JOIN users u ON g.id = u.g_id
+//             WHERE u.id IS NOT NULL
+//             GROUP BY g.id, g.progress_type, g.name
+//             LIMIT 10`
+//     );
+//   } catch (error) {
+//     console.error(error);
+//   }
+// })();

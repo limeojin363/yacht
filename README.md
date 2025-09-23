@@ -1,9 +1,9 @@
 # 작업 목록
 
 - admin 모니터링 기능(API: getUserList, getGameList)
-    communications
+  - communications
     - 각 API 스키마/타입 작성
-    back
+  - back
     - 각 API 작성
     front
     - API 호출 코드 작성

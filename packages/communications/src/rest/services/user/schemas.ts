@@ -71,3 +71,26 @@ export const GetMyInfoResBodySchema = z.object({
 });
 
 export const GetMyInfoReqBodySchema = z.object({});
+
+export const GetUserListReqBodySchema = z.object({});
+
+export const GetUserListResBodySchema = z.object({
+  users: z.array(
+    z.object({
+      id: z.number(),
+      username: z.string(),
+      authority_level: z.number(),
+      g_connected: z.number().min(0).max(1),
+      g_id: z.union([z.null(), z.number()]),
+      g_name: z.union([z.null(), z.string()]),
+    })
+  ),
+});
+
+export const DeleteUserReqBodySchema = z.object({});
+
+export const DeleteUserResBodySchema = z.object({});
+
+export const UpdateUserReqBodySchema = z.object({});
+
+export const UpdateUserResBodySchema = z.object({});
