@@ -7,18 +7,7 @@
     "dist"
   ],
   "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
-      },
-      "require": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs"
-      }
-    }
-  },
+  "main": "dist/index.js",
   "packageManager": "yarn@4.9.1",
   "dependencies": {
     "@yacht/default-game": "workspace:^",

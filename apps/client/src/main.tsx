@@ -8,7 +8,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const router = createRouter({
   routeTree,
   context: {
-    auth: { user: null, login: () => {}, logout: () => {} },
+    auth: { user: null, login: () => {}, logout: () => {}, signup: () => {} },
   },
 });
 
