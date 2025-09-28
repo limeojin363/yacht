@@ -1,7 +1,6 @@
 import mysql from "mysql2/promise";
 import express from "express";
 import cors from "cors";
-import http from "http";
 import dotenv from "dotenv";
 import { login } from "./routes/user/login.js";
 import { refresh } from "./routes/user/refresh.js";
@@ -12,21 +11,23 @@ import { exitTheGame } from "./routes/game/exit.js";
 import { getUserList } from "./routes/user/getUserList.js";
 import { getGameList } from "./routes/game/getGameList.js";
 import { createHashedPassword, createSalt } from "./auths/hash.js";
+import { wss } from "./sockets/wss.js";
+import { getInitialGameStatus } from "@yacht/default-game";
 
 dotenv.config();
 
 const app = express();
 app.use(cors());
 
-export const server = http.createServer(app);
-
 const PORT = 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.listen(PORT, () => {
+export const expressServer = app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+wss();
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "Server is running!" });
@@ -80,27 +81,21 @@ export const pool = mysql.createPool({
   }
 })();
 
-(async()=>{
+(async () => {
   try {
-    
+    const [rows] = await pool.query(`SELECT * FROM games`);
+    if (!(rows instanceof Array)) throw new Error("DB Connection Error");
+    if (rows.length > 0) {
+      console.log("Game exists");
+      return;
+    }
+
+    await pool.query(
+      `INSERT INTO games (name, progress_type, game_object) VALUES (?, ?, ?)`,
+      ["샘플 게임", 0, JSON.stringify(getInitialGameStatus(2))]
+    );
+    console.log("Created default game");
   } catch (error) {
-    
+    console.error(error);
   }
 })();
-
-// (async () => {
-//   try {
-//     const [rows] = await pool.query(
-//       `SELECT g.id, g.progress_type, g.name,
-//              JSON_ARRAYAGG(u.id) AS u_id_list,
-//              JSON_ARRAYAGG(u.username) AS u_name_list
-//             FROM games g
-//             LEFT JOIN users u ON g.id = u.g_id
-//             WHERE u.id IS NOT NULL
-//             GROUP BY g.id, g.progress_type, g.name
-//             LIMIT 10`
-//     );
-//   } catch (error) {
-//     console.error(error);
-//   }
-// })();

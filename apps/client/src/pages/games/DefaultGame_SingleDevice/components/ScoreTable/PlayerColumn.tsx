@@ -7,7 +7,6 @@ const PlayerColumn = ({ playerId }: { playerId: PlayerId }) => {
     <S.Root>
       {HAND_LIST.map((hand) => (
         <ScoreCell
-        
           key={`player${playerId}-${hand}`}
           playerId={playerId}
           hand={hand}

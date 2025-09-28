@@ -8,13 +8,21 @@ const useGameList = () => {
   const { data, isPending } = useQuery({
     queryKey: ["gameList"],
     queryFn: async () => {
-      const res = await GetGameList();
-      const data = await res.json();
-      if (data.games.length > 0 && !data.games[0].infoForAdmin) {
-        throw new Error("No infoForAdmin in game");
+      try {
+        console.log("fetch game list");
+        const res = await GetGameList();
+        console.log(res);
+        const data = await res.json();
+        if (data.games.length > 0 && !data.games[0].infoForAdmin) {
+          throw new Error("No infoForAdmin in game");
+        }
+        return data;
+      } catch (error) {
+        console.log(error);
+        return null;
       }
-      return data;
     },
+    initialData: null,
   });
 
   return { data, isPending };
@@ -31,7 +39,6 @@ const useUserList = () => {
   });
 
   return { data, isPending };
-
 };
 
 const GameListView = () => {
@@ -46,7 +53,7 @@ const GameListView = () => {
       <h2>Game List</h2>
       <ul>
         {data.games.map((game) => (
-          <li key={game.id}>Game ID: {game.id}</li>
+          <li key={game.id}>{JSON.stringify(game)}</li>
         ))}
       </ul>
     </div>

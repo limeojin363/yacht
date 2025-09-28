@@ -19,8 +19,9 @@ import { Route as AdminOnlyAdminRouteImport } from './routes/_admin-only/admin'
 import { Route as AuthenticatedOnlyMeIndexRouteImport } from './routes/_authenticated-only/me/index'
 import { Route as RegardlessOfAuthSingleDeviceDefaultGameRouteImport } from './routes/_regardless-of-auth/single-device/default-game'
 import { Route as RegardlessOfAuthSingleDeviceAlteredGameRouteImport } from './routes/_regardless-of-auth/single-device/altered-game'
-import { Route as AuthenticatedOnlyMultipleDeviceDefaultGameRouteImport } from './routes/_authenticated-only/multiple-device/default-game'
 import { Route as AuthenticatedOnlyMultipleDeviceAlteredGameRouteImport } from './routes/_authenticated-only/multiple-device/altered-game'
+import { Route as AuthenticatedOnlyMultipleDeviceDefaultGameIndexRouteImport } from './routes/_authenticated-only/multiple-device/default-game.index'
+import { Route as AuthenticatedOnlyMultipleDeviceDefaultGameGameIdRouteImport } from './routes/_authenticated-only/multiple-device/default-game.$gameId'
 
 const UnauthenticatedOnlyRouteRoute =
   UnauthenticatedOnlyRouteRouteImport.update({
@@ -75,16 +76,22 @@ const RegardlessOfAuthSingleDeviceAlteredGameRoute =
     path: '/single-device/altered-game',
     getParentRoute: () => RegardlessOfAuthRouteRoute,
   } as any)
-const AuthenticatedOnlyMultipleDeviceDefaultGameRoute =
-  AuthenticatedOnlyMultipleDeviceDefaultGameRouteImport.update({
-    id: '/multiple-device/default-game',
-    path: '/multiple-device/default-game',
-    getParentRoute: () => AuthenticatedOnlyRouteRoute,
-  } as any)
 const AuthenticatedOnlyMultipleDeviceAlteredGameRoute =
   AuthenticatedOnlyMultipleDeviceAlteredGameRouteImport.update({
     id: '/multiple-device/altered-game',
     path: '/multiple-device/altered-game',
+    getParentRoute: () => AuthenticatedOnlyRouteRoute,
+  } as any)
+const AuthenticatedOnlyMultipleDeviceDefaultGameIndexRoute =
+  AuthenticatedOnlyMultipleDeviceDefaultGameIndexRouteImport.update({
+    id: '/multiple-device/default-game/',
+    path: '/multiple-device/default-game/',
+    getParentRoute: () => AuthenticatedOnlyRouteRoute,
+  } as any)
+const AuthenticatedOnlyMultipleDeviceDefaultGameGameIdRoute =
+  AuthenticatedOnlyMultipleDeviceDefaultGameGameIdRouteImport.update({
+    id: '/multiple-device/default-game/$gameId',
+    path: '/multiple-device/default-game/$gameId',
     getParentRoute: () => AuthenticatedOnlyRouteRoute,
   } as any)
 
@@ -94,10 +101,11 @@ export interface FileRoutesByFullPath {
   '/login': typeof UnauthenticatedOnlyLoginRoute
   '/signup': typeof UnauthenticatedOnlySignupRoute
   '/multiple-device/altered-game': typeof AuthenticatedOnlyMultipleDeviceAlteredGameRoute
-  '/multiple-device/default-game': typeof AuthenticatedOnlyMultipleDeviceDefaultGameRoute
   '/single-device/altered-game': typeof RegardlessOfAuthSingleDeviceAlteredGameRoute
   '/single-device/default-game': typeof RegardlessOfAuthSingleDeviceDefaultGameRoute
   '/me': typeof AuthenticatedOnlyMeIndexRoute
+  '/multiple-device/default-game/$gameId': typeof AuthenticatedOnlyMultipleDeviceDefaultGameGameIdRoute
+  '/multiple-device/default-game': typeof AuthenticatedOnlyMultipleDeviceDefaultGameIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -105,10 +113,11 @@ export interface FileRoutesByTo {
   '/login': typeof UnauthenticatedOnlyLoginRoute
   '/signup': typeof UnauthenticatedOnlySignupRoute
   '/multiple-device/altered-game': typeof AuthenticatedOnlyMultipleDeviceAlteredGameRoute
-  '/multiple-device/default-game': typeof AuthenticatedOnlyMultipleDeviceDefaultGameRoute
   '/single-device/altered-game': typeof RegardlessOfAuthSingleDeviceAlteredGameRoute
   '/single-device/default-game': typeof RegardlessOfAuthSingleDeviceDefaultGameRoute
   '/me': typeof AuthenticatedOnlyMeIndexRoute
+  '/multiple-device/default-game/$gameId': typeof AuthenticatedOnlyMultipleDeviceDefaultGameGameIdRoute
+  '/multiple-device/default-game': typeof AuthenticatedOnlyMultipleDeviceDefaultGameIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -120,10 +129,11 @@ export interface FileRoutesById {
   '/_unauthenticated-only/login': typeof UnauthenticatedOnlyLoginRoute
   '/_unauthenticated-only/signup': typeof UnauthenticatedOnlySignupRoute
   '/_authenticated-only/multiple-device/altered-game': typeof AuthenticatedOnlyMultipleDeviceAlteredGameRoute
-  '/_authenticated-only/multiple-device/default-game': typeof AuthenticatedOnlyMultipleDeviceDefaultGameRoute
   '/_regardless-of-auth/single-device/altered-game': typeof RegardlessOfAuthSingleDeviceAlteredGameRoute
   '/_regardless-of-auth/single-device/default-game': typeof RegardlessOfAuthSingleDeviceDefaultGameRoute
   '/_authenticated-only/me/': typeof AuthenticatedOnlyMeIndexRoute
+  '/_authenticated-only/multiple-device/default-game/$gameId': typeof AuthenticatedOnlyMultipleDeviceDefaultGameGameIdRoute
+  '/_authenticated-only/multiple-device/default-game/': typeof AuthenticatedOnlyMultipleDeviceDefaultGameIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -133,10 +143,11 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/multiple-device/altered-game'
-    | '/multiple-device/default-game'
     | '/single-device/altered-game'
     | '/single-device/default-game'
     | '/me'
+    | '/multiple-device/default-game/$gameId'
+    | '/multiple-device/default-game'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -144,10 +155,11 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/multiple-device/altered-game'
-    | '/multiple-device/default-game'
     | '/single-device/altered-game'
     | '/single-device/default-game'
     | '/me'
+    | '/multiple-device/default-game/$gameId'
+    | '/multiple-device/default-game'
   id:
     | '__root__'
     | '/'
@@ -158,10 +170,11 @@ export interface FileRouteTypes {
     | '/_unauthenticated-only/login'
     | '/_unauthenticated-only/signup'
     | '/_authenticated-only/multiple-device/altered-game'
-    | '/_authenticated-only/multiple-device/default-game'
     | '/_regardless-of-auth/single-device/altered-game'
     | '/_regardless-of-auth/single-device/default-game'
     | '/_authenticated-only/me/'
+    | '/_authenticated-only/multiple-device/default-game/$gameId'
+    | '/_authenticated-only/multiple-device/default-game/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -244,13 +257,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegardlessOfAuthSingleDeviceAlteredGameRouteImport
       parentRoute: typeof RegardlessOfAuthRouteRoute
     }
-    '/_authenticated-only/multiple-device/default-game': {
-      id: '/_authenticated-only/multiple-device/default-game'
-      path: '/multiple-device/default-game'
-      fullPath: '/multiple-device/default-game'
-      preLoaderRoute: typeof AuthenticatedOnlyMultipleDeviceDefaultGameRouteImport
-      parentRoute: typeof AuthenticatedOnlyRouteRoute
-    }
     '/_authenticated-only/multiple-device/altered-game': {
       id: '/_authenticated-only/multiple-device/altered-game'
       path: '/multiple-device/altered-game'
@@ -258,22 +264,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOnlyMultipleDeviceAlteredGameRouteImport
       parentRoute: typeof AuthenticatedOnlyRouteRoute
     }
+    '/_authenticated-only/multiple-device/default-game/': {
+      id: '/_authenticated-only/multiple-device/default-game/'
+      path: '/multiple-device/default-game'
+      fullPath: '/multiple-device/default-game'
+      preLoaderRoute: typeof AuthenticatedOnlyMultipleDeviceDefaultGameIndexRouteImport
+      parentRoute: typeof AuthenticatedOnlyRouteRoute
+    }
+    '/_authenticated-only/multiple-device/default-game/$gameId': {
+      id: '/_authenticated-only/multiple-device/default-game/$gameId'
+      path: '/multiple-device/default-game/$gameId'
+      fullPath: '/multiple-device/default-game/$gameId'
+      preLoaderRoute: typeof AuthenticatedOnlyMultipleDeviceDefaultGameGameIdRouteImport
+      parentRoute: typeof AuthenticatedOnlyRouteRoute
+    }
   }
 }
 
 interface AuthenticatedOnlyRouteRouteChildren {
   AuthenticatedOnlyMultipleDeviceAlteredGameRoute: typeof AuthenticatedOnlyMultipleDeviceAlteredGameRoute
-  AuthenticatedOnlyMultipleDeviceDefaultGameRoute: typeof AuthenticatedOnlyMultipleDeviceDefaultGameRoute
   AuthenticatedOnlyMeIndexRoute: typeof AuthenticatedOnlyMeIndexRoute
+  AuthenticatedOnlyMultipleDeviceDefaultGameGameIdRoute: typeof AuthenticatedOnlyMultipleDeviceDefaultGameGameIdRoute
+  AuthenticatedOnlyMultipleDeviceDefaultGameIndexRoute: typeof AuthenticatedOnlyMultipleDeviceDefaultGameIndexRoute
 }
 
 const AuthenticatedOnlyRouteRouteChildren: AuthenticatedOnlyRouteRouteChildren =
   {
     AuthenticatedOnlyMultipleDeviceAlteredGameRoute:
       AuthenticatedOnlyMultipleDeviceAlteredGameRoute,
-    AuthenticatedOnlyMultipleDeviceDefaultGameRoute:
-      AuthenticatedOnlyMultipleDeviceDefaultGameRoute,
     AuthenticatedOnlyMeIndexRoute: AuthenticatedOnlyMeIndexRoute,
+    AuthenticatedOnlyMultipleDeviceDefaultGameGameIdRoute:
+      AuthenticatedOnlyMultipleDeviceDefaultGameGameIdRoute,
+    AuthenticatedOnlyMultipleDeviceDefaultGameIndexRoute:
+      AuthenticatedOnlyMultipleDeviceDefaultGameIndexRoute,
   }
 
 const AuthenticatedOnlyRouteRouteWithChildren =

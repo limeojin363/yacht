@@ -6,9 +6,8 @@ export const generateAccessToken = (userId: number): string => {
   });
 };
 
-// Refresh Token 생성
 export const generateRefreshToken = (userId: number): string => {
   return jwt.sign({ userId }, process.env.REFRESH_TOKEN_SECRET as string, {
     expiresIn: "7d",
-  }); // 예: 7일 만료
+  });
 };

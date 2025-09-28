@@ -8,7 +8,6 @@ import { Refresh } from "../services/user/refresh";
 const HOST = import.meta.env.VITE_APP_API_SERVER_URL as string;
 
 const setAuthorizationHeader: BeforeRequestHook = (request) => {
-  console.log("setAuthorizationHeader");
   const rawAccessToken = localStorage.getItem("accessToken");
   if (!rawAccessToken) return;
 
@@ -19,10 +18,9 @@ const setAuthorizationHeader: BeforeRequestHook = (request) => {
 const DEFAULT_RETRY_LIMIT = 3;
 
 const handleTokenRefresh: BeforeRetryHook = async ({ error, retryCount }) => {
-  console.log("refresh");
-
   const httpError = error as HTTPError;
-  if (httpError.response.status !== 401) {
+  console.log(httpError)
+  if (httpError.response?.status !== 401) {
     console.log("401이 아닌 에러 발생, 중단", httpError);
     return ky.stop;
   }

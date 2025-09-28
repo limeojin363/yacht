@@ -40,7 +40,7 @@ export const getGameList: RequestHandler<
         name,
         totalPlayers: game_object.totalPlayers,
         currentPlayers: u_id_list.length as 0 | 1 | 2 | 3 | 4,
-        infoForAdmin: { u_id_list, u_name_list }
+        infoForAdmin: { u_id_list, u_name_list },
       })),
     });
   } catch (error) {
@@ -56,18 +56,18 @@ const SchemaOf = {
       id: z.number(),
       progress_type: z.union([z.literal(0), z.literal(1), z.literal(2)]),
       name: z.string(),
-      u_id_list: z.array(z.string()),
+      u_id_list: z.array(z.number()),
       u_name_list: z.array(z.string()),
     })
   ),
   Rows: z.array(
     z.object({
-      game_object: z.string(),
+      game_object: GameStatusSchema,
       id: z.number(),
       progress_type: z.union([z.literal(0), z.literal(1), z.literal(2)]),
       name: z.string(),
-      u_id_list: z.string(), // JSON_ARRAYAGG 결과는 문자열로 옴
-      u_name_list: z.string(), // JSON_ARRAYAGG 결과는 문자열로 옴
+      u_id_list: z.array(z.number()),
+      u_name_list: z.array(z.string()),
     })
   ),
 };
@@ -75,15 +75,21 @@ const SchemaOf = {
 const FromDB = {
   getRows: async () => {
     const [rows] = await pool.query(
-      `SELECT g.id, g.progress_type, g.name, g.game_object,
-             JSON_ARRAYAGG(u.id) AS u_id_list,
-             JSON_ARRAYAGG(u.username) AS u_name_list
-            FROM games g
-            LEFT JOIN users u ON g.id = u.g_id
-            WHERE u.id IS NOT NULL
-            GROUP BY g.id, g.progress_type, g.name
-            LIMIT 10`
+      `SELECT g.id,
+       g.progress_type,
+       g.name,
+       g.game_object,
+       IF(COUNT(u.id) = 0, JSON_ARRAY(),
+          JSON_ARRAYAGG(u.id)) AS u_id_list,
+       IF(COUNT(u.id) = 0, JSON_ARRAY(),
+          JSON_ARRAYAGG(u.username)) AS u_name_list
+FROM games AS g
+LEFT JOIN users AS u ON g.id = u.g_id
+GROUP BY g.id, g.progress_type, g.name, g.game_object
+LIMIT 10
+`
     );
+    console.log(rows);
 
     const parsedRows = SchemaOf.Rows.parse(rows);
 
@@ -92,9 +98,9 @@ const FromDB = {
         id,
         name,
         progress_type,
-        u_id_list: JSON.parse(u_id_list),
-        u_name_list: JSON.parse(u_name_list),
-        game_object: JSON.parse(game_object),
+        u_id_list: u_id_list,
+        u_name_list: u_name_list,
+        game_object: game_object,
       })
     );
 
