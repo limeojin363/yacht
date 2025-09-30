@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 
 export type ViewStatus = "EMPTY" | "SELECTABLE" | "SELECTED";
 
-interface ScoreCellViewProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ScoreCellViewProps extends React.HTMLAttributes<HTMLDivElement> {
   viewStatus: ViewStatus;
   label?: number | string;
 }
