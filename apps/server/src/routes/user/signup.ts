@@ -19,7 +19,7 @@ export const ZUserRows = z.array(
     password: z.string(),
     authority_level: z.union([z.literal(0), z.literal(1), z.literal(2), z.literal(3)]),
     salt: z.string(),
-    g_connected: z.number().min(0).max(2),
+    g_playerId: z.number().nullable(),
     g_id: z.number().nullable(),
   })
 );
@@ -56,14 +56,14 @@ export const signup: RequestHandler<
   if (!parsed.success)
     return res.status(401).json({ message: "Invalid user data" });
 
-  const { id, g_connected, authority_level, g_id } = parsed.data[0]!;
+  const { id, g_playerId, authority_level, g_id } = parsed.data[0]!;
 
   const accessToken = generateAccessToken(id);
   const refreshToken = generateRefreshToken(id);
   const userInfoForResponse = {
     id,
     username,
-    g_connected: Boolean(g_connected),
+    g_playerId,
     authority_level,
     g_id,
   };

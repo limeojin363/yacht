@@ -5,10 +5,10 @@ import { pool } from "../../index.js";
 
 export const exitTheGame: RequestHandler = async (req, res) => {
   try {
-    const { id: userId, g_connected } = await verifyAuthHeader(
+    const { id: userId, g_playerId } = await verifyAuthHeader(
       req.headers["authorization"]
     );
-    if (g_connected)
+    if (g_playerId)
       throw new Error("Please disconnect from the current game first.");
 
     const ReqBodyResult = SchemaOf.ReqBody.safeParse(req.body);

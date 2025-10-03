@@ -23,7 +23,6 @@ const LeftSideArea = () => {
 
 const RightSideArea = () => {
   const { user } = useAuth();
-  console.log(user);
   const navigate = useNavigate();
 
   if (user) {

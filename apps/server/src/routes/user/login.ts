@@ -8,7 +8,6 @@ import {
 import { createHashedPassword } from "../../auths/hash.js";
 import {
   type LoginReqBody,
-  type LoginResBody,
   LoginReqBodySchema,
 } from "@yacht/communications";
 
@@ -19,7 +18,7 @@ export const ZUserRows = z.array(
     password: z.string(),
     authority_level: z.number().min(0).max(3),
     salt: z.string(),
-    g_connected: z.number().min(0).max(2),
+    g_playerId: z.number().nullable(),
     g_id: z.number().nullable(),
   })
 );
@@ -44,13 +43,14 @@ export const login: RequestHandler<
     [username]
   );
 
-  console.log(rows);
-
   const parsed = ZUserRows.safeParse(rows);
   if (!parsed.success)
     return res.status(401).json({ message: "Invalid user data" });
 
-  const { salt, password, id, g_connected, authority_level, g_id } =
+  if (parsed.data.length === 0 )
+    return res.status(401).json({ message: "Invalid username or password" });
+
+  const { salt, password, id, g_playerId, authority_level, g_id } =
     parsed.data[0]!;
 
   if (password === (await createHashedPassword(plainPassword, salt))) {
@@ -60,7 +60,7 @@ export const login: RequestHandler<
     const userInfoForResponse = {
       id,
       username,
-      g_connected: Boolean(g_connected),
+      g_playerId,
       authority_level,
       g_id,
     };

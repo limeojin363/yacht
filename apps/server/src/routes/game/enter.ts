@@ -6,18 +6,17 @@ import { GameStatusSchema } from "@yacht/default-game";
 
 export const enterTheGame: RequestHandler = async (req, res) => {
   try {
-    const { id: userId, g_connected } = await verifyAuthHeader(req.headers["authorization"]);
-    if (g_connected) throw new Error("Already connected to a game");
+    const { id: userId, g_playerId } = await verifyAuthHeader(
+      req.headers["authorization"]
+    );
+    if (g_playerId) throw new Error("Already connected to a game");
 
-    const ReqBodyResult = SchemaOf.ReqBody.safeParse(req.body);
-    if (!ReqBodyResult.success) {
-      throw new Error("Invalid request body");
-    }
-    const { gameId } = ReqBodyResult.data;
+    const { gameId } = SchemaOf.ReqBody.parse(req.body);
 
     await FromDB.check(userId, gameId);
     await FromDB.setConnection(userId, gameId);
 
+    return res.status(200).json({ message: "Entered the game" });
   } catch (error) {
     return res.status(400).json({ error });
   }

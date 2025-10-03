@@ -13,7 +13,7 @@ const MePage = () => {
         <h1>My Info</h1>
         <p>Username: {myInfo.username}</p>
         <p>Authority Level: {myInfo.authority_level}</p>
-        <p>Game Connected: {myInfo.g_connected ? "Yes" : "No"}</p>
+        <p>Game Connected: {myInfo.g_playerId ? "Yes" : "No"}</p>
       </S.Root>
     );
   }

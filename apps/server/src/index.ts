@@ -13,6 +13,7 @@ import { getGameList } from "./routes/game/getGameList.js";
 import { createHashedPassword, createSalt } from "./auths/hash.js";
 import { wss } from "./sockets/wss.js";
 import { getInitialGameStatus } from "@yacht/default-game";
+import getMyInfo from "./routes/user/getMyInfo.js";
 
 dotenv.config();
 
@@ -37,6 +38,7 @@ app.post("/user/signup", signup);
 app.post("/user/login", login);
 app.post("/user/refresh", refresh);
 app.post("/game/generate", generateGame);
+app.get("/user/me", getMyInfo);
 app.get("/user/list", getUserList);
 app.get("/game/list", getGameList);
 app.post("/game/enter", enterTheGame);
@@ -69,11 +71,11 @@ export const pool = mysql.createPool({
       salt
     );
     const authority_level = 0;
-    const g_connected = 0;
+    const g_playerId = null;
 
     await pool.query(
-      `INSERT INTO users (username, password, salt, authority_level, g_connected) VALUES (?, ?, ?, ?, ?)`,
-      [username, password, salt, authority_level, g_connected]
+      `INSERT INTO users (username, password, salt, authority_level, g_playerId) VALUES (?, ?, ?, ?, ?)`,
+      [username, password, salt, authority_level, g_playerId]
     );
     console.log("Created default admin user");
   } catch (error) {

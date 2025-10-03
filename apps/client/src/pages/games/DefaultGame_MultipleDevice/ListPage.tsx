@@ -7,13 +7,8 @@ const useGameList = () => {
     queryKey: ["gameList"],
     queryFn: async () => {
       try {
-        console.log("fetch game list");
         const res = await GetGameList();
-        console.log(res);
         const data = await res.json();
-        if (data.games.length > 0 && !data.games[0].infoForAdmin) {
-          throw new Error("No infoForAdmin in game");
-        }
         return data;
       } catch (error) {
         console.log(error);
@@ -39,10 +34,17 @@ const ListPage = () => {
       <h2>Game List</h2>
       <ul>
         {data.games.map((game) => (
-          <li key={game.id} onClick={()=>navigate({
-            to: "/multiple-device/default-game/$gameId",
-            params: { gameId: String(game.id) },
-          })}>{JSON.stringify(game)}</li>
+          <li
+            key={game.id}
+            onClick={() =>
+              navigate({
+                to: "/multiple-device/default-game/$gameId",
+                params: { gameId: String(game.id) },
+              })
+            }
+          >
+            {JSON.stringify(game)}
+          </li>
         ))}
       </ul>
     </div>

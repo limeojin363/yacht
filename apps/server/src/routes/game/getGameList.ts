@@ -89,8 +89,6 @@ GROUP BY g.id, g.progress_type, g.name, g.game_object
 LIMIT 10
 `
     );
-    console.log(rows);
-
     const parsedRows = SchemaOf.Rows.parse(rows);
 
     const processedRows = parsedRows.map(

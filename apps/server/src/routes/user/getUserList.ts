@@ -29,7 +29,7 @@ const SchemaOf = {
       id: z.number(),
       username: z.string(),
       authority_level: z.number(),
-      g_connected: z.number().min(0).max(1),
+      g_playerId: z.number().nullable(),
       g_id: z.union([z.null(), z.number()]),
       g_name: z.union([z.null(), z.string()]),
     })
@@ -39,7 +39,7 @@ const SchemaOf = {
 const FromDB = {
   getRows: async () => {
     const [rows] = await pool.query(
-      `SELECT u.id, u.username, u.authority_level, u.g_connected, u.g_id, g.name AS g_name
+      `SELECT u.id, u.username, u.authority_level, u.g_playerId, u.g_id, g.name AS g_name
           FROM users u
           LEFT JOIN games g ON u.g_id = g.id
           LIMIT 10`

@@ -21,7 +21,7 @@ const SchemaOf = {
       password: z.string(),
       authority_level: z.number().min(0).max(3),
       salt: z.string(),
-      g_connected: z.number().min(0).max(1),
+      g_playerId: z.number().nullable(),
     })
   ),
 };

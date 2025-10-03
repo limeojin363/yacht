@@ -14,7 +14,8 @@ const SchemaOf = {
       password: z.string(),
       authority_level: z.union([z.literal(0), z.literal(1), z.literal(2), z.literal(3)]),
       g_id: z.number().nullable(),
-      g_connected: z.number().min(0).max(2),
+      g_playerId: z.number().nullable(),
+      g_playerColor: z.string().nullable(),
       salt: z.string(),
     })
   ),
@@ -34,7 +35,6 @@ const verifyAuthHeader = async (
     token,
     process.env.ACCESS_TOKEN_SECRET as string
   );
-  console.log({decodedInfo});
   const decodeInfoResult = SchemaOf.DecodedInfo.parse(decodedInfo);
 
   const { userId } = decodeInfoResult;

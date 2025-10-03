@@ -9,9 +9,7 @@ const useGameList = () => {
     queryKey: ["gameList"],
     queryFn: async () => {
       try {
-        console.log("fetch game list");
         const res = await GetGameList();
-        console.log(res);
         const data = await res.json();
         if (data.games.length > 0 && !data.games[0].infoForAdmin) {
           throw new Error("No infoForAdmin in game");

@@ -46,7 +46,7 @@ export const updateOnSelect: ActionFunction<"SELECT"> = (
 ) => {
   if (isUnavailableDiceSet(diceSet))
     throw new Error("Dice have not been rolled yet");
-  if (playerList[currentPlayerId]['scores'][hand] !== null)
+  if (playerList[currentPlayerId]["scores"][hand] !== null)
     throw new Error("Hand already selected");
 
   return {
@@ -74,19 +74,17 @@ export const updateOnRoll: ActionFunction<"ROLL"> = ({
   remainingRoll,
 }) => {
   if (remainingRoll <= 0) throw new Error("No remaining rolls left");
-  if (isUnavailableDiceSet(diceSet)) throw new Error("Dice have not been rolled yet");
-
-  const newDiceSet = diceSet.map((dice) => {
-    if (dice.held) return dice;
-    return { eye: generateDiceEye(), held: false };
-  }) as AvailableDiceSet;
 
   return {
     playerList,
     remainingRoll: (remainingRoll - 1) as RemainingRoll,
     currentPlayerId,
     totalPlayers,
-    diceSet: newDiceSet,
+    diceSet: isUnavailableDiceSet(diceSet)
+      ? generateDiceSet()
+      : (diceSet.map((dice) =>
+          dice.held ? dice : { eye: generateDiceEye(), held: false }
+        ) as AvailableDiceSet),
   };
 };
 

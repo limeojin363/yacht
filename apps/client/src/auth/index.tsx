@@ -7,7 +7,7 @@ type UserInfo = {
   id: number;
   username: string;
   authority_level: 0 | 1 | 2 | 3;
-  g_connected: boolean;
+  g_playerId: number | null;
   g_id: number | null;
 };
 

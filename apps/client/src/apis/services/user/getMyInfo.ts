@@ -8,4 +8,4 @@ type GetMyInfoType = (
 ) => ResponsePromise<GetMyInfoResBody>;
 
 export const GetMyInfo: GetMyInfoType = () =>
-  authenticatedApiClient.post("user/me");
+  authenticatedApiClient.get("user/me");

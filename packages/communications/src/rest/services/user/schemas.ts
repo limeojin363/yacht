@@ -17,7 +17,7 @@ export const LoginResBodySchema = z.object({
       z.literal(2),
       z.literal(3),
     ]),
-    g_connected: z.boolean(),
+    g_playerId: z.number().nullable(),
     g_id: z.number().nullable(),
   }),
 });
@@ -48,7 +48,7 @@ export const SignupResBodySchema = z.object({
       z.literal(2),
       z.literal(3),
     ]),
-    g_connected: z.boolean(),
+    g_playerId: z.number().nullable(),
     g_id: z.number().nullable(),
   }),
 });
@@ -66,7 +66,7 @@ export const GetMyInfoResBodySchema = z.object({
     z.literal(2),
     z.literal(3),
   ]),
-  g_connected: z.boolean(),
+  g_playerId: z.number().nullable(),
   g_id: z.number().nullable(),
 });
 
@@ -80,7 +80,7 @@ export const GetUserListResBodySchema = z.object({
       id: z.number(),
       username: z.string(),
       authority_level: z.number(),
-      g_connected: z.number().min(0).max(1),
+      g_playerId: z.number().nullable(),
       g_id: z.union([z.null(), z.number()]),
       g_name: z.union([z.null(), z.string()]),
     })
