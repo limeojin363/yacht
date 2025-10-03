@@ -20,17 +20,16 @@ const getSocket = (gameId: number) => {
 };
 
 const useRoomInfo = (gameId: number) => {
-  const socket = useMemo(() => getSocket(gameId), [gameId]);
   const navigate = useNavigate();
-  const [playerList, setPlayerList] = useState<
-    {
+  const socket = useMemo(() => getSocket(gameId), [gameId]);
+  const [currentRoomInfo, setCurrentRoomInfo] = useState<{
+    playerList: (null | {
       username: string;
       userId: number;
-      g_playerId: number;
-      g_playerColor: string | null;
-      g_connected: number;
-    }[]
-  >();
+      playerColor: string | null;
+      connected: number;
+    })[];
+  }>();
 
   useEffect(() => {
     socket.connect();
@@ -39,40 +38,66 @@ const useRoomInfo = (gameId: number) => {
       console.log("ping received", d);
     });
 
-    socket.on("current-players", (playerListData) => {
-      console.log("current-players", playerListData);
-      setPlayerList(playerListData);
+    socket.on("current-room-info", (currentRoomInfoData) => {
+      console.log("current-room-info", currentRoomInfoData);
+      setCurrentRoomInfo(currentRoomInfoData);
     });
 
     socket.on("new-player-entered", (newUserData) => {
       console.log("new-player-entered", newUserData);
-      setPlayerList((prev) => {
+      setCurrentRoomInfo((prev) => {
         if (!prev) return;
-        return [...prev, newUserData];
+        const nextPlayerList = [...prev.playerList];
+        nextPlayerList[newUserData.g_playerId] = {
+          username: newUserData.username,
+          userId: newUserData.userId,
+          playerColor: newUserData.g_playerColor,
+          connected: newUserData.g_connected,
+        };
+        return { ...prev, playerList: nextPlayerList };
       });
     });
 
     socket.on("player-exited", (userId) => {
       console.log("player-exited", userId);
-      setPlayerList((prev) => prev?.filter((user) => user.userId !== userId));
+      setCurrentRoomInfo((prev) => {
+        if (!prev) return;
+        const nextPlayerList = [...prev.playerList];
+        const index = nextPlayerList.findIndex((user) => {
+          if (!user) return false;
+          return user.userId === userId;
+        });
+        if (index !== -1) nextPlayerList[index] = null;
+        return { ...prev, playerList: nextPlayerList };
+      });
     });
 
     socket.on("player-disconnected", (userId) => {
       console.log("player-disconnected", userId);
-      setPlayerList((prev) =>
-        prev?.map((user) =>
-          user.userId === userId ? { ...user, g_connected: 0 } : user
-        )
-      );
+      setCurrentRoomInfo((prev) => {
+        if (!prev) return;
+        return {
+          ...prev,
+          playerList: prev.playerList.map((user) => {
+            if (!user) return user;
+            return user.userId === userId ? { ...user, connected: 0 } : user;
+          }),
+        };
+      });
     });
 
     socket.on("player-reconnected", (userId) => {
       console.log("player-reconnected", userId);
-      setPlayerList((prev) =>
-        prev?.map((user) =>
-          user.userId === userId ? { ...user, g_connected: 1 } : user
-        )
-      );
+      setCurrentRoomInfo((prev) => {
+        if (!prev) return;
+        return {
+          ...prev,
+          playerList: prev.playerList.map((user) => {
+            if (!user) return user;
+            return user.userId === userId ? { ...user, connected: 1 } : user;
+          }),
+        };
+      });
     });
 
     return () => {
@@ -86,7 +111,7 @@ const useRoomInfo = (gameId: number) => {
     navigate({ to: "/multiple-device/default-game" });
   };
 
-  return { playerList, exit };
+  return { ...currentRoomInfo, exit };
 };
 
 const UserList = ({ gameId }: { gameId: number }) => {
@@ -99,9 +124,15 @@ const UserList = ({ gameId }: { gameId: number }) => {
     <>
       <button onClick={exit}>나가기</button>
       {playerList.map((user) => (
-        <li key={user.userId} onClick={() => console.log(user)}>
-          {user.username} - {user.g_connected ? "온라인" : "오프라인"}
-        </li>
+        <>
+          {user ? (
+            <li key={user.userId} onClick={() => console.log(user)}>
+              {user.username} - {user.connected ? "온라인" : "오프라인"}
+            </li>
+          ) : (
+            "null"
+          )}
+        </>
       ))}
     </>
   );

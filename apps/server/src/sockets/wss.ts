@@ -41,7 +41,6 @@ export const wss = () => {
       } = await verifyAuthHeader(
         socket.handshake.query["Authorization"] as string
       ));
-      console.log({ g_id });
       gameId = Number(socket.handshake.query["gameId"] as string);
 
       // 게임 ID가 유효하지 않음
@@ -92,8 +91,28 @@ export const wss = () => {
 
       // 소켓을 gameId에 해당되는 room에 등록
       socket.join(String(gameId));
+
+      const _playerList = await FromDB.getCurrentPlayers(gameId);
+      const playerList: (null | {
+        username: string;
+        userId: number;
+        playerColor: string | null;
+        connected: number;
+      })[] = Array.from({ length: totalPlayers }, () => null);
+      _playerList.forEach((p) => {
+        if (p.g_playerId !== null)
+          playerList[p.g_playerId] = {
+            username: p.username,
+            userId: p.userId,
+            playerColor: p.g_playerColor,
+            connected: p.g_connected,
+          };
+      });
+
       // 기존 방 정보를 클라이언트에 전파
-      socket.emit("current-players", await FromDB.getCurrentPlayers(gameId));
+      socket.emit("current-room-info", {
+        playerList,
+      });
 
       // exit -> DB에서 제거 후 disconnect
       socket.on("exit", async () => {
@@ -177,7 +196,6 @@ const FromDB = {
       "SELECT username, g_playerId, g_playerColor, id AS userId, g_connected FROM users WHERE g_id = ?",
       [gameId]
     );
-    console.log(rows);
     const parsedPlayers = SchemaOf.PlayerRows.parse(rows);
     const takenIds = parsedPlayers.map((p) => p.g_playerId);
     for (let i = 0; i < totalPlayers; i++) {
@@ -186,11 +204,12 @@ const FromDB = {
     throw new Error("No available player IDs");
   },
   getCurrentPlayers: async (gameId: number) => {
-    const [rows] = await pool.query(
+    const [playerRows] = await pool.query(
       "SELECT username, g_playerId, g_playerColor, g_connected, id AS userId FROM users WHERE g_id = ?",
       [gameId]
     );
-    const parsedPlayers = SchemaOf.PlayerRows.parse(rows);
+    const parsedPlayers = SchemaOf.PlayerRows.parse(playerRows);
+
     return parsedPlayers;
   },
   setGameStatus: async (gameId: number, gameStatus: GameStatus) => {
@@ -212,11 +231,9 @@ const FromDB = {
     g_playerId: number | null;
     userId: number;
   }) => {
-    const res = await pool.query(
+    await pool.query(
       "UPDATE users SET g_playerColor = ?, g_connected = ?, g_id = ?, g_playerId = ? WHERE id = ?",
       [g_playerColor, g_connected, g_id, g_playerId, userId]
     );
-
-    console.log({ res });
   },
 };

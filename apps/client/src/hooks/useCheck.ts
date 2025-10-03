@@ -15,12 +15,11 @@ const useCheck = () => {
     queryKey: ["check"],
     queryFn: async () => {
       if (!user) return null;
+    if (regexp.test(pathname)) return null;
 
       const res = await GetMyInfo();
       const { g_id } = await res.json();
-      console.log({g_id});
       if (g_id) {
-        console.log({ g_id });
         navigate({
           to: "/multiple-device/default-game/$gameId",
           params: { gameId: String(g_id) },
@@ -29,13 +28,14 @@ const useCheck = () => {
       }
       return true;
     },
-    // disable cache
-    staleTime: 0,
   });
 
   useEffect(() => {
     refetch();
-  }, [user, pathname, refetch]);
+  }, [pathname, refetch]);
 };
+
+// /multiple-device/default-game/숫자
+const regexp = /^\/multiple-device\/default-game\/\d+$/;
 
 export default useCheck;
