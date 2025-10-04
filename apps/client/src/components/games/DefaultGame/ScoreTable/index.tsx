@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import HandNameColumn from "../../../../pages/games/__DEPRECATED__DefaultGame_SingleDevice/components/ScoreTable/HandNameColumn";
+import NameColumn from "./NameColumn";
 import { use } from "react";
 import { DefaultGameContext } from "..";
 import type { PlayerId } from "@yacht/default-game";
@@ -17,7 +17,7 @@ const ScoreTable = () => {
 
   return (
     <S.Root>
-      <HandNameColumn />
+      <NameColumn />
       {playerIdList.map((playerId) => (
         <PlayerColumn key={`player${playerId}`} playerId={playerId} />
       ))}

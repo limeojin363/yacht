@@ -1,4 +1,10 @@
-import { getInitialGameStatus, type AvailableHand, type DiceIndex, type GameStatus, type PlayerId } from "@yacht/default-game";
+import {
+  getInitialGameStatus,
+  type AvailableHand,
+  type DiceIndex,
+  type GameStatus,
+  type PlayerId,
+} from "@yacht/default-game";
 import { createContext } from "react";
 import DiceArea from "./DiceArea";
 import ScoreTable from "./ScoreTable";

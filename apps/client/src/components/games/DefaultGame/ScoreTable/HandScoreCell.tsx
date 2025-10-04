@@ -50,7 +50,7 @@ const useCellProps = (
   };
 };
 
-const ScoreCell = ({
+const HandScoreCell = ({
   playerId,
   hand,
 }: {
@@ -61,4 +61,4 @@ const ScoreCell = ({
   return <ScoreCellView {...props} />;
 };
 
-export default ScoreCell;
+export default HandScoreCell;

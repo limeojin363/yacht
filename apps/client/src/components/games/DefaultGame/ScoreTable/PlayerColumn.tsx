@@ -1,17 +1,19 @@
 import { HAND_LIST, type PlayerId } from "@yacht/default-game";
-import ScoreCell from "./ScoreCell";
+import HandScoreCell from "./HandScoreCell";
 import styled from "@emotion/styled";
+import TotalScoreCell from "./TotalScoreCell";
 
 const PlayerColumn = ({ playerId }: { playerId: PlayerId }) => {
   return (
     <S.Root>
       {HAND_LIST.map((hand) => (
-        <ScoreCell
+        <HandScoreCell
           key={`player${playerId}-${hand}`}
           playerId={playerId}
           hand={hand}
         />
       ))}
+      <TotalScoreCell playerId={playerId} />
     </S.Root>
   );
 };

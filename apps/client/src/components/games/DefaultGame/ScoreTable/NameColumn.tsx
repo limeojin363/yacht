@@ -1,17 +1,18 @@
 import styled from "@emotion/styled";
 import { HAND_LIST } from "@yacht/default-game";
 
-const HandNameColumn = () => {
+const NameColumn = () => {
   return (
     <S.Root>
       {HAND_LIST.map((hand) => (
         <S.Cell key={`handname-${hand}`}>{hand}</S.Cell>
       ))}
+      <S.Cell key={`handname-${"TOTAL"}`}>{"TOTAL"}</S.Cell>
     </S.Root>
   );
 };
 
-export default HandNameColumn;
+export default NameColumn;
 
 const S = {
   Root: styled.div`
