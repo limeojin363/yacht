@@ -30,17 +30,19 @@ const getSocket = (gameId: number) => {
   });
 };
 
+export type Player = {
+  username: string;
+  userId: number;
+  playerColor: `#${string}`;
+  connected: number;
+};
+
 const useRoomInfo = (gameId: number) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const socket = useMemo(() => getSocket(gameId), [gameId]);
   const [currentRoomInfo, setCurrentRoomInfo] = useState<{
-    playerList: (null | {
-      username: string;
-      userId: number;
-      playerColor: string | null;
-      connected: number;
-    })[];
+    playerList: (null | Player)[];
     progressType: number;
     gameObject: GameStatus;
   }>();
@@ -206,6 +208,8 @@ const WaitingRoom = ({ gameId }: { gameId: number }) => {
   const { user: currentUser } = useAuth();
   const isAdmin = currentUser?.authority_level === 0;
 
+  if (!currentUser) return <div>로그인 후 이용해주세요</div>;
+
   const isConnected = !!currentRoomInfo;
   if (!isConnected) return <div>Loading...</div>;
 
@@ -231,10 +235,28 @@ const WaitingRoom = ({ gameId }: { gameId: number }) => {
       </S.Root>
     );
 
+  if (!isAvailablePlayerList(playerList))
+    throw new Error("playerList에 null이 포함되어 있음");
+
+  const isMyTurn = gameObject.currentPlayerId === currentUser.g_playerId;
+
   if (progressType === 1)
-    return <DefaultGame gameStatus={gameObject} {...listeners} />;
+    return (
+      <DefaultGame
+        playerList={playerList}
+        isMyTurn={isMyTurn}
+        gameStatus={gameObject}
+        {...listeners}
+      />
+    );
 
   return null;
+};
+
+const isAvailablePlayerList = (
+  playerList: (Player | null)[]
+): playerList is Player[] => {
+  return playerList.every((p) => p !== null);
 };
 
 const S = {

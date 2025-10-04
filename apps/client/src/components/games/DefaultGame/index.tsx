@@ -8,9 +8,12 @@ import {
 import { createContext } from "react";
 import DiceArea from "./DiceArea";
 import ScoreTable from "./ScoreTable";
+import type { Player } from "../../../pages/games/DefaultGame_MultipleDevice/WaitingRoom";
 
 export type DefaultGameContextValues = {
   gameStatus: GameStatus;
+  playerList: Player[];
+  isMyTurn: boolean;
   onClickCell: (handName: AvailableHand, playerId: PlayerId) => void;
   onClickDice: (diceIndex: DiceIndex) => void;
   onClickRoll: () => void;
@@ -18,6 +21,8 @@ export type DefaultGameContextValues = {
 
 export const DefaultGameContext = createContext<DefaultGameContextValues>({
   gameStatus: getInitialGameStatus(2),
+  playerList: [],
+  isMyTurn: false,
   onClickCell: () => {},
   onClickDice: () => {},
   onClickRoll: () => {},

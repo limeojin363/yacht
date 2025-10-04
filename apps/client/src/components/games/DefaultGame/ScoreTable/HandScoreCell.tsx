@@ -16,7 +16,9 @@ const useCellProps = (
   playerId: PlayerId,
   hand: AvailableHand
 ): ScoreCellViewProps => {
-  const { onClickCell, gameStatus } = use(DefaultGameContext);
+  const { onClickCell, gameStatus, playerList } = use(DefaultGameContext);
+
+  const playerColor = playerList[playerId].playerColor;
 
   const isCurrentPlayer = gameStatus.currentPlayerId === playerId;
   const currentScore = gameStatus.playerList[playerId].scores[hand];
@@ -44,6 +46,7 @@ const useCellProps = (
   })();
 
   return {
+    playerColor,
     viewStatus,
     label,
     onClick: () => onClickCell(hand, playerId),

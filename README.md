@@ -1,33 +1,19 @@
 # 작업 목록
 
-- admin 모니터링 기능(API: getUserList, getGameList)
-  - communications
-    - 각 API 스키마/타입 작성
-  - back
-    - 각 API 작성
-    front
-    - API 호출 코드 작성
-    - 어드민 페이지 파일 생성
-    - tanstack/table 설치 및 설정
-    - user, game 탭과 각각
-        - tanstack/query hook
-        - UI
+## 게임 UI 개선사항
 
-- users 기본(API: signup, login)
-    - API 서버 코드 작성
-    - 클라이언트 API 호출 코드 작성
-    - 회원가입 페이지
-        - hook, UI
-    - 로그인 페이지
-        - hook, UI
+- myTurn false일 때 어떻게 노출되고 동작할지?
 
-- Notification
-    - 
+## room 관리 개선사항
 
-- games 진입부
+- 게임 진행 중 나가기(방 소멸)
+- 사용자가 방을 생성할 수 있도록 하기
+- 사용자가 방을 삭제할 수 있도록 하기
+- 끝난 게임 자동 삭제
 
-- games 진행부
+## 게임 feature 개선사항
 
+- 게임이 끝났음을 알리도록 하기
 
 # 프로젝트 구조(250908 Update)
 
