@@ -1,5 +1,6 @@
 import {
   GameStatusSchema,
+  getInitialGameStatus,
   getUpdatedGameStatus,
   type GameStatus,
   type TotalPlayersNum,
@@ -135,6 +136,9 @@ export const wss = () => {
       // 소켓 방에서 제거
       socket.leave(String(gameId));
       try {
+        socket.to(String(gameId)).emit("player-exited", userId);
+        socket.disconnect();
+
         // DB에서 제거
         await FromDB.setUser({
           userId,
@@ -143,9 +147,10 @@ export const wss = () => {
           g_playerColor: null,
           g_connected: 0,
         });
+
+        await FromDB.setGameProgressType(gameId, 0);
+        await FromDB.setGameStatus(gameId, getInitialGameStatus(2));
         // 유저 퇴장 알림
-        socket.to(String(gameId)).emit("player-exited", userId);
-        socket.disconnect();
       } catch (error) {
         console.log("Error on exit: ", error);
       }
@@ -195,6 +200,8 @@ export const wss = () => {
 
         // 클라이언트에 전파
         gameNsp.to(String(gameId)).emit("game-start");
+
+        await FromDB.setGameProgressType(gameId, 1);
       } catch (error) {
         console.log("Error on game start: ", error);
       }
@@ -204,7 +211,7 @@ export const wss = () => {
       try {
         // 클라이언트에 전파
         gameNsp.to(String(gameId)).emit("game-interaction", { type, payload });
-        console.log({type, payload})
+        console.log({ type, payload });
 
         // DB 백업(재접속 대비)
         const { game_object } = await FromDB.getGameInfo(gameId);
@@ -212,6 +219,7 @@ export const wss = () => {
           type,
           payload,
         });
+
         await FromDB.setGameStatus(gameId, updatedGameStatus);
       } catch (error) {
         console.log("Error on game interaction: ", error);
@@ -273,6 +281,12 @@ const FromDB = {
   setGameStatus: async (gameId: number, gameStatus: GameStatus) => {
     await pool.query("UPDATE games SET game_object = ? WHERE id = ?", [
       JSON.stringify(gameStatus),
+      gameId,
+    ]);
+  },
+  setGameProgressType: async (gameId: number, progressType: number) => {
+    await pool.query("UPDATE games SET progress_type = ? WHERE id = ?", [
+      progressType,
       gameId,
     ]);
   },

@@ -31,6 +31,7 @@ const getSocket = (gameId: number) => {
 };
 
 const useRoomInfo = (gameId: number) => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const socket = useMemo(() => getSocket(gameId), [gameId]);
   const [currentRoomInfo, setCurrentRoomInfo] = useState<{
@@ -150,8 +151,12 @@ const useRoomInfo = (gameId: number) => {
 
   const gameStatus = currentRoomInfo?.gameObject;
 
-  const isCurrentPlayer = (playerId: number) =>
-    gameStatus?.currentPlayerId === playerId;
+  const isMyTurn = () => {
+    if (!gameStatus) return false;
+    if (!user) return false;
+    const myPlayerId = user.g_playerId;
+    return gameStatus.currentPlayerId === myPlayerId;
+  };
 
   const isSelectedHand = (playerId: number, handName: AvailableHand) =>
     gameStatus?.playerList[playerId].scores[handName] !== null;
@@ -163,8 +168,9 @@ const useRoomInfo = (gameId: number) => {
     "onClickCell" | "onClickDice" | "onClickRoll"
   > = {
     onClickCell: (handName, playerId) => {
+      if (!isMyTurn()) return;
       if (!gameStatus) return;
-      if (!isCurrentPlayer(playerId)) return;
+      if (!(gameStatus.currentPlayerId === playerId)) return;
       if (isSelectedHand(playerId, handName)) return;
       if (isUnavailableDiceSet(gameStatus.diceSet)) return;
       socket.emit("game-interaction", {
@@ -173,6 +179,7 @@ const useRoomInfo = (gameId: number) => {
       });
     },
     onClickDice: (diceIndex) => {
+      if (!isMyTurn()) return;
       if (!gameStatus) return;
       if (isUnavailableDiceSet(gameStatus.diceSet)) return;
       socket.emit("game-interaction", {
@@ -181,6 +188,7 @@ const useRoomInfo = (gameId: number) => {
       });
     },
     onClickRoll: () => {
+      if (!isMyTurn()) return;
       if (!gameStatus) return;
       if (isNoMoreRoll(gameStatus.remainingRoll)) return;
       socket.emit("game-interaction", {
