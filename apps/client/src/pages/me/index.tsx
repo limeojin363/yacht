@@ -5,8 +5,19 @@ const getMyInfo = () => {
   return user ? JSON.parse(user) : null;
 };
 
+const useLogout = () => {
+  return () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user");
+    window.location.reload();
+  }
+}
+
 const MePage = () => {
   const myInfo = getMyInfo();
+  const logout = useLogout();
+
   if (myInfo) {
     return (
       <S.Root>
@@ -14,6 +25,7 @@ const MePage = () => {
         <p>Username: {myInfo.username}</p>
         <p>Authority Level: {myInfo.authority_level}</p>
         <p>Game Connected: {myInfo.g_playerId ? "Yes" : "No"}</p>
+        <button onClick={logout}>Logout</button>
       </S.Root>
     );
   }

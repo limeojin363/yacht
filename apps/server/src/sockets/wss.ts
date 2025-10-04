@@ -29,13 +29,14 @@ export const wss = () => {
       gameId: number,
       totalPlayers: TotalPlayersNum,
       g_playerId: number | null,
-      g_playerColor: string | null;
+      g_playerColor: string | null,
+      progressType: number;
     try {
-      let g_id: number | null;
+      let gameIdFromAuth: number | null;
       ({
         id: userId,
         username,
-        g_id,
+        g_id: gameIdFromAuth,
         g_playerId,
         g_playerColor,
       } = await verifyAuthHeader(
@@ -46,14 +47,17 @@ export const wss = () => {
       // 게임 ID가 유효하지 않음
       if (!gameId) throw new Error("No gameId given from client");
       // 유저가 게임에 등록되어 있고, 그 게임이 다른 게임임
-      if (g_id !== null && g_id !== gameId)
+      if (gameIdFromAuth !== null && gameIdFromAuth !== gameId)
         throw new Error("User is already in another game");
 
-      ({ totalPlayers } = await FromDB.getGameStatus(gameId));
+      ({
+        game_object: { totalPlayers },
+        progress_type: progressType,
+      } = await FromDB.getGameInfo(gameId));
 
       // 아직 등록되지 않은 유저(신규 입장)
-      if (g_id === null) {
-        g_id = gameId;
+      if (gameIdFromAuth === null) {
+        gameIdFromAuth = gameId;
         // DB의 게임 정보로부터 playerId 생성
         g_playerId = await FromDB.generatePlayerId(gameId, totalPlayers);
         g_playerColor = generateRandomHexColor();
@@ -61,7 +65,7 @@ export const wss = () => {
         // DB에 등록
         await FromDB.setUser({
           g_playerColor,
-          g_id,
+          g_id: gameIdFromAuth,
           g_playerId,
           userId,
           g_connected: 1,
@@ -80,7 +84,7 @@ export const wss = () => {
       else {
         await FromDB.setUser({
           g_playerColor,
-          g_id,
+          g_id: gameIdFromAuth,
           g_playerId,
           userId,
           g_connected: 1,
@@ -91,7 +95,14 @@ export const wss = () => {
 
       // 소켓을 gameId에 해당되는 room에 등록
       socket.join(String(gameId));
+    } catch (error) {
+      console.log(error);
+      socket.send(error);
+      socket.disconnect();
+      return;
+    }
 
+    const getPlayerList = async () => {
       const _playerList = await FromDB.getCurrentPlayers(gameId);
       const playerList: (null | {
         username: string;
@@ -108,17 +119,22 @@ export const wss = () => {
             connected: p.g_connected,
           };
       });
+      return playerList;
+    };
 
-      // 기존 방 정보를 클라이언트에 전파
-      socket.emit("current-room-info", {
-        playerList,
-      });
+    // 기존 방 정보를 클라이언트에 전파
+    socket.emit("current-room-info", {
+      playerList: await getPlayerList(),
+      progressType,
+      gameObject: (await FromDB.getGameInfo(gameId)).game_object,
+    });
 
-      // exit -> DB에서 제거 후 disconnect
-      socket.on("exit", async () => {
-        console.log("exit received", { g_id, userId });
-        // 소켓 방에서 제거
-        socket.leave(String(gameId));
+    // exit -> DB에서 제거 후 disconnect
+    socket.on("exit", async () => {
+      console.log("exit received", { g_id: gameId, userId });
+      // 소켓 방에서 제거
+      socket.leave(String(gameId));
+      try {
         // DB에서 제거
         await FromDB.setUser({
           userId,
@@ -130,10 +146,14 @@ export const wss = () => {
         // 유저 퇴장 알림
         socket.to(String(gameId)).emit("player-exited", userId);
         socket.disconnect();
-      });
+      } catch (error) {
+        console.log("Error on exit: ", error);
+      }
+    });
 
-      // disconnect - 오류 등으로 우연히 끊긴 것으로 간주하고 방에서만 제거(DB 유지 및 재접속 대기)
-      socket.on("disconnect", async () => {
+    // disconnect - 오류 등으로 우연히 끊긴 것으로 간주하고 방에서만 제거(DB 유지 및 재접속 대기)
+    socket.on("disconnect", async () => {
+      try {
         const { g_id } = await verifyAuthHeader(
           socket.handshake.query["Authorization"] as string
         );
@@ -152,13 +172,51 @@ export const wss = () => {
         });
         // 유저 연결 끊김 알림
         socket.to(String(gameId)).emit("player-disconnected", userId);
-      });
-    } catch (error) {
-      console.log(error);
-      socket.send(error);
-      socket.disconnect();
-      return;
-    }
+      } catch (error) {
+        console.log("Error on disconnect: ", error);
+      }
+    });
+
+    socket.on("game-start", async () => {
+      try {
+        // 어드민만 시작할 수 있음
+        const { authority_level } = await verifyAuthHeader(
+          socket.handshake.query["Authorization"] as string
+        );
+        if (authority_level !== 0)
+          throw new Error("No permission to start game");
+
+        // 인원 수 체크
+        if ((await FromDB.getCurrentPlayers(gameId)).length !== totalPlayers)
+          throw new Error("Not enough players to start the game");
+
+        // 이미 시작된 게임인지 체크
+        if (progressType !== 0) throw new Error("Game has already started");
+
+        // 클라이언트에 전파
+        gameNsp.to(String(gameId)).emit("game-start");
+      } catch (error) {
+        console.log("Error on game start: ", error);
+      }
+    });
+
+    socket.on("game-interaction", async ({ type, payload }) => {
+      try {
+        // 클라이언트에 전파
+        gameNsp.to(String(gameId)).emit("game-interaction", { type, payload });
+        console.log({type, payload})
+
+        // DB 백업(재접속 대비)
+        const { game_object } = await FromDB.getGameInfo(gameId);
+        const updatedGameStatus = getUpdatedGameStatus(game_object)({
+          type,
+          payload,
+        });
+        await FromDB.setGameStatus(gameId, updatedGameStatus);
+      } catch (error) {
+        console.log("Error on game interaction: ", error);
+      }
+    });
   });
 };
 
@@ -182,14 +240,14 @@ const SchemaOf = {
 };
 
 const FromDB = {
-  getGameStatus: async (gameId: number): Promise<GameStatus> => {
+  getGameInfo: async (gameId: number) => {
     const [rows] = await pool.query("SELECT * FROM games WHERE id = ?", [
       gameId,
     ]);
     const parseResult = SchemaOf.GameRows.safeParse(rows);
     if (!parseResult.success) throw new Error("Invalid game status");
 
-    return parseResult.data[0]!.game_object;
+    return parseResult.data[0]!;
   },
   generatePlayerId: async (gameId: number, totalPlayers: number) => {
     const [rows] = await pool.query(
@@ -213,8 +271,8 @@ const FromDB = {
     return parsedPlayers;
   },
   setGameStatus: async (gameId: number, gameStatus: GameStatus) => {
-    await pool.query("UPDATE games SET gameObject = ? WHERE id = ?", [
-      gameStatus,
+    await pool.query("UPDATE games SET game_object = ? WHERE id = ?", [
+      JSON.stringify(gameStatus),
       gameId,
     ]);
   },

@@ -1,40 +1,12 @@
 import { GetScoreOf } from "../score/index.js";
 import type {
-  AvailableDiceEye,
   AvailableDiceSet,
   GameStatus,
   PlayerId,
   RemainingRoll,
-  UnavailableDiceSet,
 } from "../status/types.js";
+import { getDiceValues, isUnavailableDiceSet } from "../utils/index.js";
 import type { UserAction, UserActionName } from "./types.js";
-
-const generateDiceEye = (): AvailableDiceEye => {
-  const eyes = [1, 2, 3, 4, 5, 6] as const;
-  return eyes[Math.floor(Math.random() * eyes.length)];
-};
-
-const generateDiceSet = (): AvailableDiceSet => {
-  return [
-    { eye: generateDiceEye(), held: false },
-    { eye: generateDiceEye(), held: false },
-    { eye: generateDiceEye(), held: false },
-    { eye: generateDiceEye(), held: false },
-    { eye: generateDiceEye(), held: false },
-  ];
-};
-
-const getDiceValues = (diceSet: AvailableDiceSet) => {
-  return diceSet.map((d) => d.eye);
-};
-
-const isUnavailableDiceSet = (
-  diceSet: AvailableDiceSet | UnavailableDiceSet
-): diceSet is UnavailableDiceSet => {
-  if (diceSet.every((d) => d === null)) return true;
-  return false;
-};
-
 type ActionFunction<T extends UserActionName> = (
   gameStatus: GameStatus,
   payload: Extract<UserAction, { type: T }>["payload"]
@@ -46,9 +18,12 @@ export const updateOnSelect: ActionFunction<"SELECT"> = (
 ) => {
   if (isUnavailableDiceSet(diceSet))
     throw new Error("Dice have not been rolled yet");
-  if (playerList[currentPlayerId]["scores"][hand] !== null)
+  if (playerList[currentPlayerId]["scores"][hand] !== null) {
+    console.log({ hand });
+    console.log({ playerId: currentPlayerId });
+    console.log(playerList[currentPlayerId]["scores"][hand]);
     throw new Error("Hand already selected");
-
+  }
   return {
     diceSet: [null, null, null, null, null],
     playerList: playerList.map((player, idx) => {
@@ -66,13 +41,10 @@ export const updateOnSelect: ActionFunction<"SELECT"> = (
   };
 };
 
-export const updateOnRoll: ActionFunction<"ROLL"> = ({
-  diceSet,
-  playerList,
-  currentPlayerId,
-  totalPlayers,
-  remainingRoll,
-}) => {
+export const updateOnRoll: ActionFunction<"ROLL"> = (
+  { playerList, currentPlayerId, totalPlayers, remainingRoll },
+  nextDiceSet
+) => {
   if (remainingRoll <= 0) throw new Error("No remaining rolls left");
 
   return {
@@ -80,11 +52,7 @@ export const updateOnRoll: ActionFunction<"ROLL"> = ({
     remainingRoll: (remainingRoll - 1) as RemainingRoll,
     currentPlayerId,
     totalPlayers,
-    diceSet: isUnavailableDiceSet(diceSet)
-      ? generateDiceSet()
-      : (diceSet.map((dice) =>
-          dice.held ? dice : { eye: generateDiceEye(), held: false }
-        ) as AvailableDiceSet),
+    diceSet: nextDiceSet,
   };
 };
 

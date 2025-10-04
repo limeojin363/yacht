@@ -1,4 +1,5 @@
 import {
+  generateNextDiceSet,
   getInitialGameStatus,
   getUpdatedGameStatus,
   type AvailableHand,
@@ -43,7 +44,7 @@ const useProps = (totalPlayers: TotalPlayersNum): DefaultGameContextValues => {
     },
     onClickRoll: () => {
       if (isNoMoreRoll(gameStatus.remainingRoll)) return;
-      update({ type: "ROLL" });
+      update({ type: "ROLL", payload: generateNextDiceSet(gameStatus.diceSet) });
     },
   };
 };
