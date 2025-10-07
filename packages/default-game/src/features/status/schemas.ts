@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const TotalPlayersNumSchema = z.union([z.literal(2), z.literal(3), z.literal(4)]);
+export const PlayersNumSchema = z.union([z.literal(2), z.literal(3), z.literal(4)]);
 
 export const RemainingRollSchema = z.union([
   z.literal(0),
@@ -68,8 +68,7 @@ export const PlayerIdSchema = z.union([
 ]);
 
 export const GameStatusSchema = z.object({
-  totalPlayers: TotalPlayersNumSchema,
-  playerList: z.array(SinglePlayerSchema),
+  scoreObjectList: z.array(SinglePlayerSchema),
   diceSet: DicesetSchema,
   currentPlayerId: PlayerIdSchema,
   remainingRoll: RemainingRollSchema,

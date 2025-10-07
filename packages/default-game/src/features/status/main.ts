@@ -2,7 +2,7 @@ import _ from "lodash";
 import {
   type GameStatus,
   type SinglePlayer,
-  type TotalPlayersNum,
+  type PlayersNum,
   type UnavailableDiceSet,
 } from "./types";
 import { type UserAction } from "../actions/types";
@@ -14,7 +14,7 @@ import {
 import { HAND_LIST } from "../../constants";
 
 export const getInitialGameStatus = (
-  totalPlayers: TotalPlayersNum
+  totalPlayersNum: PlayersNum
 ): GameStatus => {
   const getPlayerInitialStatus = (): SinglePlayer => ({
     scores: {
@@ -42,12 +42,11 @@ export const getInitialGameStatus = (
   ];
 
   const getInitialPlayerList = (): SinglePlayer[] => {
-    return Array.from({ length: totalPlayers }, getPlayerInitialStatus);
+    return Array.from({ length: totalPlayersNum }, getPlayerInitialStatus);
   };
 
   return {
-    totalPlayers,
-    playerList: getInitialPlayerList(),
+    scoreObjectList: getInitialPlayerList(),
     diceSet: getDicesInitialStatus(),
     currentPlayerId: 0,
     remainingRoll: 3,
@@ -75,8 +74,8 @@ export const isGameStatusEqual = (a: GameStatus, b: GameStatus) => {
   const isRemainingRerollOk = a.remainingRoll === b.remainingRoll;
   const arePlayersOk = HAND_LIST.every(
     (hand) =>
-      a.playerList[0].scores[hand] === b.playerList[0].scores[hand] &&
-      a.playerList[1].scores[hand] === b.playerList[1].scores[hand]
+      a.scoreObjectList[0].scores[hand] === b.scoreObjectList[0].scores[hand] &&
+      a.scoreObjectList[1].scores[hand] === b.scoreObjectList[1].scores[hand]
   );
 
   return areDicesOk && isCurrentPlayerOk && isRemainingRerollOk && arePlayersOk;

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { AuthorityLevelSchema } from "../../../fields";
 
 export const LoginReqBodySchema = z.object({
   password: z.string(),
@@ -11,14 +12,9 @@ export const LoginResBodySchema = z.object({
   user: z.object({
     id: z.number(),
     username: z.string(),
-    authority_level: z.union([
-      z.literal(0),
-      z.literal(1),
-      z.literal(2),
-      z.literal(3),
-    ]),
-    g_playerId: z.number().nullable(),
-    g_id: z.number().nullable(),
+    authorityLevel: AuthorityLevelSchema,
+    gamePlayerId: z.number().nullable(),
+    gameId: z.number().nullable(),
   }),
 });
 
@@ -42,14 +38,9 @@ export const SignupResBodySchema = z.object({
   user: z.object({
     id: z.number(),
     username: z.string(),
-    authority_level: z.union([
-      z.literal(0),
-      z.literal(1),
-      z.literal(2),
-      z.literal(3),
-    ]),
-    g_playerId: z.number().nullable(),
-    g_id: z.number().nullable(),
+    authorityLevel: AuthorityLevelSchema,
+    gamePlayerId: z.number().nullable(),
+    gameId: z.number().nullable(),
   }),
 });
 
@@ -60,14 +51,9 @@ export const LogoutResBodySchema = z.object({});
 export const GetMyInfoResBodySchema = z.object({
   id: z.number(),
   username: z.string(),
-  authority_level: z.union([
-    z.literal(0),
-    z.literal(1),
-    z.literal(2),
-    z.literal(3),
-  ]),
-  g_playerId: z.number().nullable(),
-  g_id: z.number().nullable(),
+  authorityLevel: AuthorityLevelSchema,
+  gamePlayerId: z.number().nullable(),
+  gameId: z.number().nullable(),
 });
 
 export const GetMyInfoReqBodySchema = z.object({});
@@ -79,10 +65,9 @@ export const GetUserListResBodySchema = z.object({
     z.object({
       id: z.number(),
       username: z.string(),
-      authority_level: z.number(),
-      g_playerId: z.number().nullable(),
-      g_id: z.union([z.null(), z.number()]),
-      g_name: z.union([z.null(), z.string()]),
+      authorityLevel: AuthorityLevelSchema,
+      gamePlayerId: z.number().nullable(),
+      gameId: z.number().nullable(),
     })
   ),
 });

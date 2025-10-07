@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import { useNavigate } from "@tanstack/react-router";
 import {
   generateNextDiceSet,
+  getRanking,
   getUpdatedGameStatus,
   isUnavailableDiceSet,
   type AvailableHand,
@@ -167,7 +168,7 @@ const useRoomInfo = (gameId: number) => {
 
   const listeners: Pick<
     DefaultGameContextValues,
-    "onClickCell" | "onClickDice" | "onClickRoll"
+    "onClickCell" | "onClickDice" | "onClickRoll" | "onFinish"
   > = {
     onClickCell: (handName, playerId) => {
       if (!isMyTurn()) return;
@@ -197,6 +198,12 @@ const useRoomInfo = (gameId: number) => {
         type: "ROLL",
         payload: generateNextDiceSet(gameStatus.diceSet),
       });
+    },
+    onFinish: () => {
+      if (!gameStatus) return;
+      console.log("Game Finished!");
+      const ranking = getRanking(gameStatus);
+      console.log("Ranking:", ranking);
     },
   };
 

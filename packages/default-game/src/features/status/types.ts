@@ -6,7 +6,7 @@ import {
   AvailableHandSchema,
   RemainingRollSchema,
   SinglePlayerSchema,
-  TotalPlayersNumSchema,
+  PlayersNumSchema,
   UnavailableDiceSetSchema,
   DicesetSchema,
   GameStatusSchema,
@@ -14,7 +14,7 @@ import {
   PlayerIdSchema
 } from "./schemas.js";
 
-export type TotalPlayersNum = z.infer<typeof TotalPlayersNumSchema>;
+export type PlayersNum = z.infer<typeof PlayersNumSchema>;
 
 export type RemainingRoll = z.infer<typeof RemainingRollSchema>;
 

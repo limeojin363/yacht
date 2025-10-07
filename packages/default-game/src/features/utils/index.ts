@@ -2,6 +2,7 @@ import type {
   AvailableDiceEye,
   AvailableDiceSet,
   DiceSet,
+  GameStatus,
   UnavailableDiceSet,
 } from "../status";
 
@@ -35,4 +36,38 @@ export const isUnavailableDiceSet = (
 ): diceSet is UnavailableDiceSet => {
   if (diceSet.every((d) => d === null)) return true;
   return false;
+};
+
+export const isGameFinished = ({ scoreObjectList }: GameStatus) =>
+  scoreObjectList.every((player) =>
+    Object.values(player.scores).every((score) => score !== null)
+  );
+
+export const getRanking = ({ scoreObjectList}: GameStatus) => {
+  const totalPlayersNum = scoreObjectList.length;
+  const _ = scoreObjectList
+    .map((player, playerId) => ({
+      totalScore: Object.values(player.scores).reduce(
+        (acc, score) => (acc ?? 0) + (score ?? 0),
+        0
+      ) as number,
+      playerId,
+    }))
+    .sort((a, b) => b.totalScore - a.totalScore);
+
+  const ranks: number[] = Array(totalPlayersNum).fill(0);
+  let currentRank = 1;
+  let playersWithSameScore = 0;
+
+  for (let i = 0; i < _.length; i++) {
+    playersWithSameScore++;
+    ranks[_[i].playerId] = currentRank;
+
+    if (i + 1 === _.length || _[i].totalScore !== _[i + 1].totalScore) {
+      currentRank += playersWithSameScore;
+      playersWithSameScore = 0;
+    }
+  }
+
+  return ranks;
 };

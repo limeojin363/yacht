@@ -3,7 +3,7 @@ import {
   getInitialGameStatus,
   getUpdatedGameStatus,
   type AvailableHand,
-  type TotalPlayersNum,
+  type PlayersNum,
   type UserAction,
 } from "@yacht/default-game";
 import DefaultGame, {
@@ -69,19 +69,22 @@ function generateRandomColor(): HexColor {
   return hslToHex(randomHue, fixedSaturation * 100, fixedLightness * 100);
 }
 
-const useProps = (totalPlayers: TotalPlayersNum): DefaultGameContextValues => {
+const useProps = (totalPlayersNum: PlayersNum): DefaultGameContextValues => {
   const [gameStatus, setGameStatus] = useState(
-    getInitialGameStatus(totalPlayers)
+    getInitialGameStatus(totalPlayersNum)
   );
 
   const update = (userAction: UserAction) =>
-    setGameStatus((prev) => getUpdatedGameStatus(prev)(userAction));
+    setGameStatus((prev) => {
+      const next = getUpdatedGameStatus(prev)(userAction);
+      return next;
+    });
 
   const isCurrentPlayer = (playerId: number) =>
     gameStatus.currentPlayerId === playerId;
 
   const isSelectedHand = (playerId: number, handName: AvailableHand) =>
-    gameStatus.playerList[playerId].scores[handName] !== null;
+    gameStatus.scoreObjectList[playerId].scores[handName] !== null;
 
   const isUnavailableDiceSet = (diceSet: typeof gameStatus.diceSet) =>
     diceSet.some((dice) => dice === null);
@@ -90,13 +93,13 @@ const useProps = (totalPlayers: TotalPlayersNum): DefaultGameContextValues => {
 
   const playerList: Player[] = useMemo(
     () =>
-      Array.from({ length: totalPlayers }, (_, index) => ({
+      Array.from({ length: totalPlayersNum }, (_, index) => ({
         connected: 1,
         username: `Player ${index + 1}`,
         userId: index,
         playerColor: generateRandomColor(),
       })),
-    [totalPlayers]
+    [totalPlayersNum]
   );
 
   return {
@@ -121,6 +124,9 @@ const useProps = (totalPlayers: TotalPlayersNum): DefaultGameContextValues => {
         payload: generateNextDiceSet(gameStatus.diceSet),
       });
     },
+    onFinish: () => {
+      console.log("Game Finished!")
+    }
   };
 };
 

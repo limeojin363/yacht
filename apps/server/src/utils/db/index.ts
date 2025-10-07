@@ -1,9 +1,9 @@
-import { getGame } from "./getGame.js";
-import { getUser } from "./getUser.js";
+// import { getGame } from "./getGame.js";
+// import { getUser } from "./getUser.js";
 
-const FromDB = {
-  getUser,
-  getGame,
-};
+// const FromDB = {
+//   getUser,
+//   getGame,
+// };
 
-export default FromDB;
+// export default FromDB;

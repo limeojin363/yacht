@@ -9,7 +9,7 @@ const ScoreTable = () => {
   const { gameStatus } = use(DefaultGameContext);
   const playerIdList = (() => {
     const _: PlayerId[] = [];
-    for (let i = 0; i < gameStatus.totalPlayers; i++) {
+    for (let i = 0; i < gameStatus.totalPlayersNum; i++) {
       _.push(i as PlayerId);
     }
     return _;

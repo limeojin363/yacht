@@ -13,20 +13,20 @@ type ActionFunction<T extends UserActionName> = (
 ) => GameStatus;
 
 export const updateOnSelect: ActionFunction<"SELECT"> = (
-  { diceSet, playerList, currentPlayerId, totalPlayers },
+  { diceSet, scoreObjectList, currentPlayerId },
   hand
 ) => {
   if (isUnavailableDiceSet(diceSet))
     throw new Error("Dice have not been rolled yet");
-  if (playerList[currentPlayerId]["scores"][hand] !== null) {
-    console.log({ hand });
-    console.log({ playerId: currentPlayerId });
-    console.log(playerList[currentPlayerId]["scores"][hand]);
+  if (scoreObjectList[currentPlayerId]["scores"][hand] !== null) {
     throw new Error("Hand already selected");
   }
+
+  const totalPlayersNum = scoreObjectList.length;
+  
   return {
     diceSet: [null, null, null, null, null],
-    playerList: playerList.map((player, idx) => {
+    scoreObjectList: scoreObjectList.map((player, idx) => {
       if (idx !== currentPlayerId) return player;
       return {
         scores: {
@@ -35,23 +35,21 @@ export const updateOnSelect: ActionFunction<"SELECT"> = (
         },
       };
     }),
-    currentPlayerId: ((currentPlayerId + 1) % totalPlayers) as PlayerId,
+    currentPlayerId: ((currentPlayerId + 1) % totalPlayersNum) as PlayerId,
     remainingRoll: 3,
-    totalPlayers,
   };
 };
 
 export const updateOnRoll: ActionFunction<"ROLL"> = (
-  { playerList, currentPlayerId, totalPlayers, remainingRoll },
+  { scoreObjectList: scoreObjectList, currentPlayerId, remainingRoll },
   nextDiceSet
 ) => {
   if (remainingRoll <= 0) throw new Error("No remaining rolls left");
 
   return {
-    playerList,
+    scoreObjectList: scoreObjectList,
     remainingRoll: (remainingRoll - 1) as RemainingRoll,
     currentPlayerId,
-    totalPlayers,
     diceSet: nextDiceSet,
   };
 };
@@ -59,16 +57,15 @@ export const updateOnRoll: ActionFunction<"ROLL"> = (
 export const updateOnToggleDiceHolding: ActionFunction<
   "TOGGLE_DICE_HOLDING"
 > = (
-  { diceSet, playerList, currentPlayerId, totalPlayers, remainingRoll },
+  { diceSet, scoreObjectList: scoreObjectList, currentPlayerId, remainingRoll },
   index
 ) => {
   if (isUnavailableDiceSet(diceSet))
     throw new Error("Dice have not been rolled yet");
 
   return {
-    playerList,
+    scoreObjectList: scoreObjectList,
     currentPlayerId,
-    totalPlayers,
     remainingRoll,
     diceSet: diceSet.map((dice, idx) => {
       if (idx !== index) return dice;

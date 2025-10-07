@@ -1,5 +1,5 @@
 
-// export type TotalPlayers = 2 | 3 | 4;
+// export type totalPlayersNum = 2 | 3 | 4;
 
 // export type PlayerIdType = 0 | 1 | 2 | 3;
 
@@ -42,7 +42,7 @@
 // export type Dices = AvailableDices | UnavailableDices;
 
 // export type GameStatus = {
-//   totalPlayers: TotalPlayers;
+//   totalPlayersNum: totalPlayersNum;
 //   playerList: SinglePlayerType[];
 //   dices: Dices;
 //   currentPlayerId: PlayerIdType;
