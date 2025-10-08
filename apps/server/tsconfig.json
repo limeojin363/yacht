@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
-    "target": "es2020",
-    "module": "commonjs",
+    "target": "ES2022", // Or a recent ES version supported by your Node.js runtime
+    "module": "NodeNext", // Or "NodeNext" for Node.js 16+ for better interoperability
+    "moduleResolution": "NodeNext", // Or "Node16" for Node.js 16+
     "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,

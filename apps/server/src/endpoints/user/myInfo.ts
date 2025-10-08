@@ -4,7 +4,7 @@ import {
   GetMyInfoResBodySchema,
 } from "@yacht/communications";
 import { defaultEndpointsFactory } from "express-zod-api";
-import { PrismaClient } from ".prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const myInfoEndpoint = defaultEndpointsFactory.build({
   method: "get",

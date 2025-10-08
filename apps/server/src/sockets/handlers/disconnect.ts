@@ -1,6 +1,6 @@
-import { type ConnectionInfo } from ".";
-import { getUser } from "../../auths/middleware";
-import { PrismaClient } from ".prisma/client";
+import { type ConnectionInfo } from "./index.js";
+import { getUser } from "../../auths/middleware.js";
+import { PrismaClient } from "@prisma/client";
 
 const disconnectHandler =
   ({ gameId, socket, userId }: ConnectionInfo) =>

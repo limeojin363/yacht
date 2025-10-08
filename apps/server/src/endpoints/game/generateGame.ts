@@ -1,12 +1,13 @@
 import { defaultEndpointsFactory } from "express-zod-api";
-import { userCheckMiddleWare } from "../../auths/middleware";
+import { userCheckMiddleWare } from "../../auths/middleware.js";
 import {
   GenerateGameReqBodySchema,
   GenerateGameResBodySchema,
   ProgressTypeSchema,
 } from "@yacht/communications";
 import { GameStatusSchema, getInitialGameStatus } from "@yacht/default-game";
-import { PrismaClient } from ".prisma/client";
+import { PrismaClient } from "@prisma/client";
+import z from "zod";
 
 export const generateGameEndpoint = defaultEndpointsFactory
   .addMiddleware(userCheckMiddleWare)

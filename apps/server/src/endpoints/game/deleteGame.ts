@@ -1,10 +1,10 @@
 import { defaultEndpointsFactory } from "express-zod-api";
-import { adminCheckMiddleWare } from "../../auths/middleware";
+import { adminCheckMiddleWare } from "../../auths/middleware.js";
 import {
   DeleteGameReqBodySchema,
   DeleteGameResBodySchema,
 } from "@yacht/communications";
-import { PrismaClient } from ".prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 export const deleteGameEndpoint = defaultEndpointsFactory
   .addMiddleware(adminCheckMiddleWare)

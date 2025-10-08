@@ -1,11 +1,11 @@
 import { defaultEndpointsFactory } from "express-zod-api";
-import { userCheckMiddleWare } from "../../auths/middleware";
+import { userCheckMiddleWare } from "../../auths/middleware.js";
 import z from "zod";
 import {
   GetGameListResBodySchema,
   type GetGameListResBody,
 } from "@yacht/communications";
-import { PrismaClient } from ".prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 export const gameListEndpoint = defaultEndpointsFactory
   .addMiddleware(userCheckMiddleWare)
@@ -14,6 +14,7 @@ export const gameListEndpoint = defaultEndpointsFactory
     output: GetGameListResBodySchema,
     method: "get",
     handler: async () => {
+      console.log(123)
       const prismaClient = new PrismaClient();
       const gamesFromDB = await prismaClient.game.findMany({
         where: {

@@ -1,5 +1,5 @@
-import { getGameInfo, type ConnectionInfo } from ".";
-import { PrismaClient } from ".prisma/client";
+import { getGameInfo, type ConnectionInfo } from "./index.js";
+import { PrismaClient } from "@prisma/client";
 
 const exitHandler =
   ({ userId, gameId, socket }: ConnectionInfo) =>

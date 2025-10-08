@@ -4,7 +4,7 @@ import z from "zod";
 import jwt from "jsonwebtoken";
 import { AuthorityLevelSchema } from "@yacht/communications";
 import { PlayerIdSchema } from "@yacht/default-game";
-import { PrismaClient } from ".prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const getAuthorizationFromRequest = (request: {
   headers: { authorization?: string };

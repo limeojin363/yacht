@@ -3,9 +3,9 @@ import {
   SignupResBodySchema,
 } from "@yacht/communications";
 import { defaultEndpointsFactory } from "express-zod-api";
-import { createHashedPassword, createSalt } from "../../auths/hash";
-import { generateAccessToken, generateRefreshToken } from "../../auths/token";
-import { PrismaClient } from ".prisma/client";
+import { createHashedPassword, createSalt } from "../../auths/hash.js";
+import { generateAccessToken, generateRefreshToken } from "../../auths/token.js";
+import { PrismaClient } from "@prisma/client";
 
 const signupEndpoint = defaultEndpointsFactory.build({
   method: "post",

@@ -1,14 +1,14 @@
 import type { Socket } from "socket.io";
-import { getUser, getUserId } from "../../auths/middleware";
+import { getUser, getUserId } from "../../auths/middleware.js";
 import z from "zod";
 import { ProgressTypeSchema, type Player } from "@yacht/communications";
 import { GameStatusSchema, type PlayerId } from "@yacht/default-game";
-import generatePlayerColor from "../../utils/color";
-import exitHandler from "./exit";
-import gameInteractionHandler from "./game-interaction";
-import gameStartHandler from "./game-start";
-import disconnectHandler from "./disconnect";
-import { PrismaClient } from ".prisma/client";
+import generatePlayerColor from "../../utils/color.js";
+import exitHandler from "./exit.js";
+import gameInteractionHandler from "./game-interaction.js";
+import gameStartHandler from "./game-start.js";
+import disconnectHandler from "./disconnect.js";
+import { PrismaClient } from "@prisma/client";
 
 export const getGameInfo = async (gameId: number) => {
   const prismaClient = new PrismaClient();

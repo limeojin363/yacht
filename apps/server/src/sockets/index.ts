@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import onConnection from "./handlers";
+import onConnection from "./handlers/index.js";
 
 export const registerSocket = (server: Express.Application) => {
   const io = new Server(server, {

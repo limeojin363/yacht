@@ -2,25 +2,31 @@ import { createContext, use, useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Login } from "../apis/services/user/login";
 import { Signup } from "../apis/services/user/signup";
+import type { LoginResBody, SignupResBody } from "@yacht/communications";
+
+type Credentials = { username: string; password: string };
 
 type UserInfo = {
   id: number;
   username: string;
-  authority_level: 0 | 1 | 2 | 3;
-  g_playerId: number | null;
-  g_id: number | null;
+  authorityLevel: 0 | 2 | 1;
+  gamePlayerId: number | null;
+  gameId: number | null;
 };
-
-type Credentials = { username: string; password: string };
 
 export type AuthInfo = {
   user: UserInfo | null;
-  login: (credentials: Credentials) => void;
-  signup: (credentials: Credentials) => void;
-  logout: () => void;
+  login: (credentials: Credentials) => Promise<LoginResBody | void>;
+  signup: (credentials: Credentials) => Promise<SignupResBody | void>;
+  logout: () => Promise<void>;
 };
 
-const AuthContext = createContext<AuthInfo | null>(null);
+const AuthContext = createContext<AuthInfo>({
+  user: null,
+  login: async () => {},
+  signup: async () => {},
+  logout: async () => {},
+});
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserInfo | null>(null);
@@ -75,7 +81,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     onSuccess: () => {},
   });
 
-  const value = { user, login, logout, signup };
+  const value: AuthInfo = { user, login, logout, signup };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
