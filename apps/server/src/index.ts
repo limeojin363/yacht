@@ -43,9 +43,6 @@ const routing: Routing = {
 };
 
 const config = createConfig({
-  http: {
-    listen: 3000,
-  },
   cors: ({ defaultHeaders }) => {
     defaultHeaders["Access-Control-Allow-Origin"] = "*";
     defaultHeaders["Access-Control-Allow-Methods"] =
@@ -64,9 +61,8 @@ dotenv.config();
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-
-  const httpServer = http.createServer(app);
-  registerSocket(httpServer);
+  const expressServer = app.listen(3000);
+  registerSocket(expressServer);
 
   console.log("Server is running on http://localhost:3000");
 })();

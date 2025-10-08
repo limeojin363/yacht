@@ -7,9 +7,11 @@ import PlayerColumn from "./PlayerColumn";
 
 const ScoreTable = () => {
   const { gameStatus } = use(DefaultGameContext);
+
+  const totalPlayersNum = gameStatus.scoreObjectList.length;
   const playerIdList = (() => {
     const _: PlayerId[] = [];
-    for (let i = 0; i < gameStatus.totalPlayersNum; i++) {
+    for (let i = 0; i < totalPlayersNum; i++) {
       _.push(i as PlayerId);
     }
     return _;

@@ -22,6 +22,8 @@ const gameInteractionHandler =
     }
 
     try {
+      const prismaClient = new PrismaClient();
+
       const user = await getUser(userId);
       const game = await getGameInfo(gameId);
 
@@ -31,9 +33,8 @@ const gameInteractionHandler =
 
       if (user.gameId !== gameId) throw new Error("User is not in this game");
 
+      socket.emit("game-interaction", action);
       socket.to(String(gameId)).emit("game-interaction", action);
-
-      const prismaClient = new PrismaClient();
 
       const nextGameStatus = getUpdatedGameStatus(game.gameStatus)(action);
       await prismaClient.game.update({

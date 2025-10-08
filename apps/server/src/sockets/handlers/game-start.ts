@@ -1,6 +1,13 @@
-import { getGameInfo, type ConnectionInfo } from "./index.js";
+import { getGameInfo, getPlayerList, type ConnectionInfo } from "./index.js";
 import { getUser } from "../../auths/middleware.js";
 import { PrismaClient } from "@prisma/client";
+import type { Player } from "@yacht/communications";
+
+const isAvailablePlayerList = (
+  playerList: (Player | null)[]
+): playerList is Player[] => {
+  return playerList.every((p) => p !== null);
+};
 
 const gameStartHandler =
   ({ gameId, socket, userId }: ConnectionInfo) =>
@@ -22,6 +29,11 @@ const gameStartHandler =
       if (game.progressType !== 0) {
         throw new Error("Game is already in progress");
       }
+
+      const playerList = await getPlayerList(gameId);
+
+      if (!isAvailablePlayerList(playerList))
+        throw new Error("playerList에 null이 포함되어 있음");
 
       const prismaClient = new PrismaClient();
       await prismaClient.game.update({

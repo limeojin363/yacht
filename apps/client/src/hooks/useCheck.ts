@@ -19,11 +19,9 @@ const useCheck = () => {
 
       const res = await GetMyInfo();
 
-      console.log(await res.json())
       const {
         data: { gameId },
       } = await res.json();
-      console.log({gameId})
 
       if (gameId) {
         navigate({

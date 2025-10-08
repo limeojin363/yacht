@@ -2,7 +2,11 @@ import type { Socket } from "socket.io";
 import { getUser, getUserId } from "../../auths/middleware.js";
 import z from "zod";
 import { ProgressTypeSchema, type Player } from "@yacht/communications";
-import { GameStatusSchema, type PlayerId } from "@yacht/default-game";
+import {
+  GameStatusSchema,
+  PlayersNumSchema,
+  type PlayerId,
+} from "@yacht/default-game";
 import generatePlayerColor from "../../utils/color.js";
 import exitHandler from "./exit.js";
 import gameInteractionHandler from "./game-interaction.js";
@@ -24,6 +28,7 @@ export const getGameInfo = async (gameId: number) => {
   const gameToReturn = {
     id: gameRow.id,
     name: gameRow.name,
+    gameStatus,
     progressType: gameRow.progressType,
     totalPlayersNum: gameStatus.scoreObjectList.length,
   };
@@ -109,6 +114,7 @@ const _ = {
       await prismaClient.user.update({
         where: { id: user.id },
         data: {
+          gameId,
           gamePlayerId,
           gamePlayerColor,
           gameConnected,
@@ -134,33 +140,14 @@ const _ = {
         data: { gameConnected },
       });
 
-      socket.to(String(gameId)).emit("player-reconnected", user.gamePlayerId);
+      socket.to(String(gameId)).emit("player-reconnected", { userId });
     }
 
     // 본인 소켓을 등록
     socket.join(String(gameId));
 
     const game = await getGameInfo(gameId);
-    const totalPlayersNum = game.gameStatus.scoreObjectList.length;
-
-    const users = await prismaClient.user.findMany({
-      where: { gameId: user.gameId },
-    });
-
-    const playerList: (null | Player)[] = Array.from(
-      { length: totalPlayersNum },
-      () => null
-    );
-
-    for (const u of users) {
-      playerList[u.gamePlayerId!] = {
-        username: u.name,
-        userId: u.id,
-        playerColor: u.gamePlayerColor!,
-        connected: u.gameConnected!,
-        playerId: u.gamePlayerId as PlayerId,
-      };
-    }
+    const playerList = await getPlayerList(gameId);
 
     // 현재 방 정보 전송
     socket.emit("current-room-info", {
@@ -169,6 +156,34 @@ const _ = {
       progressType: game.progressType,
     });
   },
+};
+
+export const getPlayerList = async (gameId: number) => {
+  const prismaClient = new PrismaClient();
+
+  const game = await getGameInfo(gameId);
+  const totalPlayersNum = game.gameStatus.scoreObjectList.length;
+
+  const users = await prismaClient.user.findMany({
+    where: { gameId },
+  });
+
+  const playerList: (null | Player)[] = Array.from(
+    { length: totalPlayersNum },
+    () => null
+  );
+
+  for (const u of users) {
+    playerList[u.gamePlayerId!] = {
+      username: u.name,
+      userId: u.id,
+      playerColor: u.gamePlayerColor!,
+      connected: u.gameConnected!,
+      playerId: u.gamePlayerId as PlayerId,
+    };
+  }
+
+  return playerList;
 };
 
 const generatePlayerId = async (gameId: number) => {
@@ -204,6 +219,7 @@ const SchemaOf = {
     name: z.string(),
     gameStatus: GameStatusSchema,
     progressType: ProgressTypeSchema,
+    totalPlayersNum: PlayersNumSchema,
   }),
 };
 

@@ -6,9 +6,10 @@ import ScoreCellView, { type ScoreCellViewProps } from "../../ScoreCellView";
 const useCellProps = (playerId: PlayerId): ScoreCellViewProps => {
   const { gameStatus, playerList } = use(DefaultGameContext);
 
-  const totalScore = Object.values(
-    gameStatus.playerList[playerId].scores
-  ).reduce((acc, score) => (acc ?? 0) + (score ?? 0), 0) as number;
+  const totalScore = Object.values(gameStatus.scoreObjectList[playerId]).reduce(
+    (acc, score) => (acc ?? 0) + (score ?? 0),
+    0
+  ) as number;
 
   return {
     playerColor: playerList[playerId].playerColor,

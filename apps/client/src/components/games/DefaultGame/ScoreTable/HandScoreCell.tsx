@@ -21,7 +21,7 @@ const useCellProps = (
   const playerColor = playerList[playerId].playerColor;
 
   const isCurrentPlayer = gameStatus.currentPlayerId === playerId;
-  const currentScore = gameStatus.playerList[playerId].scores[hand];
+  const currentScore = gameStatus.scoreObjectList[playerId][hand];
   const viewStatus = (() => {
     // 이미 선택된 핸드
     if (currentScore !== null) return "SELECTED";

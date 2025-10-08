@@ -7,6 +7,7 @@ import {
   isUnavailableDiceSet,
   type AvailableHand,
   type GameStatus,
+  type PlayerId,
 } from "@yacht/default-game";
 import { useEffect, useMemo, useState } from "react";
 import { io } from "socket.io-client";
@@ -36,6 +37,7 @@ export type Player = {
   userId: number;
   playerColor: `#${string}`;
   connected: number;
+  playerId: PlayerId;
 };
 
 const useRoomInfo = (gameId: number) => {
@@ -45,7 +47,7 @@ const useRoomInfo = (gameId: number) => {
   const [currentRoomInfo, setCurrentRoomInfo] = useState<{
     playerList: (null | Player)[];
     progressType: number;
-    gameObject: GameStatus;
+    gameStatus: GameStatus;
   }>();
 
   useEffect(() => {
@@ -60,23 +62,18 @@ const useRoomInfo = (gameId: number) => {
       setCurrentRoomInfo(currentRoomInfoData);
     });
 
-    socket.on("new-player-entered", (newUserData) => {
-      console.log("new-player-entered", newUserData);
+    socket.on("new-player", (newPlayer: Player) => {
+      console.log("new-player", newPlayer);
       setCurrentRoomInfo((prev) => {
         if (!prev) return;
         const nextPlayerList = [...prev.playerList];
-        nextPlayerList[newUserData.g_playerId] = {
-          username: newUserData.username,
-          userId: newUserData.userId,
-          playerColor: newUserData.g_playerColor,
-          connected: newUserData.g_connected,
-        };
+        nextPlayerList[newPlayer.playerId] = newPlayer;
         return { ...prev, playerList: nextPlayerList };
       });
     });
 
-    socket.on("player-exited", (userId) => {
-      console.log("player-exited", userId);
+    socket.on("player-exited", ({ userId }) => {
+      console.log("player-exited", { userId });
       setCurrentRoomInfo((prev) => {
         if (!prev) return;
         const nextPlayerList = [...prev.playerList];
@@ -89,8 +86,8 @@ const useRoomInfo = (gameId: number) => {
       });
     });
 
-    socket.on("player-disconnected", (userId) => {
-      console.log("player-disconnected", userId);
+    socket.on("player-disconnected", ({ userId }) => {
+      console.log("player-disconnected", { userId });
       setCurrentRoomInfo((prev) => {
         if (!prev) return;
         console.log(prev);
@@ -104,8 +101,8 @@ const useRoomInfo = (gameId: number) => {
       });
     });
 
-    socket.on("player-reconnected", (userId) => {
-      console.log("player-reconnected", userId);
+    socket.on("player-reconnected", ({ userId }) => {
+      console.log("player-reconnected", { userId });
       setCurrentRoomInfo((prev) => {
         if (!prev) return;
         return {
@@ -132,7 +129,7 @@ const useRoomInfo = (gameId: number) => {
         if (!prev) return;
         return {
           ...prev,
-          gameObject: getUpdatedGameStatus(prev.gameObject)({ type, payload }),
+          gameStatus: getUpdatedGameStatus(prev.gameStatus)({ type, payload }),
         };
       });
     });
@@ -152,7 +149,7 @@ const useRoomInfo = (gameId: number) => {
     socket.emit("game-start");
   };
 
-  const gameStatus = currentRoomInfo?.gameObject;
+  const gameStatus = currentRoomInfo?.gameStatus;
 
   const isMyTurn = () => {
     if (!gameStatus) return false;
@@ -161,7 +158,7 @@ const useRoomInfo = (gameId: number) => {
     return gameStatus.currentPlayerId === myPlayerId;
   };
 
-  const isSelectedHand = (playerId: number, handName: AvailableHand) => 
+  const isSelectedHand = (playerId: number, handName: AvailableHand) =>
     !!gameStatus && gameStatus.scoreObjectList[playerId][handName] !== null;
 
   const isNoMoreRoll = (remainingRoll: number) => remainingRoll <= 0;
@@ -191,6 +188,7 @@ const useRoomInfo = (gameId: number) => {
       });
     },
     onClickRoll: () => {
+      console.log(gameStatus?.currentPlayerId, user?.gamePlayerId);
       if (!isMyTurn()) return;
       if (!gameStatus) return;
       if (isNoMoreRoll(gameStatus.remainingRoll)) return;
@@ -220,7 +218,7 @@ const WaitingRoom = ({ gameId }: { gameId: number }) => {
   const isConnected = !!currentRoomInfo;
   if (!isConnected) return <div>Loading...</div>;
 
-  const { playerList, progressType, gameObject } = currentRoomInfo;
+  const { playerList, progressType, gameStatus: gameObject } = currentRoomInfo;
 
   if (progressType === 0)
     return (
@@ -242,10 +240,10 @@ const WaitingRoom = ({ gameId }: { gameId: number }) => {
       </S.Root>
     );
 
-  if (!isAvailablePlayerList(playerList))
-    throw new Error("playerList에 null이 포함되어 있음");
-
   const isMyTurn = gameObject.currentPlayerId === currentUser.gamePlayerId;
+
+  if (!isAvailablePlayerList(playerList))
+    return <div>playerList에 null이 포함되어 있음</div>;
 
   if (progressType === 1)
     return (
@@ -260,12 +258,6 @@ const WaitingRoom = ({ gameId }: { gameId: number }) => {
   return null;
 };
 
-const isAvailablePlayerList = (
-  playerList: (Player | null)[]
-): playerList is Player[] => {
-  return playerList.every((p) => p !== null);
-};
-
 const S = {
   Root: styled.div`
     display: flex;
@@ -276,3 +268,9 @@ const S = {
 };
 
 export default WaitingRoom;
+
+const isAvailablePlayerList = (
+  playerList: (Player | null)[]
+): playerList is Player[] => {
+  return playerList.every((p) => p !== null);
+};

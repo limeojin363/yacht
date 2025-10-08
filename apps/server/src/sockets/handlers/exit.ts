@@ -6,21 +6,20 @@ const exitHandler =
   async () => {
     console.log("exit received", { userId, gameId });
     try {
-        const prismaClient = new PrismaClient();
+      const prismaClient = new PrismaClient();
 
       const { progressType } = await getGameInfo(gameId);
 
       if (progressType === 2) throw new Error("Game has already ended");
 
       socket.leave(String(gameId));
+
       if (progressType === 1) {
         socket.to(String(gameId)).emit("player-exited", { userId });
-        socket
-          .to(String(gameId))
-          .emit("game-interrupted", {
-            reason: "A player has exited during the game.",
-          });
-            socket.to(String(gameId)).disconnectSockets();
+        socket.to(String(gameId)).emit("game-interrupted", {
+          reason: "A player has exited during the game.",
+        });
+        socket.to(String(gameId)).disconnectSockets();
         socket.disconnect();
 
         await prismaClient.game.delete({
@@ -37,10 +36,23 @@ const exitHandler =
           },
         });
       }
+
+      if (progressType === 0) {
+        socket.to(String(gameId)).emit("player-exited", { userId });
+        await prismaClient.user.update({
+          where: { id: userId },
+          data: {
+            gameId: null,
+            gamePlayerId: null,
+            gamePlayerColor: null,
+            gameConnected: 0,
+          },
+        });
+      }
     } catch (error) {
-        console.log(error);
-        socket.leave(String(gameId));
-        socket.disconnect();
+      console.log(error);
+      socket.leave(String(gameId));
+      socket.disconnect();
     }
   };
 
