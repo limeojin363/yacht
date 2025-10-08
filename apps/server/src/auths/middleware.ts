@@ -71,7 +71,7 @@ const SchemaOf = {
     salt: z.string(),
     gameId: z.number().nullable(),
     gameConnected: z.number().nullable(),
-    gamePlayerId: PlayerIdSchema,
+    gamePlayerId: PlayerIdSchema.nullable(),
     gamePlayerColor: z.string().nullable(),
   }),
 };

@@ -5,7 +5,9 @@ import {
   type EnterGameResBody,
 } from "@yacht/communications";
 
-type EnterGameType = (b: EnterGameReqBody) => ResponsePromise<EnterGameResBody>;
+type EnterGameType = (
+  b: EnterGameReqBody
+) => ResponsePromise<{ data: EnterGameResBody }>;
 
 export const EnterTheGame: EnterGameType = (body) =>
   authenticatedApiClient.post("game/enter", { json: body });

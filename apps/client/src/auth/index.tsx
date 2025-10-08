@@ -16,8 +16,8 @@ type UserInfo = {
 
 export type AuthInfo = {
   user: UserInfo | null;
-  login: (credentials: Credentials) => Promise<LoginResBody | void>;
-  signup: (credentials: Credentials) => Promise<SignupResBody | void>;
+  login: (credentials: Credentials) => Promise<{ data: LoginResBody } | void>;
+  signup: (credentials: Credentials) => Promise<{ data: SignupResBody } | void>;
   logout: () => Promise<void>;
 };
 
@@ -43,12 +43,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const res = await Login({ username, password });
       return res.json();
     },
-    onSuccess: ({ user, accessToken, refreshToken }) => {
+    onSuccess: ({ data }) => {
       console.log("Login Success!");
-      setUser(user);
-      localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("accessToken", JSON.stringify(accessToken));
-      localStorage.setItem("refreshToken", JSON.stringify(refreshToken));
+      setUser(data.user);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("accessToken", JSON.stringify(data.accessToken));
+      localStorage.setItem("refreshToken", JSON.stringify(data.refreshToken));
       window.location.href = "/";
     },
     onError: (error) => {
@@ -61,12 +61,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const res = await Signup({ username, password });
       return res.json();
     },
-    onSuccess: ({ user, accessToken, refreshToken }) => {
+    onSuccess: ({ data }) => {
       console.log("Signup Success!");
-      setUser(user);
-      localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("accessToken", JSON.stringify(accessToken));
-      localStorage.setItem("refreshToken", JSON.stringify(refreshToken));
+      setUser(data.user);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("accessToken", JSON.stringify(data.accessToken));
+      localStorage.setItem("refreshToken", JSON.stringify(data.refreshToken));
       window.location.href = "/";
     },
     onError: (error) => {

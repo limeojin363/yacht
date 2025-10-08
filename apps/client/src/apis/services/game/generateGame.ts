@@ -7,7 +7,7 @@ import {
 
 type GenerateGameType = (
   b: GenerateGameReqBody
-) => ResponsePromise<GenerateGameResBody>;
+) => ResponsePromise<{ data: GenerateGameResBody }>;
 
 export const GenerateGame: GenerateGameType = (body) =>
-  authenticatedApiClient.post("game/generate", { json: body });
+  authenticatedApiClient.post("game", { json: body });

@@ -10,11 +10,8 @@ const useGameList = () => {
     queryFn: async () => {
       try {
         const res = await GetGameList();
-        const data = await res.json();
-        if (data.games.length > 0 && !data.games[0].infoForAdmin) {
-          throw new Error("No infoForAdmin in game");
-        }
-        return data;
+        const json = await res.json();
+        return json.data;
       } catch (error) {
         console.log(error);
         return null;
@@ -31,8 +28,8 @@ const useUserList = () => {
     queryKey: ["userList"],
     queryFn: async () => {
       const res = await GetUserList();
-      const data = await res.json();
-      return data;
+      const json = await res.json();
+      return json.data;
     },
   });
 

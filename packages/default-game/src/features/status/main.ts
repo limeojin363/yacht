@@ -17,20 +17,18 @@ export const getInitialGameStatus = (
   totalPlayersNum: PlayersNum
 ): GameStatus => {
   const getPlayerInitialStatus = (): SinglePlayer => ({
-    scores: {
-      NUMBERS_1: null,
-      NUMBERS_2: null,
-      NUMBERS_3: null,
-      NUMBERS_4: null,
-      NUMBERS_5: null,
-      NUMBERS_6: null,
-      TRIPLE: null,
-      FOURCARD: null,
-      FULLHOUSE: null,
-      STRAIGHT: null,
-      YACHT: null,
-      CHOICE: null,
-    },
+    NUMBERS_1: null,
+    NUMBERS_2: null,
+    NUMBERS_3: null,
+    NUMBERS_4: null,
+    NUMBERS_5: null,
+    NUMBERS_6: null,
+    TRIPLE: null,
+    FOURCARD: null,
+    FULLHOUSE: null,
+    STRAIGHT: null,
+    YACHT: null,
+    CHOICE: null,
   });
 
   const getDicesInitialStatus = (): UnavailableDiceSet => [
@@ -74,8 +72,8 @@ export const isGameStatusEqual = (a: GameStatus, b: GameStatus) => {
   const isRemainingRerollOk = a.remainingRoll === b.remainingRoll;
   const arePlayersOk = HAND_LIST.every(
     (hand) =>
-      a.scoreObjectList[0].scores[hand] === b.scoreObjectList[0].scores[hand] &&
-      a.scoreObjectList[1].scores[hand] === b.scoreObjectList[1].scores[hand]
+      a.scoreObjectList[0][hand] === b.scoreObjectList[0][hand] &&
+      a.scoreObjectList[1][hand] === b.scoreObjectList[1][hand]
   );
 
   return areDicesOk && isCurrentPlayerOk && isRemainingRerollOk && arePlayersOk;

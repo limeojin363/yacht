@@ -8,7 +8,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const router = createRouter({
   routeTree,
   context: {
-    auth: { user: null, login: () => {}, logout: () => {}, signup: () => {} },
+    auth: {
+      user: null,
+      login: async () => {},
+      logout: async () => {},
+      signup: async () => {},
+    },
   },
 });
 
@@ -23,7 +28,7 @@ const Inner = () => {
   return <RouterProvider router={router} context={{ auth }} />;
 };
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 const rootElement = document.getElementById("root")!;
 if (!rootElement.innerHTML) {

@@ -15,19 +15,26 @@ const useCheck = () => {
     queryKey: ["check"],
     queryFn: async () => {
       if (!user) return null;
-    if (regexp.test(pathname)) return null;
+      if (regexp.test(pathname)) return null;
 
       const res = await GetMyInfo();
-      const { g_id } = await res.json();
-      if (g_id) {
+
+      console.log(await res.json())
+      const {
+        data: { gameId },
+      } = await res.json();
+      console.log({gameId})
+
+      if (gameId) {
         navigate({
           to: "/multiple-device/default-game/$gameId",
-          params: { gameId: String(g_id) },
+          params: { gameId: String(gameId) },
         });
         triggerToast("참여 중인 게임으로 이동합니다.");
       }
       return true;
     },
+    
   });
 
   useEffect(() => {

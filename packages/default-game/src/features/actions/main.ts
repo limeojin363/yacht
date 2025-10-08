@@ -18,21 +18,19 @@ export const updateOnSelect: ActionFunction<"SELECT"> = (
 ) => {
   if (isUnavailableDiceSet(diceSet))
     throw new Error("Dice have not been rolled yet");
-  if (scoreObjectList[currentPlayerId]["scores"][hand] !== null) {
+  if (scoreObjectList[currentPlayerId][hand] !== null) {
     throw new Error("Hand already selected");
   }
 
   const totalPlayersNum = scoreObjectList.length;
-  
+
   return {
     diceSet: [null, null, null, null, null],
-    scoreObjectList: scoreObjectList.map((player, idx) => {
-      if (idx !== currentPlayerId) return player;
+    scoreObjectList: scoreObjectList.map((prev, idx) => {
+      if (idx !== currentPlayerId) return prev;
       return {
-        scores: {
-          ...player.scores,
-          [hand]: GetScoreOf[hand](getDiceValues(diceSet)),
-        },
+        ...prev,
+        [hand]: GetScoreOf[hand](getDiceValues(diceSet)),
       };
     }),
     currentPlayerId: ((currentPlayerId + 1) % totalPlayersNum) as PlayerId,

@@ -157,12 +157,12 @@ const useRoomInfo = (gameId: number) => {
   const isMyTurn = () => {
     if (!gameStatus) return false;
     if (!user) return false;
-    const myPlayerId = user.g_playerId;
+    const myPlayerId = user.gamePlayerId;
     return gameStatus.currentPlayerId === myPlayerId;
   };
 
-  const isSelectedHand = (playerId: number, handName: AvailableHand) =>
-    gameStatus?.playerList[playerId].scores[handName] !== null;
+  const isSelectedHand = (playerId: number, handName: AvailableHand) => 
+    !!gameStatus && gameStatus.scoreObjectList[playerId][handName] !== null;
 
   const isNoMoreRoll = (remainingRoll: number) => remainingRoll <= 0;
 
@@ -213,7 +213,7 @@ const useRoomInfo = (gameId: number) => {
 const WaitingRoom = ({ gameId }: { gameId: number }) => {
   const { currentRoomInfo, exit, start, listeners } = useRoomInfo(gameId);
   const { user: currentUser } = useAuth();
-  const isAdmin = currentUser?.authority_level === 0;
+  const isAdmin = currentUser?.authorityLevel === 0;
 
   if (!currentUser) return <div>로그인 후 이용해주세요</div>;
 
@@ -245,7 +245,7 @@ const WaitingRoom = ({ gameId }: { gameId: number }) => {
   if (!isAvailablePlayerList(playerList))
     throw new Error("playerList에 null이 포함되어 있음");
 
-  const isMyTurn = gameObject.currentPlayerId === currentUser.g_playerId;
+  const isMyTurn = gameObject.currentPlayerId === currentUser.gamePlayerId;
 
   if (progressType === 1)
     return (

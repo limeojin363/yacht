@@ -39,15 +39,15 @@ export const isUnavailableDiceSet = (
 };
 
 export const isGameFinished = ({ scoreObjectList }: GameStatus) =>
-  scoreObjectList.every((player) =>
-    Object.values(player.scores).every((score) => score !== null)
+  scoreObjectList.every((scores) =>
+    Object.values(scores).every((score) => score !== null)
   );
 
 export const getRanking = ({ scoreObjectList}: GameStatus) => {
   const totalPlayersNum = scoreObjectList.length;
   const _ = scoreObjectList
-    .map((player, playerId) => ({
-      totalScore: Object.values(player.scores).reduce(
+    .map((scores, playerId) => ({
+      totalScore: Object.values(scores).reduce(
         (acc, score) => (acc ?? 0) + (score ?? 0),
         0
       ) as number,

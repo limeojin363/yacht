@@ -15,7 +15,7 @@ const setAuthorizationHeader: BeforeRequestHook = (request) => {
   request.headers.set("Authorization", `Bearer ${parsedAccessToken}`);
 };
 
-const DEFAULT_RETRY_LIMIT = 3;
+const DEFAULT_RETRY_LIMIT = 1;
 
 const handleTokenRefresh: BeforeRetryHook = async ({ error, retryCount }) => {
   const httpError = error as HTTPError;
@@ -41,10 +41,13 @@ const handleTokenRefresh: BeforeRetryHook = async ({ error, retryCount }) => {
     }
 
     const res = await Refresh({ refreshToken });
-    const data = await res.json();
+    const json = await res.json();
 
-    localStorage.setItem("accessToken", JSON.stringify(data.accessToken));
-    localStorage.setItem("refreshToken", JSON.stringify(data.refreshToken));
+    localStorage.setItem("accessToken", JSON.stringify(json.data.accessToken));
+    localStorage.setItem(
+      "refreshToken",
+      JSON.stringify(json.data.refreshToken)
+    );
   } catch (error) {
     window.location.href = "/login";
     console.error("Token refresh 실패, 로그아웃", error);
@@ -55,16 +58,24 @@ const handleTokenRefresh: BeforeRetryHook = async ({ error, retryCount }) => {
 
 export const baseApiClient = ky.create({
   prefixUrl: HOST,
+  headers: {
+    "Access-Control-Request-Headers": "Authorization",
+    "Access-Control-Request-Method": "GET, POST, PUT, DELETE, OPTIONS",
+  },
 });
 
-const authenticatedApiClient = ky.extend({
+const authenticatedApiClient = ky.create({
   prefixUrl: HOST,
   timeout: 10000,
-  retry: {
-    limit: DEFAULT_RETRY_LIMIT,
-    backoffLimit: 1000,
-    methods: ["get", "post", "put", "delete"],
-    statusCodes: [401, 408, 413, 429, 500, 502, 503, 504],
+  // retry: {
+  //   limit: DEFAULT_RETRY_LIMIT,
+  //   backoffLimit: 1000,
+  //   methods: ["get", "post", "put", "delete"],
+  //   statusCodes: [401, 408, 413, 429, 500, 502, 503, 504],
+  // },
+  headers: {
+    "Access-Control-Request-Headers": "Authorization",
+    "Access-Control-Request-Method": "GET, POST, PUT, DELETE, OPTIONS",
   },
   hooks: {
     beforeRetry: [handleTokenRefresh],

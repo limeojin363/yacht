@@ -1,6 +1,10 @@
 import z from "zod";
 
-export const PlayersNumSchema = z.union([z.literal(2), z.literal(3), z.literal(4)]);
+export const PlayersNumSchema = z.union([
+  z.literal(2),
+  z.literal(3),
+  z.literal(4),
+]);
 
 export const RemainingRollSchema = z.union([
   z.literal(0),
@@ -38,9 +42,10 @@ export const AvailableHandSchema = z.union([
   z.literal("CHOICE"),
 ]);
 
-export const SinglePlayerSchema = z.object({
-  scores: z.record(AvailableHandSchema, z.number().nullable()),
-});
+export const SinglePlayerSchema = z.record(
+  AvailableHandSchema,
+  z.number().nullable()
+);
 
 export const AvailableDiceSetSchema = z.tuple([
   AvailableDiceObjectSchema,
@@ -58,7 +63,10 @@ export const UnavailableDiceSetSchema = z.tuple([
   z.null(),
 ]);
 
-export const DicesetSchema = z.union([AvailableDiceSetSchema, UnavailableDiceSetSchema]);
+export const DicesetSchema = z.union([
+  AvailableDiceSetSchema,
+  UnavailableDiceSetSchema,
+]);
 
 export const PlayerIdSchema = z.union([
   z.literal(0),

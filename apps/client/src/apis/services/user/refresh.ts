@@ -7,7 +7,7 @@ import {
 
 type TRefresh = (
   _: RefreshReqBody
-) => ResponsePromise<RefreshResBody>;
+) => ResponsePromise<{ data: RefreshResBody }>;
 
 export const Refresh: TRefresh = (data) =>
   baseApiClient.post("user/refresh", { json: data });
