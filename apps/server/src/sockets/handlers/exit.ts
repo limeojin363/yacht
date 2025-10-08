@@ -12,13 +12,10 @@ const exitHandler =
 
       if (progressType === 2) throw new Error("Game has already ended");
 
-      socket.leave(String(gameId));
-
       if (progressType === 1) {
-        socket.to(String(gameId)).emit("player-exited", { userId });
-        socket.to(String(gameId)).emit("game-interrupted", {
-          reason: "A player has exited during the game.",
-        });
+        console.log("Game interrupted due to player exit", { userId, gameId });
+        socket.emit("game-interrupted", { userId });
+        socket.to(String(gameId)).emit("game-interrupted", { userId });
         socket.to(String(gameId)).disconnectSockets();
         socket.disconnect();
 

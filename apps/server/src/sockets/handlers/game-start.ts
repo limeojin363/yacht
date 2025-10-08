@@ -40,7 +40,8 @@ const gameStartHandler =
         where: { id: gameId },
         data: { progressType: 1 },
       });
-
+      
+      socket.emit("game-start");
       socket.to(String(gameId)).emit("game-start");
     } catch (error) {
       console.log("game-start error", error);

@@ -1,5 +1,4 @@
 import express from "express";
-import cors from "cors";
 import dotenv from "dotenv";
 import {
   Routing,
@@ -15,7 +14,6 @@ import myInfoEndpoint from "./endpoints/user/myInfo.js";
 import { deleteGameEndpoint } from "./endpoints/game/deleteGame.js";
 import { updateGameEndpoint } from "./endpoints/game/updateGame.js";
 import { registerSocket } from "./sockets/index.js";
-import http from "http";
 import z from "zod";
 import { PrismaClient } from "@prisma/client";
 import { createHashedPassword, createSalt } from "./auths/hash.js";

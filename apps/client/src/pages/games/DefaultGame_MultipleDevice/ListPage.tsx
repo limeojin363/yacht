@@ -4,6 +4,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useAuth } from "../../../auth";
 import { GenerateGame } from "../../../apis/services/game/generateGame";
 import { queryClient } from "../../../main";
+import { DeleteGame } from "../../../apis/services/game/deleteGame";
 
 const useGameList = () => {
   const { data, isPending } = useQuery({
@@ -41,11 +42,29 @@ const useGenerateGame = () => {
   return () => generateGame();
 };
 
+const useDeleteGame = () => {
+  const { mutateAsync: deleteGame } = useMutation({
+    mutationKey: ["deleteGame"],
+    mutationFn: async (gameId: number) => {
+      const res = await DeleteGame({ id: gameId });
+      const { data } = await res.json();
+      return data;
+    },
+    onSuccess: (data) => {
+      console.log("Game deleted successfully:", data);
+      queryClient.invalidateQueries({ queryKey: ["gameList"] });
+    },
+  });
+
+  return (gameId: number) => deleteGame(gameId);
+};
+
 const ListPage = () => {
   const { data } = useGameList();
   const navigate = useNavigate();
   const { user } = useAuth();
   const generateGame = useGenerateGame();
+  const deleteGame = useDeleteGame();
 
   if (!data) {
     return <div>Loading...</div>;
@@ -57,16 +76,18 @@ const ListPage = () => {
       {user && <button onClick={generateGame}>adsf</button>}
       <ul>
         {data.games.map((game) => (
-          <li
-            key={game.id}
-            onClick={() =>
-              navigate({
-                to: "/multiple-device/default-game/$gameId",
-                params: { gameId: String(game.id) },
-              })
-            }
-          >
-            {JSON.stringify(game)}
+          <li key={game.id}>
+            <div
+              onClick={() =>
+                navigate({
+                  to: "/multiple-device/default-game/$gameId",
+                  params: { gameId: String(game.id) },
+                })
+              }
+            >
+              {JSON.stringify(game)}
+            </div>
+            <button onClick={() => deleteGame(game.id)}>DELETE</button>
           </li>
         ))}
       </ul>

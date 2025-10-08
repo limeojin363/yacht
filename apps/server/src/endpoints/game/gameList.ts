@@ -14,7 +14,6 @@ export const gameListEndpoint = defaultEndpointsFactory
     output: GetGameListResBodySchema,
     method: "get",
     handler: async () => {
-      console.log(123)
       const prismaClient = new PrismaClient();
       const gamesFromDB = await prismaClient.game.findMany({
         where: {

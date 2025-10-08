@@ -134,7 +134,15 @@ const useRoomInfo = (gameId: number) => {
       });
     });
 
+    socket.on("game-interrupted", ({ userId }) => {
+      alert(
+        `게임이 중단되었습니다. (userId: ${userId}님이 게임에서 나갔습니다.)`
+      );
+      navigate({ to: "/multiple-device/default-game" });
+    });
+
     return () => {
+      console.log(1)
       socket.removeAllListeners();
       if (socket.active) socket.disconnect();
     };
@@ -165,7 +173,7 @@ const useRoomInfo = (gameId: number) => {
 
   const listeners: Pick<
     DefaultGameContextValues,
-    "onClickCell" | "onClickDice" | "onClickRoll" | "onFinish"
+    "onClickCell" | "onClickDice" | "onClickRoll" | "onFinish" | "onExit"
   > = {
     onClickCell: (handName, playerId) => {
       if (!isMyTurn()) return;
@@ -203,12 +211,15 @@ const useRoomInfo = (gameId: number) => {
       const ranking = getRanking(gameStatus);
       console.log("Ranking:", ranking);
     },
+    onExit: () => {
+      exit();
+    },
   };
 
   return { currentRoomInfo, exit, start, listeners };
 };
 
-const WaitingRoom = ({ gameId }: { gameId: number }) => {
+const GamePage = ({ gameId }: { gameId: number }) => {
   const { currentRoomInfo, exit, start, listeners } = useRoomInfo(gameId);
   const { user: currentUser } = useAuth();
   const isAdmin = currentUser?.authorityLevel === 0;
@@ -267,7 +278,7 @@ const S = {
   `,
 };
 
-export default WaitingRoom;
+export default GamePage;
 
 const isAvailablePlayerList = (
   playerList: (Player | null)[]

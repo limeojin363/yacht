@@ -9,7 +9,7 @@ import {
 import { createContext, useEffect } from "react";
 import DiceArea from "./DiceArea";
 import ScoreTable from "./ScoreTable";
-import type { Player } from "../../../pages/games/DefaultGame_MultipleDevice/WaitingRoom";
+import type { Player } from "../../../pages/games/DefaultGame_MultipleDevice/GamePage";
 
 export type DefaultGameContextValues = {
   gameStatus: GameStatus;
@@ -19,6 +19,7 @@ export type DefaultGameContextValues = {
   onClickDice: (diceIndex: DiceIndex) => void;
   onClickRoll: () => void;
   onFinish: () => void;
+  onExit: () => void;
 };
 
 export const DefaultGameContext = createContext<DefaultGameContextValues>({
@@ -29,6 +30,7 @@ export const DefaultGameContext = createContext<DefaultGameContextValues>({
   onClickDice: () => {},
   onClickRoll: () => {},
   onFinish: () => {},
+  onExit: () => {},
 });
 
 // 리스너 동작은 별도의 의존성 주입이 필요하다
@@ -40,6 +42,7 @@ const DefaultGame = ({
   onClickDice,
   onClickRoll,
   onFinish,
+  onExit,
   playerList,
 }: DefaultGameContextValues) => {
   useEffect(() => {
@@ -55,9 +58,11 @@ const DefaultGame = ({
         onClickDice,
         onClickRoll,
         onFinish,
+        onExit,
         playerList,
       }}
     >
+      <button onClick={onExit}>Exit</button>
       <ScoreTable />
       <DiceArea />
     </DefaultGameContext.Provider>

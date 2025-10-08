@@ -26,7 +26,7 @@ const RightSideArea = () => {
   const navigate = useNavigate();
 
   if (user) {
-    const isAdmin = user.authority_level === 0;
+    const isAdmin = user.authorityLevel === 0;
     if (isAdmin) {
       return (
         <S.RightContainer onClick={() => navigate({ to: "/admin" })}>

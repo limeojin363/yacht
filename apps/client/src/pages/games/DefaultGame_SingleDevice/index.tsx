@@ -3,6 +3,7 @@ import {
   getInitialGameStatus,
   getUpdatedGameStatus,
   type AvailableHand,
+  type PlayerId,
   type PlayersNum,
   type UserAction,
 } from "@yacht/default-game";
@@ -10,7 +11,8 @@ import DefaultGame, {
   type DefaultGameContextValues,
 } from "../../../components/games/DefaultGame";
 import { useMemo, useState } from "react";
-import type { Player } from "../DefaultGame_MultipleDevice/WaitingRoom";
+import type { Player } from "../DefaultGame_MultipleDevice/GamePage";
+import { useNavigate } from "@tanstack/react-router";
 
 type HexColor = `#${string}`;
 
@@ -74,6 +76,8 @@ const useProps = (totalPlayersNum: PlayersNum): DefaultGameContextValues => {
     getInitialGameStatus(totalPlayersNum)
   );
 
+  const navigate = useNavigate();
+
   const update = (userAction: UserAction) =>
     setGameStatus((prev) => {
       const next = getUpdatedGameStatus(prev)(userAction);
@@ -84,7 +88,7 @@ const useProps = (totalPlayersNum: PlayersNum): DefaultGameContextValues => {
     gameStatus.currentPlayerId === playerId;
 
   const isSelectedHand = (playerId: number, handName: AvailableHand) =>
-    gameStatus.scoreObjectList[playerId].scores[handName] !== null;
+    gameStatus.scoreObjectList[playerId][handName] !== null;
 
   const isUnavailableDiceSet = (diceSet: typeof gameStatus.diceSet) =>
     diceSet.some((dice) => dice === null);
@@ -98,6 +102,7 @@ const useProps = (totalPlayersNum: PlayersNum): DefaultGameContextValues => {
         username: `Player ${index + 1}`,
         userId: index,
         playerColor: generateRandomColor(),
+        playerId: index as PlayerId,
       })),
     [totalPlayersNum]
   );
@@ -126,6 +131,9 @@ const useProps = (totalPlayersNum: PlayersNum): DefaultGameContextValues => {
     },
     onFinish: () => {
       console.log("Game Finished!")
+    },
+    onExit: () => {
+      navigate({ to: "/single-device/default-game" });
     }
   };
 };
