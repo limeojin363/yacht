@@ -1,25 +1,29 @@
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { type AuthInfo } from "../auth";
-import Header from "../components/layouts/Header";
-import useToast from "../hooks/useToast";
+import { AuthProvider, type AuthInfo } from "../auth";
 import useCheck from "../hooks/useCheck";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface MyRouterContext {
   auth: AuthInfo;
 }
 
 const Component = () => {
-  const { ToastComponent } = useToast();
   useCheck();
 
   return (
-    <>
-      <Header />
+    <AuthProvider>
       <Outlet />
       <TanStackRouterDevtools />
-      <ToastComponent />
-    </>
+      <ToastContainer
+        autoClose={2000}
+        limit={3}
+        closeButton={false}
+        closeOnClick
+        hideProgressBar
+      />
+    </AuthProvider>
   );
 };
 

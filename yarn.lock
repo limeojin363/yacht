@@ -2061,6 +2061,7 @@ __metadata:
     ky: "npm:^1.10.0"
     react: "npm:^19.1.0"
     react-dom: "npm:^19.1.0"
+    react-toastify: "npm:^11.0.5"
     socket.io-client: "npm:^4.8.1"
     typescript: "npm:~5.8.3"
     typescript-eslint: "npm:^8.30.1"
@@ -5116,6 +5117,18 @@ __metadata:
   version: 0.17.0
   resolution: "react-refresh@npm:0.17.0"
   checksum: 10c0/002cba940384c9930008c0bce26cac97a9d5682bc623112c2268ba0c155127d9c178a9a5cc2212d560088d60dfd503edd808669a25f9b377f316a32361d0b23c
+  languageName: node
+  linkType: hard
+
+"react-toastify@npm:^11.0.5":
+  version: 11.0.5
+  resolution: "react-toastify@npm:11.0.5"
+  dependencies:
+    clsx: "npm:^2.1.1"
+  peerDependencies:
+    react: ^18 || ^19
+    react-dom: ^18 || ^19
+  checksum: 10c0/50f5b81323ebb1957b2efd0963fac24aa1407155d16ab756ffd6d0f42f8af17e796b3958a9fce13e9d1b945d6c3a5a9ebf13529478474d8a2af4bf1dd0db67d2
   languageName: node
   linkType: hard
 

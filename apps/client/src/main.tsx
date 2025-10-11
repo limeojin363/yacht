@@ -2,7 +2,6 @@ import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
-import { AuthProvider, useAuth } from "./auth";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const router = createRouter({
@@ -24,8 +23,7 @@ declare module "@tanstack/react-router" {
 }
 
 const Inner = () => {
-  const auth = useAuth();
-  return <RouterProvider router={router} context={{ auth }} />;
+  return <RouterProvider router={router}  />;
 };
 
 export const queryClient = new QueryClient();
@@ -35,11 +33,9 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <Inner />
-        </AuthProvider>
-      </QueryClientProvider>
+        <QueryClientProvider client={queryClient}>
+            <Inner />
+        </QueryClientProvider>
     </StrictMode>
   );
 }

@@ -9,7 +9,7 @@ import {
 import { createContext, useEffect } from "react";
 import DiceArea from "./DiceArea";
 import ScoreTable from "./ScoreTable";
-import type { Player } from "../../../pages/games/DefaultGame_MultipleDevice/GamePage";
+import type { Player } from "../../../routes/_authenticated-only/multiple-device/default-game.$gameId/-components/page";
 
 export type DefaultGameContextValues = {
   gameStatus: GameStatus;
