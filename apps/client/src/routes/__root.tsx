@@ -9,20 +9,25 @@ interface MyRouterContext {
   auth: AuthInfo;
 }
 
-const Component = () => {
+const CheckProvider = ({ children }: { children: React.ReactNode }) => {
   useCheck();
+  return children;
+};
 
+const Component = () => {
   return (
     <AuthProvider>
-      <Outlet />
-      <TanStackRouterDevtools />
-      <ToastContainer
-        autoClose={2000}
-        limit={3}
-        closeButton={false}
-        closeOnClick
-        hideProgressBar
-      />
+      <CheckProvider>
+        <Outlet />
+        <TanStackRouterDevtools />
+        <ToastContainer
+          autoClose={2000}
+          limit={3}
+          closeButton={false}
+          closeOnClick
+          hideProgressBar
+        />
+      </CheckProvider>
     </AuthProvider>
   );
 };
