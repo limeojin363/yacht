@@ -129,9 +129,6 @@ const useProps = (totalPlayersNum: PlayersNum): DefaultGameContextValues => {
         payload: generateNextDiceSet(gameStatus.diceSet),
       });
     },
-    onFinish: () => {
-      console.log("Game Finished!")
-    },
     onExit: () => {
       navigate({ to: "/" });
     }

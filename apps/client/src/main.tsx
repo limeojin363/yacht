@@ -8,6 +8,7 @@ const router = createRouter({
   routeTree,
   context: {
     auth: {
+      isLoaded: false,
       user: null,
       login: async () => {},
       logout: async () => {},

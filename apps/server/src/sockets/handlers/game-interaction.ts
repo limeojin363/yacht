@@ -48,6 +48,16 @@ const gameInteractionHandler =
           data: { progressType: 2 },
         });
 
+        await prismaClient.user.update({
+          where: { id: userId },
+          data: {
+            gameId: null,
+            gamePlayerId: null,
+            gamePlayerColor: null,
+            gameConnected: 0,
+          }
+        })
+
         socket.to(String(gameId)).emit("game-ended");
       }
     } catch (error) {

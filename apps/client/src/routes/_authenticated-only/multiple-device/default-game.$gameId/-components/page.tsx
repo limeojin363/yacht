@@ -2,7 +2,6 @@ import styled from "@emotion/styled";
 import { useNavigate } from "@tanstack/react-router";
 import {
   generateNextDiceSet,
-  getRanking,
   getUpdatedGameStatus,
   isUnavailableDiceSet,
   type AvailableHand,
@@ -15,6 +14,7 @@ import { useAuth } from "../../../../../auth";
 import DefaultGame, {
   type DefaultGameContextValues,
 } from "../../../../../components/games/DefaultGame";
+import { toast } from "react-toastify";
 
 const socketUrl =
   "wss://shiny-space-capybara-q5v4qxjx6vx3x75g-3000.app.github.dev";
@@ -123,6 +123,11 @@ const useRoomInfo = (gameId: number) => {
       });
     });
 
+    socket.on("error-on-connection", () => {
+      toast.error("게임 접속 중 오류가 발생했습니다.");
+      navigate({ to: "/multiple-device/default-game" });
+    });
+
     socket.on("game-interaction", ({ type, payload }) => {
       console.log("game-interaction", { type, payload });
       setCurrentRoomInfo((prev) => {
@@ -135,22 +140,24 @@ const useRoomInfo = (gameId: number) => {
     });
 
     socket.on("game-interrupted", ({ userId }) => {
-      alert(
+      toast.error(
         `게임이 중단되었습니다. (userId: ${userId}님이 게임에서 나갔습니다.)`
       );
       navigate({ to: "/multiple-device/default-game" });
     });
 
     return () => {
-      console.log(1)
+      console.log(1);
       socket.removeAllListeners();
       if (socket.active) socket.disconnect();
     };
   }, [socket, navigate]);
 
   const exit = () => {
-    socket.emit("exit");
-    navigate({ to: "/multiple-device/default-game" });
+    socket.on("game-ended", () =>
+      navigate({ to: "/multiple-device/default-game" })
+  );
+  socket.emit("exit");
   };
 
   const start = () => {
@@ -173,7 +180,7 @@ const useRoomInfo = (gameId: number) => {
 
   const listeners: Pick<
     DefaultGameContextValues,
-    "onClickCell" | "onClickDice" | "onClickRoll" | "onFinish" | "onExit"
+    "onClickCell" | "onClickDice" | "onClickRoll" | "onExit"
   > = {
     onClickCell: (handName, playerId) => {
       if (!isMyTurn()) return;
@@ -204,12 +211,6 @@ const useRoomInfo = (gameId: number) => {
         type: "ROLL",
         payload: generateNextDiceSet(gameStatus.diceSet),
       });
-    },
-    onFinish: () => {
-      if (!gameStatus) return;
-      console.log("Game Finished!");
-      const ranking = getRanking(gameStatus);
-      console.log("Ranking:", ranking);
     },
     onExit: () => {
       exit();

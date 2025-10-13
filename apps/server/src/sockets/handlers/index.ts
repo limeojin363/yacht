@@ -43,6 +43,7 @@ const onConnection = async (socket: Socket) => {
     ({ userId, gameId } = await _.getBaseInformations(socket));
   } catch (error) {
     console.error("Error on getting base informations: ", error);
+    socket.emit("error-on-connection", error)
     socket.disconnect();
     return;
   }
