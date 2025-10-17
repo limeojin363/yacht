@@ -48,8 +48,8 @@ const gameInteractionHandler =
           data: { progressType: 2 },
         });
 
-        await prismaClient.user.update({
-          where: { id: userId },
+        await prismaClient.user.updateMany({
+          where: { gameId },
           data: {
             gameId: null,
             gamePlayerId: null,

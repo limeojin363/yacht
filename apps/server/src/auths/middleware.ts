@@ -18,13 +18,18 @@ export const getUserId = (authorization: string) => {
   const token = authorization.split(" ")[1];
   if (!token) throw createHttpError(401, "No token provided");
 
-  const decodedInfo = jwt.verify(
-    token,
-    process.env.ACCESS_TOKEN_SECRET as string
-  );
-  const { userId } = SchemaOf.DecodedInfo.parse(decodedInfo);
+  try {
+    const decodedInfo = jwt.verify(
+      token,
+      process.env.ACCESS_TOKEN_SECRET as string
+    );
+    const { userId } = SchemaOf.DecodedInfo.parse(decodedInfo);
 
-  return userId;
+    return userId;
+  } catch (error) {
+    console.error(error);
+    throw createHttpError(401, "Invalid or Expired token");
+  }
 };
 
 export const getUser = async (userId: number) => {

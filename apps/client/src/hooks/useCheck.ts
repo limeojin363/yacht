@@ -1,19 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { GetMyInfo } from "../apis/services/user/getMyInfo";
 import { useLocation, useNavigate } from "@tanstack/react-router";
-import { useAuth } from "../auth";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 
 const useCheck = () => {
   const pathname = useLocation({ select: (location) => location.pathname });
   const navigate = useNavigate();
-  const { user } = useAuth();
 
   const { refetch } = useQuery({
     queryKey: ["check"],
     queryFn: async () => {
-      if (!user) return null;
       if (regexp.test(pathname)) return null;
 
       const res = await GetMyInfo();
@@ -36,7 +33,6 @@ const useCheck = () => {
   });
 
   useEffect(() => {
-    console.log(123);
     refetch();
   }, [pathname, refetch]);
 };

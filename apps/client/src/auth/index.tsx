@@ -1,9 +1,11 @@
 import { createContext, use, useEffect, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Login } from "../apis/services/user/login";
 import { Signup } from "../apis/services/user/signup";
 import type { LoginResBody, SignupResBody } from "@yacht/communications";
-import { useNavigate } from "@tanstack/react-router";
+import { useLocation, useNavigate } from "@tanstack/react-router";
+import { GetMyInfo } from "../apis/services/user/getMyInfo";
+import { toast } from "react-toastify";
 
 type Credentials = { username: string; password: string };
 
@@ -18,6 +20,7 @@ type UserInfo = {
 export type AuthInfo = {
   user: UserInfo | null;
   isLoaded: boolean;
+  check: () => void;
   login: (credentials: Credentials) => Promise<{ data: LoginResBody } | void>;
   signup: (credentials: Credentials) => Promise<{ data: SignupResBody } | void>;
   logout: () => Promise<void>;
@@ -26,6 +29,7 @@ export type AuthInfo = {
 const AuthContext = createContext<AuthInfo>({
   user: null,
   isLoaded: false,
+  check: () => {},
   login: async () => {},
   signup: async () => {},
   logout: async () => {},
@@ -91,7 +95,39 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     onSuccess: () => {},
   });
 
-  const value: AuthInfo = { user, login, logout, signup, isLoaded };
+  const pathname = useLocation({ select: (location) => location.pathname });
+
+  const { refetch: check } = useQuery({
+    queryKey: ["check"],
+    queryFn: async () => {
+      const res = await GetMyInfo();
+
+      const { data: userData } = await res.json();
+      console.log(userData);
+
+      const { gameId } = userData;
+
+      localStorage.setItem("user", JSON.stringify(userData));
+      setUser(userData);
+
+      if (/^\/multiple-device\/default-game\/\d+$/.test(pathname)) return null;
+
+      if (gameId) {
+        toast.warn("참가 중인 게임으로 이동합니다.");
+        navigate({
+          to: "/multiple-device/default-game/$gameId",
+          params: { gameId: String(gameId) },
+        });
+      }
+      return true;
+    },
+  });
+
+  useEffect(() => {
+    check();
+  }, [pathname, check]);
+
+  const value: AuthInfo = { user, check, login, logout, signup, isLoaded };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

@@ -14,10 +14,6 @@ const exitHandler =
 
       if (progressType === 1) {
         console.log("Game interrupted due to player exit", { userId, gameId });
-        socket.emit("game-interrupted", { userId });
-        socket.to(String(gameId)).emit("game-interrupted", { userId });
-        socket.to(String(gameId)).disconnectSockets();
-        socket.disconnect();
 
         await prismaClient.game.delete({
           where: { id: gameId },
@@ -32,6 +28,11 @@ const exitHandler =
             gameConnected: 0,
           },
         });
+
+        socket.emit("game-interrupted", { userId });
+        socket.disconnect();
+        socket.to(String(gameId)).emit("game-interrupted", { userId });
+        socket.to(String(gameId)).disconnectSockets();
       }
 
       if (progressType === 0) {
@@ -45,6 +46,9 @@ const exitHandler =
             gameConnected: 0,
           },
         });
+
+        socket.emit("exit-ok");
+        socket.disconnect();
       }
     } catch (error) {
       console.log(error);

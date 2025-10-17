@@ -11,5 +11,5 @@ export const registerSocket = (server: Express.Application) => {
     },
   });
 
-  io.of("/game", onConnection);
+  io.of("/game-default", onConnection);
 };

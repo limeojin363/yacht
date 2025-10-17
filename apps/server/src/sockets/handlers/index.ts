@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import type { Socket } from "socket.io";
 import { getUser, getUserId } from "../../auths/middleware.js";
 import z from "zod";
@@ -43,7 +44,7 @@ const onConnection = async (socket: Socket) => {
     ({ userId, gameId } = await _.getBaseInformations(socket));
   } catch (error) {
     console.error("Error on getting base informations: ", error);
-    socket.emit("error-on-connection", error)
+    socket.emit("error-on-connection", { error, canRefresh: true });
     socket.disconnect();
     return;
   }
@@ -76,7 +77,25 @@ const _ = {
     const authorization = socket.handshake.query["Authorization"] as string;
     if (!authorization) throw new Error("No authorization header");
 
-    const userId = getUserId(authorization);
+    let userId: number;
+
+    try {
+      const token = authorization.split(" ")[1];
+      const decodedInfo = jwt.verify(
+        token,
+        process.env.ACCESS_TOKEN_SECRET as string
+      );
+      ({ userId } = SchemaOf.DecodedInfo.parse(decodedInfo));
+    } catch (error) {
+      const refresh = socket.handshake.query["Refresh"] as string;
+      if (!refresh) throw new Error("No refresh token provided");
+      const decodedRefresh = jwt.verify(
+        refresh,
+        process.env.REFRESH_TOKEN_SECRET as string
+      );
+      ({ userId } = SchemaOf.DecodedInfo.parse(decodedRefresh));
+    }
+
     const user = await getUser(userId);
 
     const gameId = Number(socket.handshake.query["gameId"]);
@@ -221,6 +240,9 @@ const SchemaOf = {
     gameStatus: GameStatusSchema,
     progressType: ProgressTypeSchema,
     totalPlayersNum: PlayersNumSchema,
+  }),
+  DecodedInfo: z.object({
+    userId: z.number(),
   }),
 };
 

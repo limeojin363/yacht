@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import {
   generateNextDiceSet,
   getUpdatedGameStatus,
+  isGameFinished,
   isUnavailableDiceSet,
   type AvailableHand,
   type GameStatus,
@@ -22,10 +23,14 @@ const socketUrl =
 const getAuthorizationHeader = () =>
   `Bearer ${JSON.parse(localStorage.getItem("accessToken") || "")}`;
 
+const getRefreshHeader = () => 
+  JSON.parse(localStorage.getItem("refreshToken") || "");
+
 const getSocket = (gameId: number) => {
-  return io(`${socketUrl}/game`, {
+  return io(`${socketUrl}/game-default`, {
     query: {
       Authorization: getAuthorizationHeader(),
+      Refresh: getRefreshHeader(),
       gameId,
     },
     autoConnect: false,
@@ -76,6 +81,7 @@ const useRoomInfo = (gameId: number) => {
       console.log("player-exited", { userId });
       setCurrentRoomInfo((prev) => {
         if (!prev) return;
+
         const nextPlayerList = [...prev.playerList];
         const index = nextPlayerList.findIndex((user) => {
           if (!user) return false;
@@ -123,8 +129,14 @@ const useRoomInfo = (gameId: number) => {
       });
     });
 
+    socket.on("refreshed", ({accessToken, refreshToken}) => {
+      console.log("refreshed");
+      localStorage.setItem("accessToken", JSON.stringify(accessToken));
+      localStorage.setItem("refreshToken", JSON.stringify(refreshToken));
+    })
+
     socket.on("error-on-connection", () => {
-      toast.error("게임 접속 중 오류가 발생했습니다.");
+      toast.error("게임 접속 중 오류가 발생했습니다.", );
       navigate({ to: "/multiple-device/default-game" });
     });
 
@@ -132,9 +144,12 @@ const useRoomInfo = (gameId: number) => {
       console.log("game-interaction", { type, payload });
       setCurrentRoomInfo((prev) => {
         if (!prev) return;
+        const nextGameStatus = getUpdatedGameStatus(prev.gameStatus)({ type, payload });
+        const nextProgressType = isGameFinished(nextGameStatus) ? 2 : 1;
         return {
           ...prev,
-          gameStatus: getUpdatedGameStatus(prev.gameStatus)({ type, payload }),
+          gameStatus: nextGameStatus,
+          progressType: nextProgressType,
         };
       });
     });
@@ -146,6 +161,11 @@ const useRoomInfo = (gameId: number) => {
       navigate({ to: "/multiple-device/default-game" });
     });
 
+    socket.on("exit-ok", () => {
+      console.log("exit-ok");
+      navigate({ to: "/multiple-device/default-game" });
+    });
+
     return () => {
       console.log(1);
       socket.removeAllListeners();
@@ -154,10 +174,11 @@ const useRoomInfo = (gameId: number) => {
   }, [socket, navigate]);
 
   const exit = () => {
-    socket.on("game-ended", () =>
-      navigate({ to: "/multiple-device/default-game" })
-  );
-  socket.emit("exit");
+    if (!currentRoomInfo) return;
+
+    if (currentRoomInfo.progressType === 2) {
+      navigate({ to: "/multiple-device/default-game" });
+    } else socket.emit("exit");
   };
 
   const start = () => {
@@ -222,9 +243,10 @@ const useRoomInfo = (gameId: number) => {
 
 const GamePage = ({ gameId }: { gameId: number }) => {
   const { currentRoomInfo, exit, start, listeners } = useRoomInfo(gameId);
-  const { user: currentUser } = useAuth();
+  const { user: currentUser, isLoaded } = useAuth();
   const isAdmin = currentUser?.authorityLevel === 0;
 
+  if (!isLoaded) return <div>Loading...</div>;
   if (!currentUser) return <div>로그인 후 이용해주세요</div>;
 
   const isConnected = !!currentRoomInfo;
@@ -257,7 +279,6 @@ const GamePage = ({ gameId }: { gameId: number }) => {
   if (!isAvailablePlayerList(playerList))
     return <div>playerList에 null이 포함되어 있음</div>;
 
-  if (progressType === 1)
     return (
       <DefaultGame
         playerList={playerList}
@@ -266,8 +287,6 @@ const GamePage = ({ gameId }: { gameId: number }) => {
         {...listeners}
       />
     );
-
-  return null;
 };
 
 const S = {

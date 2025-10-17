@@ -2048,6 +2048,7 @@ __metadata:
     "@tanstack/react-router-devtools": "npm:^1.131.31"
     "@tanstack/router-plugin": "npm:^1.131.31"
     "@types/cors": "npm:^2.8.18"
+    "@types/http-errors": "npm:^2.0.5"
     "@types/react": "npm:^19.1.2"
     "@types/react-dom": "npm:^19.1.2"
     "@vitejs/plugin-react": "npm:^4.4.1"
@@ -2057,8 +2058,9 @@ __metadata:
     eslint-plugin-react-hooks: "npm:^5.2.0"
     eslint-plugin-react-refresh: "npm:^0.4.19"
     globals: "npm:^16.0.0"
+    http-errors: "npm:^2.0.0"
     jotai: "npm:^2.12.5"
-    ky: "npm:^1.10.0"
+    ky: "npm:^1.12.0"
     react: "npm:^19.1.0"
     react-dom: "npm:^19.1.0"
     react-toastify: "npm:^11.0.5"
@@ -4140,10 +4142,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ky@npm:^1.10.0":
-  version: 1.10.0
-  resolution: "ky@npm:1.10.0"
-  checksum: 10c0/089b74886b6eb45c3929ac1769f08cd85f40fbf7d24dfd87bbe091e990aee8063eafc7575527ada0a51074f3973db218a85c1f00561fbebd61b8c70176bf3607
+"ky@npm:^1.12.0":
+  version: 1.12.0
+  resolution: "ky@npm:1.12.0"
+  checksum: 10c0/1b6c5de27f3a93e1ea63d98f3d0aa94961846441873c850f21d553df3749487a634e58497357676d1e9e871262aa6dbb61172d8c5cb1d44fab35d899a5988f79
   languageName: node
   linkType: hard
 

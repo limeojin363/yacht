@@ -17,6 +17,7 @@ import { registerSocket } from "./sockets/index.js";
 import z from "zod";
 import { PrismaClient } from "@prisma/client";
 import { createHashedPassword, createSalt } from "./auths/hash.js";
+import refreshEndpoint from "./endpoints/user/refresh.js";
 
 const routing: Routing = {
   "get /": defaultEndpointsFactory.build({
@@ -31,6 +32,7 @@ const routing: Routing = {
     "post /login": loginEndpoint,
     "post /signup": signupEndpoint,
     "get /me": myInfoEndpoint,
+    "post /refresh": refreshEndpoint,
   },
   game: {
     "get /list": gameListEndpoint,

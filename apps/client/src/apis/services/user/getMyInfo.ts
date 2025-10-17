@@ -5,4 +5,4 @@ import { type GetMyInfoResBody } from "@yacht/communications";
 type GetMyInfoType = () => ResponsePromise<{ data: GetMyInfoResBody }>;
 
 export const GetMyInfo: GetMyInfoType = () =>
-  authenticatedApiClient.get("user/me");
+  authenticatedApiClient.get("user/me", {});

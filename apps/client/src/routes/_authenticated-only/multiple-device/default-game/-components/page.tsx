@@ -11,14 +11,9 @@ const useGameList = () => {
   const { data, isPending } = useQuery({
     queryKey: ["gameList"],
     queryFn: async () => {
-      try {
         const res = await GetGameList();
         const { data } = await res.json();
         return data;
-      } catch (error) {
-        console.log(error);
-        return null;
-      }
     },
     initialData: null,
   });
