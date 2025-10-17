@@ -20,7 +20,6 @@ type UserInfo = {
 export type AuthInfo = {
   user: UserInfo | null;
   isLoaded: boolean;
-  check: () => void;
   login: (credentials: Credentials) => Promise<{ data: LoginResBody } | void>;
   signup: (credentials: Credentials) => Promise<{ data: SignupResBody } | void>;
   logout: () => Promise<void>;
@@ -29,7 +28,6 @@ export type AuthInfo = {
 const AuthContext = createContext<AuthInfo>({
   user: null,
   isLoaded: false,
-  check: () => {},
   login: async () => {},
   signup: async () => {},
   logout: async () => {},
@@ -127,7 +125,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     check();
   }, [pathname, check]);
 
-  const value: AuthInfo = { user, check, login, logout, signup, isLoaded };
+  const value: AuthInfo = { user, login, logout, signup, isLoaded };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
