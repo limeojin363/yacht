@@ -1,5 +1,6 @@
 import { Server } from "socket.io";
-import onConnection from "./handlers/index.js";
+import defaultGameConnectionHandler from "./handlers/default-game/index.js";
+import alteredGameConnectionHandler from "./handlers/altered-game/index.js";
 
 export const registerSocket = (server: Express.Application) => {
   const io = new Server(server, {
@@ -11,5 +12,6 @@ export const registerSocket = (server: Express.Application) => {
     },
   });
 
-  io.of("/game-default", onConnection);
+  io.of("/game-default", defaultGameConnectionHandler);
+  io.of("/game-altered", alteredGameConnectionHandler);
 };

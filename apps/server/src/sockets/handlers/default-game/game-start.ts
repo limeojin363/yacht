@@ -1,5 +1,5 @@
 import { getGameInfo, getPlayerList, type ConnectionInfo } from "./index.js";
-import { getUser } from "../../auths/middleware.js";
+import { getUser } from "../../../auths/middleware.js";
 import { PrismaClient } from "@prisma/client";
 import type { Player } from "@yacht/communications";
 

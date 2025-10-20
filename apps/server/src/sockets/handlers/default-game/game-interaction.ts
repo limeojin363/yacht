@@ -5,7 +5,7 @@ import {
   type UserAction,
 } from "@yacht/default-game";
 import { getGameInfo, type ConnectionInfo } from "./index.js";
-import { getUser } from "../../auths/middleware.js";
+import { getUser } from "../../../auths/middleware.js";
 import { PrismaClient } from "@prisma/client";
 
 const gameInteractionHandler =

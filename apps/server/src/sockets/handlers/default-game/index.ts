@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import type { Socket } from "socket.io";
-import { getUser, getUserId } from "../../auths/middleware.js";
+import { getUser, getUserId } from "../../../auths/middleware.js";
 import z from "zod";
 import { ProgressTypeSchema, type Player } from "@yacht/communications";
 import {
@@ -8,7 +8,7 @@ import {
   PlayersNumSchema,
   type PlayerId,
 } from "@yacht/default-game";
-import generatePlayerColor from "../../utils/color.js";
+import generatePlayerColor from "../../../utils/color.js";
 import exitHandler from "./exit.js";
 import gameInteractionHandler from "./game-interaction.js";
 import gameStartHandler from "./game-start.js";
@@ -37,7 +37,7 @@ export const getGameInfo = async (gameId: number) => {
   return SchemaOf.Game.parse(gameToReturn);
 };
 
-const onConnection = async (socket: Socket) => {
+const defaultGameConnectionHandler = async (socket: Socket) => {
   let userId: number, gameId: number;
 
   try {
@@ -246,4 +246,4 @@ const SchemaOf = {
   }),
 };
 
-export default onConnection;
+export default defaultGameConnectionHandler;
