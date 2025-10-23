@@ -1,4 +1,4 @@
-import type { SelectableHand } from "../status";
+import type { DefaultHand } from "../status";
 
 type AdditionalRowName =
   | "FUSION_1&2"
@@ -13,7 +13,7 @@ type AdditionalRowName =
   | "CHOICE_TRIPLE_A"
   | "CHOICE_TRIPLE_B";
 
-type RowName = SelectableHand | AdditionalRowName;
+type RowName = DefaultHand | AdditionalRowName;
 
 type PlayerScoreObject = {
   [key in RowName]?: {

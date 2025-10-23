@@ -1,8 +1,8 @@
-import type { AlterOptionName, SelectableHand } from "../status";
+import type { AlterOptionName, DefaultHand } from "../status";
 
 type FusionRowName = Extract<AlterOptionName, `FUSION${string}`>;
 
-export type RowName = SelectableHand | FusionRowName;
+export type RowName = DefaultHand | FusionRowName;
 
 export type ScoreTable = {
   rowNames: RowName[];

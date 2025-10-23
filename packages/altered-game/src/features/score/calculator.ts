@@ -1,11 +1,17 @@
+import _ from "lodash";
 import { COUNT, EYES, SCORES } from "../../constants/index";
-import type { AvailableDiceEye, SelectableHand } from "../status/types";
+import AlterOptionMap from "../alter-options";
+import type {
+  AlterOptionName,
+  AvailableDiceEye,
+  DefaultHand,
+} from "../status/types";
 
 const count = (handInput: AvailableDiceEye[], number: number) =>
   handInput.filter((n) => n === number).length;
 
-export const GetScoreOf: Record<
-  SelectableHand,
+export const GetDefaultScoreOf: Record<
+  string,
   (handInput: AvailableDiceEye[]) => number
 > = {
   TRIPLE: (handInput: AvailableDiceEye[]) =>
@@ -54,10 +60,22 @@ export const GetScoreOf: Record<
     count(handInput, EYES.SIX) * EYES.SIX,
 };
 
-interface Cal {
-  [key: SelectableHand]: (handInput: AvailableDiceEye[]) => number;
-};
+export const Calculator = (() => {
+  const GetScoreOf = _.cloneDeep(GetDefaultScoreOf);
 
-class Calculator implements Cal {
+  const get = (handName: string, handInput: AvailableDiceEye[]) => {
+    const scoreGetter = GetScoreOf[handName];
+    if (!scoreGetter) throw new Error("등록되지 않은 hand입니다..");
+  };
 
-}
+  const inject = (alterOptions: AlterOptionName[]): void => {
+    alterOptions.forEach((optionName) => {
+      const alterOption = AlterOptionMap[optionName];
+      if (alterOption.effectOnCalculator) {
+        alterOption.effectOnCalculator(GetScoreOf);
+      }
+    });
+  };
+
+  return { get, inject };
+})();

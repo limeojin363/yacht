@@ -1,5 +1,5 @@
 import type { RowName } from "../features/score/types.js";
-import { type SelectableHand } from "../features/status/index.js";
+import { type DefaultHand } from "../features/status/index.js";
 
 export const EYES = {
   ONE: 1,
@@ -37,6 +37,6 @@ export const SELECTABLE_HAND_LIST = [
   "STRAIGHT",
   "YACHT",
   "CHOICE",
-] as const satisfies SelectableHand[];
+] as const satisfies DefaultHand[];
 
 export const TABLE_ROWNAME_LIST = ["CHOICE"] as const satisfies RowName[];

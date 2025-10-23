@@ -1,62 +1,52 @@
-import type { AlterOptionName, GameStatus, SelectableHand } from "../status";
+import type { GameStatus, DefaultHand, AvailableDiceEye } from "../status";
+import { ChoiceOptionMap } from "./maps/Choice";
+import { FusionOptionMap } from "./maps/Fusion";
+import { AllNumberBonusMissionOptionMap } from "./maps/BonusMission";
+import { N1EtcOptionMap, N1IfZeroOptionMap, N1TimesOptionMap } from "./maps/N1";
+import { YachtOptionMap } from "./maps/Yacht";
+import { AllNumberBonusMissionOptionName } from "./maps/BonusMission";
+import { ChoiceOptionName, } from "./maps/Choice";
+import { FusionOptionName } from "./maps/Fusion";
+import { N1TimesOptionName, N1IfZeroOptionName, N1EtcOptionName } from "./maps/N1";
+import { N2TimesOptionName } from "./maps/N2";
+import { N3TimesOptionName } from "./maps/N3";
+import { N4TimesOptionName } from "./maps/N4";
+import { N5TimesOptionName } from "./maps/N5";
+import { N6TimesOptionName } from "./maps/N6";
+import { RollLimitOptionName, HoldingLimitOptionName } from "./maps/UserActionLimit";
+import { YachtOptionName } from "./maps/Yacht";
 
-const AlterOptionMap = {
-  "FUSION_1&2": {
-    description: "NUMBERS_1과 NUMBERS_2를 곱연산",
-    dependencies: ["NUMBERS_1", "NUMBERS_2"],
-  },
-  "FUSION_1&3": {
-    description: "NUMBERS_1과 NUMBERS_3를 곱연산",
-    dependencies: ["NUMBERS_1", "NUMBERS_3"],
-  },
-  "FUSION_1&4": {
-    description: "NUMBERS_1과 NUMBERS_4를 곱연산",
-    dependencies: ["NUMBERS_1", "NUMBERS_4"],
-  },
-  "FUSION_1&5": {
-    description: "NUMBERS_1과 NUMBERS_5를 곱연산",
-    dependencies: ["NUMBERS_1", "NUMBERS_5"],
-  },
-  "FUSION_1&6": {
-    description: "NUMBERS_1과 NUMBERS_6를 곱연산",
-    dependencies: ["NUMBERS_1", "NUMBERS_6"],
-  },
-  "FUSION_2&3": {
-    description: "NUMBERS_2와 NUMBERS_3를 곱연산",
-    dependencies: ["NUMBERS_2", "NUMBERS_3"],
-  },
-  "FUSION_2&4": {
-    description: "NUMBERS_2와 NUMBERS_4를 곱연산",
-    dependencies: ["NUMBERS_2", "NUMBERS_4"],
-  },
-  "ONE-CHOICE_DOUBLE": {
-    description: "",
-    dependencies: [],
-  },
-  "TWO-CHOICE_DOUBLE": {
-    description: "CHOICE_DOUBLE을 두 개 생성",
-    dependencies: [],
-  },
-  "ONE-CHOICE_TRIPLE": {
-    description: "CHOICE_TRIPLE을 세 개 생성",
-    dependencies: [],
-  },
-  "TWO-CHOICE_TRIPLE": {
-    description: "",
-    dependencies: [],
-  },
-} satisfies {
-  [key in AlterOptionName]: {
-    description: string;
-    isGameFinished?: () => void;
-    // 공개와 동시에 gameStatus 객체에 적용
-    revealEffectOnGameStatus?: (g: GameStatus) => GameStatus;
-    // Score 객체로의 재조합 과정에 적용
-    onRecombine?: (obj: void) => void;
-    // HAND-SELECT 이벤트 발생 후 실행
-    afterHandSelect?: () => void;
-    dependencies: SelectableHand[];
-  };
+export type AlterOptionObject = {
+  description: string;
+  handDependencies: DefaultHand[];
+  revealEffectOnGameStatus?: (g: GameStatus) => GameStatus; // 공개와 동시에 gameStatus 객체에 적용 - field 추가, roll/fix 리미트 수정 등
+  effectOnCalculator?: (scoreGetter: Record<string, (handInput: AvailableDiceEye[]) => number>) => void; // Calculator(런타임 운용)를 조작 - 개별 핸드 계산 / 총점 계산에 영향
+  newIsFinished?: (g: GameStatus) => boolean; // 게임 종료 조건(런타임 운용) 변경
+};
+
+export type AlterOptionName =
+  | AllNumberBonusMissionOptionName
+  | ChoiceOptionName
+  | FusionOptionName
+  | N1TimesOptionName
+  | N1IfZeroOptionName
+  | N1EtcOptionName
+  | N2TimesOptionName
+  | N3TimesOptionName
+  | N4TimesOptionName
+  | N5TimesOptionName
+  | N6TimesOptionName
+  | RollLimitOptionName
+  | HoldingLimitOptionName
+  | YachtOptionName;
+const AlterOptionMap: Record<string, AlterOptionObject> = {
+  ...FusionOptionMap,
+  ...ChoiceOptionMap,
+  ...N1TimesOptionMap,
+  ...N1IfZeroOptionMap,
+  ...N1EtcOptionMap,
+  ...YachtOptionMap,
+  ...AllNumberBonusMissionOptionMap,
 };
 
 export default AlterOptionMap;

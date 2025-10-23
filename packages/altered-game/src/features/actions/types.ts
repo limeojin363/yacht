@@ -1,10 +1,10 @@
 import z from "zod";
-import { AvailableDiceSetSchema, SelectableHandSchema } from "../status";
+import { AvailableDiceSetSchema, DefaultHandSchema } from "../status";
 
 export const UserActionSchema = z.union([
   z.object({
     type: z.literal("HAND-SELECT"),
-    payload: SelectableHandSchema,
+    payload: DefaultHandSchema,
   }),
   z.object({
     type: z.literal("ROLL"),
