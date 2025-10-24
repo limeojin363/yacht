@@ -1,33 +1,28 @@
 import _ from "lodash";
 import { COUNT, EYES, SCORES } from "../../constants/index";
 import AlterOptionMap from "../alter-options";
-import type {
-  AlterOptionName,
-  AvailableDiceEye,
-  DefaultHand,
-} from "../status/types";
 
-const count = (handInput: AvailableDiceEye[], number: number) =>
+const count = (handInput: number[], number: number) =>
   handInput.filter((n) => n === number).length;
 
 export const GetDefaultScoreOf: Record<
   string,
-  (handInput: AvailableDiceEye[]) => number
+  (handInput: number[]) => number
 > = {
-  TRIPLE: (handInput: AvailableDiceEye[]) =>
+  TRIPLE: (handInput: number[]) =>
     handInput.some((n) => count(handInput, n) >= COUNT.THREE)
       ? handInput.reduce((acc, n) => acc + n, 0)
       : 0,
-  FOURCARD: (handInput: AvailableDiceEye[]) =>
+  FOURCARD: (handInput: number[]) =>
     handInput.some((n) => count(handInput, n) >= COUNT.FOUR)
       ? handInput.reduce((acc, n) => acc + n, 0)
       : 0,
-  FULLHOUSE: (handInput: AvailableDiceEye[]) =>
+  FULLHOUSE: (handInput: number[]) =>
     handInput.some((n) => count(handInput, n) === COUNT.TWO) &&
     handInput.some((n) => count(handInput, n) === COUNT.THREE)
       ? SCORES.FULLHOUSE
       : 0,
-  STRAIGHT: (handInput: AvailableDiceEye[]) =>
+  STRAIGHT: (handInput: number[]) =>
     (handInput.includes(EYES.ONE) &&
       handInput.includes(EYES.TWO) &&
       handInput.includes(EYES.THREE) &&
@@ -40,37 +35,41 @@ export const GetDefaultScoreOf: Record<
       handInput.includes(EYES.SIX))
       ? SCORES.STRAIGHT
       : 0,
-  YACHT: (handInput: AvailableDiceEye[]) =>
+  YACHT: (handInput: number[]) =>
     handInput.some((n) => count(handInput, n) === COUNT.FIVE)
       ? SCORES.YACHT
       : 0,
-  CHOICE: (handInput: AvailableDiceEye[]) =>
+  CHOICE: (handInput: number[]) =>
     handInput.reduce((acc, n) => acc + n, 0),
-  NUMBERS_1: (handInput: AvailableDiceEye[]) =>
+  NUMBERS_1: (handInput: number[]) =>
     count(handInput, EYES.ONE) * EYES.ONE,
-  NUMBERS_2: (handInput: AvailableDiceEye[]) =>
+  NUMBERS_2: (handInput: number[]) =>
     count(handInput, EYES.TWO) * EYES.TWO,
-  NUMBERS_3: (handInput: AvailableDiceEye[]) =>
+  NUMBERS_3: (handInput: number[]) =>
     count(handInput, EYES.THREE) * EYES.THREE,
-  NUMBERS_4: (handInput: AvailableDiceEye[]) =>
+  NUMBERS_4: (handInput: number[]) =>
     count(handInput, EYES.FOUR) * EYES.FOUR,
-  NUMBERS_5: (handInput: AvailableDiceEye[]) =>
+  NUMBERS_5: (handInput: number[]) =>
     count(handInput, EYES.FIVE) * EYES.FIVE,
-  NUMBERS_6: (handInput: AvailableDiceEye[]) =>
+  NUMBERS_6: (handInput: number[]) =>
     count(handInput, EYES.SIX) * EYES.SIX,
 };
 
 export const Calculator = (() => {
   const GetScoreOf = _.cloneDeep(GetDefaultScoreOf);
 
-  const get = (handName: string, handInput: AvailableDiceEye[]) => {
+  const get = (handName: string, handInput: number[]) => {
     const scoreGetter = GetScoreOf[handName];
     if (!scoreGetter) throw new Error("등록되지 않은 hand입니다..");
+
+    return scoreGetter(handInput);
   };
 
-  const inject = (alterOptions: AlterOptionName[]): void => {
+  const inject = (alterOptions: string[]): void => {
     alterOptions.forEach((optionName) => {
       const alterOption = AlterOptionMap[optionName];
+      if (!alterOption) throw new Error("등록되지 않은 옵션명입니다..");
+
       if (alterOption.effectOnCalculator) {
         alterOption.effectOnCalculator(GetScoreOf);
       }

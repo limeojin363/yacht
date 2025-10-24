@@ -1,9 +1,8 @@
 import _ from "lodash";
 import {
   type GameStatus,
-  type SinglePlayer,
-  type PlayersNum,
-  type UnavailableDiceSet,
+  type PlayerSelectionObject,
+  type UnusableDiceSet,
 } from "./types";
 import { type UserAction } from "../actions/types";
 import {
@@ -13,10 +12,8 @@ import {
 } from "../actions/main.js";
 import { SELECTABLE_HAND_LIST } from "../../constants";
 
-export const getInitialGameStatus = (
-  totalPlayersNum: PlayersNum
-): GameStatus => {
-  const getPlayerInitialStatus = (): SinglePlayer => ({
+export const getInitialGameStatus = (totalPlayersNum: number): GameStatus => {
+  const getPlayerInitialStatus = (): PlayerSelectionObject => ({
     NUMBERS_1: null,
     NUMBERS_2: null,
     NUMBERS_3: null,
@@ -31,7 +28,7 @@ export const getInitialGameStatus = (
     CHOICE: null,
   });
 
-  const getDicesInitialStatus = (): UnavailableDiceSet => [
+  const getDicesInitialStatus = (): UnusableDiceSet => [
     null,
     null,
     null,
@@ -39,11 +36,13 @@ export const getInitialGameStatus = (
     null,
   ];
 
-  const getInitialPlayerList = (): SinglePlayer[] => {
+  const getInitialPlayerList = (): PlayerSelectionObject[] => {
     return Array.from({ length: totalPlayersNum }, getPlayerInitialStatus);
   };
 
   return {
+    maxHolding: 5,
+    maxRoll: 3,
     alterOptions: [],
     handSelectionObjects: getInitialPlayerList(),
     diceSet: getDicesInitialStatus(),
@@ -64,18 +63,3 @@ export const getUpdatedGameStatus =
         return updateOnToggleDiceHolding(status, payload);
     }
   };
-
-export const isGameStatusEqual = (a: GameStatus, b: GameStatus) => {
-  const areDicesOk = [0, 1, 2, 3, 4].every(
-    (i) => a.diceSet[i] === b.diceSet[i]
-  );
-  const isCurrentPlayerOk = a.currentPlayerId === b.currentPlayerId;
-  const isRemainingRerollOk = a.remainingRoll === b.remainingRoll;
-  const arePlayersOk = SELECTABLE_HAND_LIST.every(
-    (hand) =>
-      a.handSelectionObjects[0][hand] === b.handSelectionObjects[0][hand] &&
-      a.handSelectionObjects[1][hand] === b.handSelectionObjects[1][hand]
-  );
-
-  return areDicesOk && isCurrentPlayerOk && isRemainingRerollOk && arePlayersOk;
-};
