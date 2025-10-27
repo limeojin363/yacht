@@ -1,4 +1,4 @@
-import type { AlterOptionObject } from "..";
+import type { AlterOptionObject } from ".";
 
 const RollLimitOptionParamList = [1, 2, 4, 5] as const;
 
@@ -14,6 +14,9 @@ export const RollLimitMap = RollLimitOptionParamList.reduce(
     acc[name] = {
       description: `롤 횟수를 ${curr}개로 제한`,
       handDependencies: [],
+      onTrigger(gameStatus) {
+        gameStatus.maxRoll = curr;
+      }
     };
     return acc;
   },
@@ -34,6 +37,9 @@ export const HoldingLimitOptionMap = HoldingLimitParamList.reduce(
     acc[name] = {
       description: `주사위 고정 가능 최대 개수를 ${curr}개로 제한`,
       handDependencies: [],
+      onTrigger(gameStatus) {
+        gameStatus.maxHolding = curr;
+      }
     };
     return acc;
   },

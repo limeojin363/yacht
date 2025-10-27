@@ -1,10 +1,10 @@
 import type {
-  DiceEyes,
   DiceSet,
+  DiceEyes,
   GameStatusDataPart,
   UnusableDiceSet,
   UsableDiceSet,
-} from "../status";
+} from "../features/status";
 
 export const generateDiceEye = (): number => {
   const eyes = [1, 2, 3, 4, 5, 6] as const;
@@ -39,8 +39,10 @@ export const isUnusableDiceSet = (
   return false;
 };
 
-export const isGameFinished = ({ playerHandSelectionObjectMap: handSelectionObjects }: GameStatusDataPart) =>
-  Object.values(handSelectionObjects).every((selections) =>
+export const isGameFinished = ({
+  playerHandSelectionObjectMap: scoreObjectList,
+}: GameStatusDataPart) =>
+  scoreObjectList.every((selections) =>
     Object.values(selections).every((selection) => selection !== null)
   );
 

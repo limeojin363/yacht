@@ -1,4 +1,5 @@
-import type { AlterOptionObject } from "..";
+import type { AlterOptionObject } from ".";
+import { GetDefaultScoreOf } from "../../score";
 
 const N2TimesOptionParamList = [-1, -2, 0.5, 3, 4, 5] as const;
 
@@ -14,6 +15,12 @@ export const N2TimesOptionMap = N2TimesOptionParamList.reduce(
     acc[name] = {
       description: `NUMBERS_2의 점수를 ${curr}배`,
       handDependencies: [`NUMBERS_2`],
+      onTrigger: (gameStatus) => {
+        gameStatus.rowCalculator[`NUMBERS_2`] = (handInput: number[]) => {
+          const baseScore = GetDefaultScoreOf[`NUMBERS_2`](handInput);
+          return baseScore * curr;
+        };
+      },
     };
     return acc;
   },
@@ -24,5 +31,11 @@ export const N2EtcOptionMap: Record<string, AlterOptionObject> = {
   NUMBERS_2_SQUARE: {
     description: `NUMBERS_2의 점수를 제곱`,
     handDependencies: [`NUMBERS_2`],
+    onTrigger: (gameStatus) => {
+      gameStatus.rowCalculator[`NUMBERS_2`] = (handInput: number[]) => {
+        const baseScore = GetDefaultScoreOf[`NUMBERS_2`](handInput);
+        return baseScore * baseScore;
+      };
+    }
   },
 };

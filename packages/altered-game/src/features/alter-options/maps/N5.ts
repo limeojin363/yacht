@@ -1,12 +1,14 @@
-import type { AlterOptionObject } from "..";
+import type { AlterOptionObject } from ".";
+import { GetDefaultScoreOf } from "../../score";
 
 const N5TimesOptionParamList = [2, 3] as const;
 
-export type N5TimesOptionName = typeof N5TimesOptionParamList[number] extends infer T
-  ? T extends number
-    ? `NUMBERS_5_${T}x`
-    : never
-  : never;
+export type N5TimesOptionName =
+  (typeof N5TimesOptionParamList)[number] extends infer T
+    ? T extends number
+      ? `NUMBERS_5_${T}x`
+      : never
+    : never;
 
 export const N5TimesOptionMap = N5TimesOptionParamList.reduce(
   (acc, curr) => {
@@ -14,6 +16,12 @@ export const N5TimesOptionMap = N5TimesOptionParamList.reduce(
     acc[name] = {
       description: `NUMBERS_5의 점수를 ${curr}배`,
       handDependencies: [`NUMBERS_5`],
+      onTrigger(gameStatus) {
+        gameStatus.rowCalculator[`NUMBERS_5`] = (handInput: number[]) => {
+          const baseScore = GetDefaultScoreOf[`NUMBERS_5`](handInput);
+          return baseScore * curr;
+        };
+      },
     };
     return acc;
   },

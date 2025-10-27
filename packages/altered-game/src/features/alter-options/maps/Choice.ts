@@ -1,4 +1,5 @@
-import type { AlterOptionObject } from "..";
+import type { AlterOptionObject } from ".";
+import { GetDefaultScoreOf } from "../../score";
 
 const ChoiceOptionParamList = [
   [1, 2],
@@ -8,11 +9,14 @@ const ChoiceOptionParamList = [
   [2, 3],
 ] as const;
 
-export type ChoiceOptionName = typeof ChoiceOptionParamList[number] extends infer T
-  ? T extends readonly [infer A, infer B]
-    ? `${A & number}-CHOICE_x${B & number}`
-    : never
-  : never;
+const Postfix = ["_A", "_B", "_C"] as const;
+
+export type ChoiceOptionName =
+  (typeof ChoiceOptionParamList)[number] extends infer T
+    ? T extends readonly [infer A, infer B]
+      ? `${A & number}-CHOICE_x${B & number}`
+      : never
+    : never;
 
 export const ChoiceOptionMap = ChoiceOptionParamList.reduce(
   (acc, curr) => {
@@ -20,6 +24,13 @@ export const ChoiceOptionMap = ChoiceOptionParamList.reduce(
     acc[name] = {
       description: `CHOICE_x${curr[1]}을 ${curr[0]}개 생성`,
       handDependencies: [],
+      onTrigger(gameStatus) {
+        Array.from({ length: curr[1] }, (_, idx) => {
+          gameStatus.rowCalculator[`CHOICE_x${curr[1]}_${Postfix[idx]}`] = (
+            handInput: number[]
+          ) => GetDefaultScoreOf.CHOICE(handInput) * curr[1];
+        });
+      },
     };
     return acc;
   },

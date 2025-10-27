@@ -1,4 +1,5 @@
-import type { AlterOptionObject } from "..";
+import type { AlterOptionObject } from ".";
+import { GetDefaultScoreOf } from "../../score";
 
 const FusionOptionParamList = [
   [1, 2],
@@ -10,15 +11,15 @@ const FusionOptionParamList = [
   [2, 4],
 ] as const;
 
-// TODO: 원리 이해
+// TODO: 어떻게 다른건지 원리 이해하기(GPT가 짜준 코등미)
 // type Changer<T extends FusionParamTuple> = `FUSION_${T[0]}&${T[1]}`;
 // export type FusionOptionName = Changer<FusionParamTuple>;
-
-export type FusionOptionName = typeof FusionOptionParamList[number] extends infer T
-  ? T extends readonly [infer A, infer B]
-    ? `FUSION_${A & number}&${B & number}`
-    : never
-  : never;
+export type FusionOptionName =
+  (typeof FusionOptionParamList)[number] extends infer T
+    ? T extends readonly [infer A, infer B]
+      ? `FUSION_${A & number}&${B & number}`
+      : never
+    : never;
 
 export const FusionOptionMap = FusionOptionParamList.reduce(
   (acc, curr) => {
@@ -26,6 +27,18 @@ export const FusionOptionMap = FusionOptionParamList.reduce(
     acc[name] = {
       description: `NUMBERS_${curr[0]}과 NUMBERS_${curr[1]}를 곱연산`,
       handDependencies: [`NUMBERS_${curr[0]}`, `NUMBERS_${curr[1]}`],
+      onTrigger: (gameStatus) => {
+        delete gameStatus.rowCalculator[`NUMBERS_${curr[0]}`];
+        delete gameStatus.rowCalculator[`NUMBERS_${curr[1]}`];
+
+        gameStatus.rowCalculator[`FUSION_${curr[0]}&${curr[1]}`] = (
+          handInput: number[]
+        ) => {
+          const baseScoreA = GetDefaultScoreOf[`NUMBERS_${curr[0]}`](handInput);
+          const baseScoreB = GetDefaultScoreOf[`NUMBERS_${curr[1]}`](handInput);
+          return baseScoreA * baseScoreB;
+        };
+      },
     };
     return acc;
   },

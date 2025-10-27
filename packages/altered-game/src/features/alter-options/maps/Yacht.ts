@@ -1,12 +1,13 @@
-import type { AlterOptionObject } from "..";
+import type { AlterOptionObject } from ".";
 
 const YachtOptionParamList = [70, 80, 90, 100] as const;
 
-export type YachtOptionName = typeof YachtOptionParamList[number] extends infer T
-  ? T extends number
-    ? `YACHT_${T}`
-    : never
-  : never;
+export type YachtOptionName =
+  (typeof YachtOptionParamList)[number] extends infer T
+    ? T extends number
+      ? `YACHT_${T}`
+      : never
+    : never;
 
 export const YachtOptionMap = YachtOptionParamList.reduce(
   (acc, curr) => {
@@ -14,6 +15,13 @@ export const YachtOptionMap = YachtOptionParamList.reduce(
     acc[name] = {
       description: `YACHT가 ${curr}점이 됨`,
       handDependencies: [],
+      onTrigger(gameStatus) {
+        gameStatus.rowCalculator["YACHT"] = (handInput: number[]) => {
+          if (handInput.every((n) => n === handInput[0])) {
+            return curr;
+          } else return 0;
+        };
+      },
     };
     return acc;
   },
