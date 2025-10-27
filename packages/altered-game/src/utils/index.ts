@@ -1,6 +1,6 @@
 import type {
-  DiceSet,
   DiceEyes,
+  DiceSet,
   GameStatusDataPart,
   UnusableDiceSet,
   UsableDiceSet,
@@ -39,10 +39,8 @@ export const isUnusableDiceSet = (
   return false;
 };
 
-export const isGameFinished = ({
-  playerHandSelectionObjectMap: scoreObjectList,
-}: GameStatusDataPart) =>
-  scoreObjectList.every((selections) =>
+export const isGameFinished = ({ playerHandSelectionObjectMap: handSelectionObjects }: GameStatusDataPart) =>
+  Object.values(handSelectionObjects).every((selections) =>
     Object.values(selections).every((selection) => selection !== null)
   );
 

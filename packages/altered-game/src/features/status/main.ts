@@ -1,8 +1,8 @@
 import _ from "lodash";
-import { getDiceEyes, isUnusableDiceSet } from "../../utils";
 import AlterOptionMap from "../alter-options/maps";
 import { GetDefaultScoreOf } from "../score";
 import type { GameStatusDataPart, UserAction } from "./types";
+import { getDiceEyes, isUnusableDiceSet } from "../../utils";
 
 export class GameStatus {
   private alterOptions: GameStatusDataPart["alterOptions"];
@@ -115,8 +115,8 @@ export class GameStatus {
 
   public get currentTurn() {
     let turn = 0;
-    Object.values(this.handSelectionObjects).forEach(handSelectionObject => {
-      Object.values(handSelectionObject).forEach(selection => {
+    Object.values(this.handSelectionObjects).forEach((handSelectionObject) => {
+      Object.values(handSelectionObject).forEach((selection) => {
         if (selection !== null) {
           turn += 1;
         }
@@ -126,14 +126,19 @@ export class GameStatus {
   }
 
   public get totalHand() {
-    const hands = Object.keys(GetDefaultScoreOf);
-    return hands.length
+    const hands = Object.keys(this.handSelectionObjects[0]!);
+    return hands.length;
+  }
+
+  public get totalRow() {
+    const rows = Object.keys(this.rowCalculator);
+    return rows.length;
   }
 
   public get currentFilledRowNum() {
     let filledRowNum = 0;
-    Object.values(this.handSelectionObjects).forEach(handSelectionObject => {
-      Object.values(handSelectionObject).forEach(selection => {
+    Object.values(this.handSelectionObjects).forEach((handSelectionObject) => {
+      Object.values(handSelectionObject).forEach((selection) => {
         if (selection !== null) {
           filledRowNum += 1;
         }
@@ -141,8 +146,6 @@ export class GameStatus {
     });
     return filledRowNum;
   }
-
-  public get totalTurn() {}
 
   public getClone() {
     return _.cloneDeep(this);
@@ -159,6 +162,10 @@ export class GameStatus {
 
   public get totalPlayers() {
     return Object.keys(this.handSelectionObjects).length;
+  }
+
+  public get totalTurn() {
+    return this.totalPlayers * this.totalRow;
   }
 
   public get currentHeldDices() {
