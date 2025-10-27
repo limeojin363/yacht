@@ -10,7 +10,6 @@
 // const useToast = () => {
 //   const [toastList, setToastList] = useAtom(toastListAtom);
 
-
 //   const triggerToast = useCallback(
 //     (message: string) => {
 //       const id = crypto.randomUUID();

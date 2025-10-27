@@ -9,4 +9,3 @@
 //   DeleteUserResBody | { message: string },
 //   DeleteUserReqBody
 // > = async (req, res) => {};
-

@@ -1,10 +1,10 @@
-const fixedSaturation = 0.7;  // 예시 채도 (70%)
-const fixedLightness = 0.4;  // 예시 명도 (40%)
+const fixedSaturation = 0.7; // 예시 채도 (70%)
+const fixedLightness = 0.4; // 예시 명도 (40%)
 
 type HexColor = `#${string}`;
 
 // 랜덤 색상을 생성하는 함수
-const generatePlayerColor = ():HexColor => {
+const generatePlayerColor = (): HexColor => {
   // 최우측 원색 팔레트에서 랜덤 색상 각도 (hue) 선택 (0 - 360 사이)
   const randomHue = Math.floor(Math.random() * 360); // 0부터 360 사이의 랜덤 값
 
@@ -49,11 +49,11 @@ const generatePlayerColor = ():HexColor => {
     const gFinal = Math.round((g + m) * 255);
     const bFinal = Math.round((b + m) * 255);
 
-    return `#${(1 << 24 | rFinal << 16 | gFinal << 8 | bFinal).toString(16).slice(1).toUpperCase()}`;
+    return `#${((1 << 24) | (rFinal << 16) | (gFinal << 8) | bFinal).toString(16).slice(1).toUpperCase()}`;
   }
 
   // 랜덤 색상 값을 최종 결과로 반환
   return hslToHex(randomHue, fixedSaturation * 100, fixedLightness * 100);
-}
+};
 
 export default generatePlayerColor;

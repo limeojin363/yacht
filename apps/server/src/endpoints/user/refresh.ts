@@ -20,7 +20,7 @@ const refreshEndpoint = defaultEndpointsFactory.build({
     try {
       const decodedInfo = jwt.verify(
         prevRefreshToken,
-        process.env.REFRESH_TOKEN_SECRET as string
+        process.env.REFRESH_TOKEN_SECRET as string,
       );
       ({ userId } = SchemaOf.DecodedInfo.parse(decodedInfo));
     } catch (error) {

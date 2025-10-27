@@ -29,13 +29,12 @@ export const AllNumberBonusMissionOptionMap =
 
             let totalScore = 0;
             for (const [rowName, handInput] of Object.entries(
-              playerSelection
+              playerSelection,
             )) {
               const rowScoreGetter = gameStatus.rowCalculator[rowName];
               if (rowScoreGetter === undefined) throw new Error();
 
-              if (handInput !== null)
-                totalScore += rowScoreGetter(handInput);
+              if (handInput !== null) totalScore += rowScoreGetter(handInput);
             }
 
             if (
@@ -66,5 +65,5 @@ export const AllNumberBonusMissionOptionMap =
       };
       return acc;
     },
-    {} as Record<AllNumberBonusMissionOptionName, AlterOptionObject>
+    {} as Record<AllNumberBonusMissionOptionName, AlterOptionObject>,
   );

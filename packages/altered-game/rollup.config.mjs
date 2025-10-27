@@ -34,5 +34,5 @@ export default [
       format: "es",
     },
     plugins: [dts()],
-  }
+  },
 ];

@@ -1,8 +1,8 @@
-import { createFileRoute } from '@tanstack/react-router'
-import ListPage from './-components/page'
+import { createFileRoute } from "@tanstack/react-router";
+import ListPage from "./-components/page";
 
 export const Route = createFileRoute(
-  '/_authenticated-only/multiple-device/default-game/',
+  "/_authenticated-only/multiple-device/default-game/",
 )({
   component: ListPage,
-})
+});

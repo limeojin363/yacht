@@ -24,7 +24,7 @@ declare module "@tanstack/react-router" {
 }
 
 const Inner = () => {
-  return <RouterProvider router={router}  />;
+  return <RouterProvider router={router} />;
 };
 
 export const queryClient = new QueryClient();
@@ -34,9 +34,9 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-        <QueryClientProvider client={queryClient}>
-            <Inner />
-        </QueryClientProvider>
-    </StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <Inner />
+      </QueryClientProvider>
+    </StrictMode>,
   );
 }

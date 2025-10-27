@@ -31,4 +31,3 @@ export type Player = {
   playerId: PlayerId;
   playerColor: string;
 };
-

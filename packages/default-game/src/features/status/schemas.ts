@@ -44,7 +44,7 @@ export const AvailableHandSchema = z.union([
 
 export const SinglePlayerSchema = z.record(
   AvailableHandSchema,
-  z.number().nullable()
+  z.number().nullable(),
 );
 
 export const AvailableDiceSetSchema = z.tuple([

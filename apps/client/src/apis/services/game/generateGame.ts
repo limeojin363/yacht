@@ -6,7 +6,7 @@ import {
 } from "@yacht/communications";
 
 type GenerateGameType = (
-  b: GenerateGameReqBody
+  b: GenerateGameReqBody,
 ) => ResponsePromise<{ data: GenerateGameResBody }>;
 
 export const GenerateGame: GenerateGameType = (body) =>

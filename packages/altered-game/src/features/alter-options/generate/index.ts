@@ -28,9 +28,9 @@ export const generateAlterOptions = (): AlterOption[] => {
   const name2 = getRandomItemFromArray(
     Object.keys(AlterOptionMap).filter((name) =>
       AlterOptionMap[name]!.handDependencies.every(
-        (dep) => !dependencies.includes(dep)
-      )
-    )
+        (dep) => !dependencies.includes(dep),
+      ),
+    ),
   );
 
   ret.push({
@@ -42,9 +42,9 @@ export const generateAlterOptions = (): AlterOption[] => {
   const name3 = getRandomItemFromArray(
     Object.keys(AlterOptionMap).filter((name) =>
       AlterOptionMap[name]!.handDependencies.every(
-        (dep) => !dependencies.includes(dep)
-      )
-    )
+        (dep) => !dependencies.includes(dep),
+      ),
+    ),
   );
 
   ret.push({

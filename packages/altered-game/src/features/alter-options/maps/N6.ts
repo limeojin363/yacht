@@ -25,5 +25,5 @@ export const N6TimesOptionMap = N6TimesOptionParamList.reduce(
     };
     return acc;
   },
-  {} as Record<N6TimesOptionName, AlterOptionObject>
+  {} as Record<N6TimesOptionName, AlterOptionObject>,
 );

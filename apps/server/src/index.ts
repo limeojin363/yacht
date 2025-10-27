@@ -90,7 +90,7 @@ dotenv.config();
     const salt = await createSalt();
     const hashedPassword = await createHashedPassword(
       defaultAdminPassword,
-      salt
+      salt,
     );
 
     await prismaClient.user.create({

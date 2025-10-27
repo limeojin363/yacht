@@ -2034,6 +2034,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@yacht/altered-game@workspace:packages/altered-game":
+  version: 0.0.0-use.local
+  resolution: "@yacht/altered-game@workspace:packages/altered-game"
+  dependencies:
+    "@rollup/plugin-commonjs": "npm:^28.0.6"
+    "@rollup/plugin-multi-entry": "npm:^6.0.1"
+    "@rollup/plugin-node-resolve": "npm:^16.0.1"
+    "@rollup/plugin-typescript": "npm:^12.1.4"
+    "@types/lodash": "npm:^4"
+    lodash: "npm:^4.17.21"
+    rollup: "npm:^4.50.1"
+    rollup-plugin-dts: "npm:^6.2.3"
+    zod: "npm:^4.1.5"
+  languageName: unknown
+  linkType: soft
+
 "@yacht/client@workspace:apps/client":
   version: 0.0.0-use.local
   resolution: "@yacht/client@workspace:apps/client"

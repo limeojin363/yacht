@@ -32,7 +32,7 @@ export const FusionOptionMap = FusionOptionParamList.reduce(
         delete gameStatus.rowCalculator[`NUMBERS_${curr[1]}`];
 
         gameStatus.rowCalculator[`FUSION_${curr[0]}&${curr[1]}`] = (
-          handInput: number[]
+          handInput: number[],
         ) => {
           const baseScoreA = GetDefaultScoreOf[`NUMBERS_${curr[0]}`](handInput);
           const baseScoreB = GetDefaultScoreOf[`NUMBERS_${curr[1]}`](handInput);
@@ -42,5 +42,5 @@ export const FusionOptionMap = FusionOptionParamList.reduce(
     };
     return acc;
   },
-  {} as Record<FusionOptionName, AlterOptionObject>
+  {} as Record<FusionOptionName, AlterOptionObject>,
 );

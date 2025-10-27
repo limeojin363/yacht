@@ -21,10 +21,10 @@ const disconnectHandler =
         },
       });
     } catch (error) {
-        console.log("disconnect error", error);
-        socket.leave(String(gameId));
-        socket.disconnect();
+      console.log("disconnect error", error);
+      socket.leave(String(gameId));
+      socket.disconnect();
     }
   };
 
-  export default disconnectHandler;
+export default disconnectHandler;

@@ -34,7 +34,7 @@ const S = {
 
     border-radius: 4px;
     border: 1px solid black;
-`,
+  `,
   ModalContentArea: styled.div``,
   ButtonArea: styled.div``,
   Button: styled.button<{ theme: "PRIMARY" | "SECONDARY" }>``,

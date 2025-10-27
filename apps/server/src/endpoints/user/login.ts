@@ -1,8 +1,15 @@
-import { AuthorityLevelSchema, LoginReqBodySchema, LoginResBodySchema } from "@yacht/communications";
+import {
+  AuthorityLevelSchema,
+  LoginReqBodySchema,
+  LoginResBodySchema,
+} from "@yacht/communications";
 import { defaultEndpointsFactory } from "express-zod-api";
 import createHttpError from "http-errors";
 import { createHashedPassword } from "../../auths/hash.js";
-import { generateAccessToken, generateRefreshToken } from "../../auths/token.js";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../../auths/token.js";
 import { PrismaClient } from "@prisma/client";
 
 const loginEndpoint = defaultEndpointsFactory.build({

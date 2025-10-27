@@ -6,7 +6,7 @@ import {
 } from "@yacht/communications";
 
 type TRefresh = (
-  _: RefreshReqBody
+  _: RefreshReqBody,
 ) => ResponsePromise<{ data: RefreshResBody }>;
 
 export const Refresh: TRefresh = (data) =>

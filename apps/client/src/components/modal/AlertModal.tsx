@@ -30,7 +30,7 @@ const S = {
     border: 1px solid black;
     padding: 16px;
     min-width: 300px;
-    
+
     display: flex;
     flex-direction: column;
     gap: 16px;

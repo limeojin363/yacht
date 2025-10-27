@@ -23,7 +23,7 @@ export const getGameInfo = async (gameId: number) => {
   if (!gameRow) throw new Error("No game found");
 
   const gameStatus = GameStatusSchema.parse(
-    JSON.parse(gameRow.gameStatus as string)
+    JSON.parse(gameRow.gameStatus as string),
   );
 
   const gameToReturn = {
@@ -83,7 +83,7 @@ const _ = {
       const token = authorization.split(" ")[1];
       const decodedInfo = jwt.verify(
         token,
-        process.env.ACCESS_TOKEN_SECRET as string
+        process.env.ACCESS_TOKEN_SECRET as string,
       );
       ({ userId } = SchemaOf.DecodedInfo.parse(decodedInfo));
     } catch (error) {
@@ -91,7 +91,7 @@ const _ = {
       if (!refresh) throw new Error("No refresh token provided");
       const decodedRefresh = jwt.verify(
         refresh,
-        process.env.REFRESH_TOKEN_SECRET as string
+        process.env.REFRESH_TOKEN_SECRET as string,
       );
       ({ userId } = SchemaOf.DecodedInfo.parse(decodedRefresh));
     }
@@ -190,7 +190,7 @@ export const getPlayerList = async (gameId: number) => {
 
   const playerList: (null | Player)[] = Array.from(
     { length: totalPlayersNum },
-    () => null
+    () => null,
   );
 
   for (const u of users) {
@@ -221,7 +221,7 @@ const generatePlayerId = async (gameId: number) => {
       if (player.gamePlayerId === null)
         throw new Error("A player has null gamePlayerId");
       return player.gamePlayerId;
-    })
+    }),
   );
 
   const totalPlayersNum = game.gameStatus.scoreObjectList.length;

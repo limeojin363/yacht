@@ -15,7 +15,7 @@ export const generateDiceEye = (): number => {
 export const generateNextDiceSet = (prev: DiceSet): UsableDiceSet => {
   if (!isUnusableDiceSet(prev)) {
     return prev.map((dice) =>
-      dice.held ? dice : { eye: generateDiceEye(), held: false }
+      dice.held ? dice : { eye: generateDiceEye(), held: false },
     ) as UsableDiceSet;
   }
 
@@ -33,16 +33,20 @@ export const getDiceEyes = (diceSet: UsableDiceSet): DiceEyes => {
 };
 
 export const isUnusableDiceSet = (
-  diceSet: DiceSet
+  diceSet: DiceSet,
 ): diceSet is UnusableDiceSet => {
   if (diceSet.every((d) => d === null)) return true;
   return false;
 };
 
-export const isGameFinished = ({ playerHandSelectionObjectMap: handSelectionObjects }: GameStatusDataPart) =>
+export const isGameFinished = ({
+  playerHandSelectionObjectMap: handSelectionObjects,
+}: GameStatusDataPart) =>
   Object.values(handSelectionObjects).every((selections) =>
-    Object.values(selections).every((selection) => selection !== null)
+    Object.values(selections).every((selection) => selection !== null),
   );
 
 // TODO: implement ranking calculation
-export const getRanking = ({ playerHandSelectionObjectMap: handSelectionObjects }: GameStatusDataPart) => {};
+export const getRanking = ({
+  playerHandSelectionObjectMap: handSelectionObjects,
+}: GameStatusDataPart) => {};

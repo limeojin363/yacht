@@ -14,7 +14,7 @@ export const generateDiceEye = (): AvailableDiceEye => {
 export const generateNextDiceSet = (prev: DiceSet): AvailableDiceSet => {
   if (!isUnavailableDiceSet(prev)) {
     return prev.map((dice) =>
-      dice.held ? dice : { eye: generateDiceEye(), held: false }
+      dice.held ? dice : { eye: generateDiceEye(), held: false },
     ) as AvailableDiceSet;
   }
 
@@ -32,7 +32,7 @@ export const getDiceValues = (diceSet: AvailableDiceSet) => {
 };
 
 export const isUnavailableDiceSet = (
-  diceSet: DiceSet
+  diceSet: DiceSet,
 ): diceSet is UnavailableDiceSet => {
   if (diceSet.every((d) => d === null)) return true;
   return false;
@@ -40,16 +40,16 @@ export const isUnavailableDiceSet = (
 
 export const isGameFinished = ({ scoreObjectList }: GameStatus) =>
   scoreObjectList.every((scores) =>
-    Object.values(scores).every((score) => score !== null)
+    Object.values(scores).every((score) => score !== null),
   );
 
-export const getRanking = ({ scoreObjectList}: GameStatus) => {
+export const getRanking = ({ scoreObjectList }: GameStatus) => {
   const totalPlayersNum = scoreObjectList.length;
   const _ = scoreObjectList
     .map((scores, playerId) => ({
       totalScore: Object.values(scores).reduce(
         (acc, score) => (acc ?? 0) + (score ?? 0),
-        0
+        0,
       ) as number,
       playerId,
     }))

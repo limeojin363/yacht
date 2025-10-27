@@ -25,7 +25,7 @@ export const N1TimesOptionMap = N1TimesOptionParamList.reduce(
     };
     return acc;
   },
-  {} as Record<string, AlterOptionObject>
+  {} as Record<string, AlterOptionObject>,
 );
 
 export const N1IfZeroParamList = [10, 20, -10, -20] as const;
@@ -52,7 +52,7 @@ export const N1IfZeroOptionMap = N1IfZeroParamList.reduce(
     };
     return acc;
   },
-  {} as Record<string, AlterOptionObject>
+  {} as Record<string, AlterOptionObject>,
 );
 
 export const N1EtcOptionMap = {

@@ -50,7 +50,7 @@ export type DiceEyes = z.infer<typeof DiceEyesSchema>;
 
 export const PlayerSelectionObjectSchema = z.record(
   z.string(),
-  DiceEyesSchema.nullable()
+  DiceEyesSchema.nullable(),
 );
 
 export const DicesetSchema = z.union([
@@ -60,7 +60,7 @@ export const DicesetSchema = z.union([
 
 export const PlayerHandSelectionObjectSchema = z.record(
   z.string(),
-  PlayerSelectionObjectSchema
+  PlayerSelectionObjectSchema,
 );
 
 export type PlayerHandSelectionObjectMap = z.infer<

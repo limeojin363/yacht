@@ -68,7 +68,7 @@ export const GetUserListResBodySchema = z.object({
       authorityLevel: AuthorityLevelSchema,
       gamePlayerId: z.number().nullable(),
       gameId: z.number().nullable(),
-    })
+    }),
   ),
 });
 

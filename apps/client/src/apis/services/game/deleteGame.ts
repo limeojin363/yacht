@@ -6,7 +6,7 @@ import {
 } from "@yacht/communications";
 
 type DeleteGameType = (
-  b: DeleteGameReqBody
+  b: DeleteGameReqBody,
 ) => ResponsePromise<{ data: DeleteGameResBody }>;
 
 export const DeleteGame: DeleteGameType = ({ id }) =>

@@ -13,7 +13,7 @@ const myInfoEndpoint = defaultEndpointsFactory
     method: "get",
     input: GetMyInfoReqBodySchema,
     output: GetMyInfoResBodySchema,
-    handler: async ({ options: { id }}) => {
+    handler: async ({ options: { id } }) => {
       const prismaClient = new PrismaClient();
       const user = await prismaClient.user.findUnique({
         where: { id },

@@ -25,5 +25,5 @@ export const YachtOptionMap = YachtOptionParamList.reduce(
     };
     return acc;
   },
-  {} as Record<YachtOptionName, AlterOptionObject>
+  {} as Record<YachtOptionName, AlterOptionObject>,
 );

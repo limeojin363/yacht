@@ -11,7 +11,7 @@ import {
   DicesetSchema,
   GameStatusSchema,
   DiceIndexSchema,
-  PlayerIdSchema
+  PlayerIdSchema,
 } from "./schemas.js";
 
 export type PlayersNum = z.infer<typeof PlayersNumSchema>;

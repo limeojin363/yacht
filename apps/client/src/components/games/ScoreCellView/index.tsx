@@ -10,7 +10,12 @@ export interface ScoreCellViewProps
   label?: number | string;
 }
 
-const ScoreCellView = ({ viewStatus, label, playerColor, ...props }: ScoreCellViewProps) => {
+const ScoreCellView = ({
+  viewStatus,
+  label,
+  playerColor,
+  ...props
+}: ScoreCellViewProps) => {
   return (
     <S.Root {...props} viewStatus={viewStatus} playerColor={playerColor}>
       {label !== null && (
@@ -78,7 +83,9 @@ type HexColor = `#${string}`;
 //   return hslToHex(randomHue, fixedSaturation * 100, fixedLightness * 100);
 // }
 
-const getWrapperStyleMap = (playerColor: HexColor): Record<ViewStatus, ReturnType<typeof css>> => ({
+const getWrapperStyleMap = (
+  playerColor: HexColor,
+): Record<ViewStatus, ReturnType<typeof css>> => ({
   EMPTY: css`
     background-color: rgba(255, 255, 255, 1);
   `,
@@ -110,7 +117,8 @@ const S = {
 
     font-weight: bold;
     font-size: 1.3rem;
-    ${({ viewStatus, playerColor }) => getWrapperStyleMap(playerColor)[viewStatus]};
+    ${({ viewStatus, playerColor }) =>
+      getWrapperStyleMap(playerColor)[viewStatus]};
   `,
   InnerText: styled.div<{ viewStatus: ViewStatus }>``,
 };

@@ -25,7 +25,6 @@
 //   })
 // );
 
-
 // export const login: RequestHandler<
 //   {},
 //   | LoginResBody
@@ -72,4 +71,3 @@
 //     res.status(401).json({ message: "Invalid username or password" });
 //   }
 // };
-

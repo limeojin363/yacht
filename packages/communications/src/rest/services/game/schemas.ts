@@ -49,6 +49,6 @@ export const GetGameListResBodySchema = z.object({
       id: z.number(),
       name: z.string(),
       players: z.array(z.object({ id: z.number(), name: z.string() })),
-    })
+    }),
   ),
 });

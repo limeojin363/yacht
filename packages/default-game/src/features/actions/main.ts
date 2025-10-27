@@ -9,12 +9,12 @@ import { getDiceValues, isUnavailableDiceSet } from "../utils/index.js";
 import type { UserAction, UserActionName } from "./types.js";
 type ActionFunction<T extends UserActionName> = (
   gameStatus: GameStatus,
-  payload: Extract<UserAction, { type: T }>["payload"]
+  payload: Extract<UserAction, { type: T }>["payload"],
 ) => GameStatus;
 
 export const updateOnSelect: ActionFunction<"SELECT"> = (
   { diceSet, scoreObjectList, currentPlayerId },
-  hand
+  hand,
 ) => {
   if (isUnavailableDiceSet(diceSet))
     throw new Error("Dice have not been rolled yet");
@@ -40,7 +40,7 @@ export const updateOnSelect: ActionFunction<"SELECT"> = (
 
 export const updateOnRoll: ActionFunction<"ROLL"> = (
   { scoreObjectList: scoreObjectList, currentPlayerId, remainingRoll },
-  nextDiceSet
+  nextDiceSet,
 ) => {
   if (remainingRoll <= 0) throw new Error("No remaining rolls left");
 
@@ -56,7 +56,7 @@ export const updateOnToggleDiceHolding: ActionFunction<
   "TOGGLE_DICE_HOLDING"
 > = (
   { diceSet, scoreObjectList: scoreObjectList, currentPlayerId, remainingRoll },
-  index
+  index,
 ) => {
   if (isUnavailableDiceSet(diceSet))
     throw new Error("Dice have not been rolled yet");

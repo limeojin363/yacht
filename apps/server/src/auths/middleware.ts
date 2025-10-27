@@ -21,7 +21,7 @@ export const getUserId = (authorization: string) => {
   try {
     const decodedInfo = jwt.verify(
       token,
-      process.env.ACCESS_TOKEN_SECRET as string
+      process.env.ACCESS_TOKEN_SECRET as string,
     );
     const { userId } = SchemaOf.DecodedInfo.parse(decodedInfo);
 

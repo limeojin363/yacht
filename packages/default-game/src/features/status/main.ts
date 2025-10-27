@@ -14,7 +14,7 @@ import {
 import { HAND_LIST } from "../../constants";
 
 export const getInitialGameStatus = (
-  totalPlayersNum: PlayersNum
+  totalPlayersNum: PlayersNum,
 ): GameStatus => {
   const getPlayerInitialStatus = (): SinglePlayer => ({
     NUMBERS_1: null,
@@ -66,14 +66,14 @@ export const getUpdatedGameStatus =
 
 export const isGameStatusEqual = (a: GameStatus, b: GameStatus) => {
   const areDicesOk = [0, 1, 2, 3, 4].every(
-    (i) => a.diceSet[i] === b.diceSet[i]
+    (i) => a.diceSet[i] === b.diceSet[i],
   );
   const isCurrentPlayerOk = a.currentPlayerId === b.currentPlayerId;
   const isRemainingRerollOk = a.remainingRoll === b.remainingRoll;
   const arePlayersOk = HAND_LIST.every(
     (hand) =>
       a.scoreObjectList[0][hand] === b.scoreObjectList[0][hand] &&
-      a.scoreObjectList[1][hand] === b.scoreObjectList[1][hand]
+      a.scoreObjectList[1][hand] === b.scoreObjectList[1][hand],
   );
 
   return areDicesOk && isCurrentPlayerOk && isRemainingRerollOk && arePlayersOk;

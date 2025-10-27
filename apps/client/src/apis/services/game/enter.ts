@@ -6,7 +6,7 @@ import {
 } from "@yacht/communications";
 
 type EnterGameType = (
-  b: EnterGameReqBody
+  b: EnterGameReqBody,
 ) => ResponsePromise<{ data: EnterGameResBody }>;
 
 export const EnterTheGame: EnterGameType = (body) =>

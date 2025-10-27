@@ -26,7 +26,7 @@ export const SpecialHandsExodiaMap = {
                 handInput !== undefined &&
                 gameStatus.getScoreOf({ rowName, playerId }) !== 0
               );
-            }
+            },
           )
         ) {
           totalScore += 99999;
@@ -62,7 +62,7 @@ export const SpecialHandsExodiaMap = {
                   return true;
                 }
                 return false;
-              }
+              },
             );
             return false;
           };
@@ -72,7 +72,7 @@ export const SpecialHandsExodiaMap = {
             Object.values(gameStatus.handSelectionObjects).forEach(
               (playerSelection) => {
                 const thisPlayerTurn = Object.values(playerSelection).filter(
-                  (v) => v !== null
+                  (v) => v !== null,
                 ).length;
                 if (turn === null) {
                   turn = thisPlayerTurn;
@@ -81,7 +81,7 @@ export const SpecialHandsExodiaMap = {
                     return false;
                   }
                 }
-              }
+              },
             );
 
             return true;
@@ -90,7 +90,7 @@ export const SpecialHandsExodiaMap = {
           if (wasThisTurnEnded() && wasExodiaTriggered()) return true;
 
           for (const selection of Object.values(
-            gameStatus.handSelectionObjects
+            gameStatus.handSelectionObjects,
           )) {
             if (Object.values(selection).some((v) => v === null)) {
               return false;
@@ -180,7 +180,7 @@ export const NumbersExodiaMap = {
                 }
 
                 return numbersScore >= 90;
-              }
+              },
             );
 
           const wasThisTurnEnded = () => {
@@ -188,7 +188,7 @@ export const NumbersExodiaMap = {
             Object.values(gameStatus.handSelectionObjects).forEach(
               (playerSelection) => {
                 const thisPlayerTurn = Object.values(playerSelection).filter(
-                  (v) => v !== null
+                  (v) => v !== null,
                 ).length;
                 if (turn === null) {
                   turn = thisPlayerTurn;
@@ -197,7 +197,7 @@ export const NumbersExodiaMap = {
                     return false;
                   }
                 }
-              }
+              },
             );
 
             return true;
@@ -206,7 +206,7 @@ export const NumbersExodiaMap = {
           if (wasThisTurnEnded() && wasExodiaTriggered()) return true;
 
           for (const selection of Object.values(
-            gameStatus.handSelectionObjects
+            gameStatus.handSelectionObjects,
           )) {
             if (Object.values(selection).some((v) => v === null)) {
               return false;

@@ -25,7 +25,7 @@ export const updateGameEndpoint = defaultEndpointsFactory
 
       if (game.progressType !== 0) {
         throw new Error(
-          "Cannot update a game that is in progress or completed"
+          "Cannot update a game that is in progress or completed",
         );
       }
 
@@ -38,7 +38,7 @@ export const updateGameEndpoint = defaultEndpointsFactory
       });
 
       const nextGameStatus = GameStatusSchema.parse(
-        JSON.parse(rawGameStatus as string)
+        JSON.parse(rawGameStatus as string),
       );
 
       return {

@@ -25,5 +25,5 @@ export const N3TimesOptionMap = N3TimesOptionParamList.reduce(
     };
     return acc;
   },
-  {} as Record<N3TimesOptionName, AlterOptionObject>
+  {} as Record<N3TimesOptionName, AlterOptionObject>,
 );

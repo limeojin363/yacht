@@ -55,8 +55,8 @@ const gameInteractionHandler =
             gamePlayerId: null,
             gamePlayerColor: null,
             gameConnected: 0,
-          }
-        })
+          },
+        });
 
         socket.to(String(gameId)).emit("game-ended");
       }

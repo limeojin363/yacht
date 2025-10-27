@@ -6,20 +6,13 @@ import { YachtOptionMap } from "./Yacht";
 import { AllNumberBonusMissionOptionName } from "./BonusMission";
 import { ChoiceOptionName } from "./Choice";
 import { FusionOptionName } from "./Fusion";
-import {
-  N1TimesOptionName,
-  N1IfZeroOptionName,
-  N1EtcOptionName,
-} from "./N1";
+import { N1TimesOptionName, N1IfZeroOptionName, N1EtcOptionName } from "./N1";
 import { N2TimesOptionName } from "./N2";
 import { N3TimesOptionName } from "./N3";
 import { N4TimesOptionName } from "./N4";
 import { N5TimesOptionName } from "./N5";
 import { N6TimesOptionName } from "./N6";
-import {
-  RollLimitOptionName,
-  HoldingLimitOptionName,
-} from "./UserActionLimit";
+import { RollLimitOptionName, HoldingLimitOptionName } from "./UserActionLimit";
 import { YachtOptionName } from "./Yacht";
 import type { GameStatus } from "../../status/main";
 

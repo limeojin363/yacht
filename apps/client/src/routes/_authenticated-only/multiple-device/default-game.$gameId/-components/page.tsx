@@ -23,7 +23,7 @@ const socketUrl =
 const getAuthorizationHeader = () =>
   `Bearer ${JSON.parse(localStorage.getItem("accessToken") || "")}`;
 
-const getRefreshHeader = () => 
+const getRefreshHeader = () =>
   JSON.parse(localStorage.getItem("refreshToken") || "");
 
 const getSocket = (gameId: number) => {
@@ -129,14 +129,14 @@ const useRoomInfo = (gameId: number) => {
       });
     });
 
-    socket.on("refreshed", ({accessToken, refreshToken}) => {
+    socket.on("refreshed", ({ accessToken, refreshToken }) => {
       console.log("refreshed");
       localStorage.setItem("accessToken", JSON.stringify(accessToken));
       localStorage.setItem("refreshToken", JSON.stringify(refreshToken));
-    })
+    });
 
     socket.on("error-on-connection", () => {
-      toast.error("게임 접속 중 오류가 발생했습니다.", );
+      toast.error("게임 접속 중 오류가 발생했습니다.");
       navigate({ to: "/multiple-device/default-game" });
     });
 
@@ -144,7 +144,10 @@ const useRoomInfo = (gameId: number) => {
       console.log("game-interaction", { type, payload });
       setCurrentRoomInfo((prev) => {
         if (!prev) return;
-        const nextGameStatus = getUpdatedGameStatus(prev.gameStatus)({ type, payload });
+        const nextGameStatus = getUpdatedGameStatus(prev.gameStatus)({
+          type,
+          payload,
+        });
         const nextProgressType = isGameFinished(nextGameStatus) ? 2 : 1;
         return {
           ...prev,
@@ -156,7 +159,7 @@ const useRoomInfo = (gameId: number) => {
 
     socket.on("game-interrupted", ({ userId }) => {
       toast.error(
-        `게임이 중단되었습니다. (userId: ${userId}님이 게임에서 나갔습니다.)`
+        `게임이 중단되었습니다. (userId: ${userId}님이 게임에서 나갔습니다.)`,
       );
       navigate({ to: "/multiple-device/default-game" });
     });
@@ -279,14 +282,14 @@ const GamePage = ({ gameId }: { gameId: number }) => {
   if (!isAvailablePlayerList(playerList))
     return <div>playerList에 null이 포함되어 있음</div>;
 
-    return (
-      <DefaultGame
-        playerList={playerList}
-        isMyTurn={isMyTurn}
-        gameStatus={gameObject}
-        {...listeners}
-      />
-    );
+  return (
+    <DefaultGame
+      playerList={playerList}
+      isMyTurn={isMyTurn}
+      gameStatus={gameObject}
+      {...listeners}
+    />
+  );
 };
 
 const S = {
@@ -301,7 +304,7 @@ const S = {
 export default GamePage;
 
 const isAvailablePlayerList = (
-  playerList: (Player | null)[]
+  playerList: (Player | null)[],
 ): playerList is Player[] => {
   return playerList.every((p) => p !== null);
 };

@@ -8,7 +8,7 @@ const useCellProps = (playerId: PlayerId): ScoreCellViewProps => {
 
   const totalScore = Object.values(gameStatus.scoreObjectList[playerId]).reduce(
     (acc, score) => (acc ?? 0) + (score ?? 0),
-    0
+    0,
   ) as number;
 
   return {

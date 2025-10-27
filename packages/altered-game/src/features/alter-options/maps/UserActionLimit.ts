@@ -2,11 +2,12 @@ import type { AlterOptionObject } from ".";
 
 const RollLimitOptionParamList = [1, 2, 4, 5] as const;
 
-export type RollLimitOptionName = typeof RollLimitOptionParamList[number] extends infer T
-  ? T extends number
-    ? `ROLL_LIMIT_${T}`
-    : never
-  : never;
+export type RollLimitOptionName =
+  (typeof RollLimitOptionParamList)[number] extends infer T
+    ? T extends number
+      ? `ROLL_LIMIT_${T}`
+      : never
+    : never;
 
 export const RollLimitMap = RollLimitOptionParamList.reduce(
   (acc, curr) => {
@@ -16,20 +17,21 @@ export const RollLimitMap = RollLimitOptionParamList.reduce(
       handDependencies: [],
       onTrigger(gameStatus) {
         gameStatus.maxRoll = curr;
-      }
+      },
     };
     return acc;
   },
-  {} as Record<RollLimitOptionName, AlterOptionObject>
+  {} as Record<RollLimitOptionName, AlterOptionObject>,
 );
 
 const HoldingLimitParamList = [0, 1, 2, 3, 4] as const;
 
-export type HoldingLimitOptionName = typeof HoldingLimitParamList[number] extends infer T
-  ? T extends number
-    ? `HOLDING_LIMIT_${T}`
-    : never
-  : never;
+export type HoldingLimitOptionName =
+  (typeof HoldingLimitParamList)[number] extends infer T
+    ? T extends number
+      ? `HOLDING_LIMIT_${T}`
+      : never
+    : never;
 
 export const HoldingLimitOptionMap = HoldingLimitParamList.reduce(
   (acc, curr) => {
@@ -39,9 +41,9 @@ export const HoldingLimitOptionMap = HoldingLimitParamList.reduce(
       handDependencies: [],
       onTrigger(gameStatus) {
         gameStatus.maxHolding = curr;
-      }
+      },
     };
     return acc;
   },
-  {} as Record<HoldingLimitOptionName, AlterOptionObject>
+  {} as Record<HoldingLimitOptionName, AlterOptionObject>,
 );

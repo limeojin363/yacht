@@ -14,7 +14,7 @@ const getDiceEyes = (diceSet: AvailableDiceSet) =>
 
 const useCellProps = (
   playerId: PlayerId,
-  hand: AvailableHand
+  hand: AvailableHand,
 ): ScoreCellViewProps => {
   const { onClickCell, gameStatus, playerList } = use(DefaultGameContext);
 

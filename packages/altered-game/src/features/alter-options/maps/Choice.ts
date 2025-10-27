@@ -27,12 +27,12 @@ export const ChoiceOptionMap = ChoiceOptionParamList.reduce(
       onTrigger(gameStatus) {
         Array.from({ length: curr[1] }, (_, idx) => {
           gameStatus.rowCalculator[`CHOICE_x${curr[1]}_${Postfix[idx]}`] = (
-            handInput: number[]
+            handInput: number[],
           ) => GetDefaultScoreOf.CHOICE(handInput) * curr[1];
         });
       },
     };
     return acc;
   },
-  {} as Record<ChoiceOptionName, AlterOptionObject>
+  {} as Record<ChoiceOptionName, AlterOptionObject>,
 );

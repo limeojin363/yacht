@@ -22,7 +22,7 @@ const useCheck = () => {
       console.log({ gameId });
 
       if (gameId) {
-        toast.warn("참가 중인 게임으로 이동합니다.")
+        toast.warn("참가 중인 게임으로 이동합니다.");
         navigate({
           to: "/multiple-device/default-game/$gameId",
           params: { gameId: String(gameId) },

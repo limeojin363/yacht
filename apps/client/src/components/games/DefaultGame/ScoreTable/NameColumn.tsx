@@ -4,7 +4,7 @@ import { HAND_LIST } from "@yacht/default-game";
 const NameColumn = () => {
   return (
     <S.Root>
-      {["PLAYER_NAME",...HAND_LIST, "TOTAL"].map((hand) => (
+      {["PLAYER_NAME", ...HAND_LIST, "TOTAL"].map((hand) => (
         <S.Cell key={`handname-${hand}`}>{hand}</S.Cell>
       ))}
     </S.Root>

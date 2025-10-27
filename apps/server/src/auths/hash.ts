@@ -10,7 +10,7 @@ export const createSalt = (): Promise<string> =>
 
 export const createHashedPassword = (
   plainPassword: string,
-  salt: string
+  salt: string,
 ): Promise<string> =>
   new Promise(async (resolve, reject) => {
     crypto.pbkdf2(plainPassword, salt, 9999, 64, "sha512", (err, key) => {
@@ -18,4 +18,3 @@ export const createHashedPassword = (
       resolve(key.toString("base64"));
     });
   });
-

@@ -3,11 +3,12 @@ import { GetDefaultScoreOf } from "../../score";
 
 const N2TimesOptionParamList = [-1, -2, 0.5, 3, 4, 5] as const;
 
-export type N2TimesOptionName = typeof N2TimesOptionParamList[number] extends infer T
-  ? T extends number
-    ? `NUMBERS_2_${T}x`
-    : never
-  : never;
+export type N2TimesOptionName =
+  (typeof N2TimesOptionParamList)[number] extends infer T
+    ? T extends number
+      ? `NUMBERS_2_${T}x`
+      : never
+    : never;
 
 export const N2TimesOptionMap = N2TimesOptionParamList.reduce(
   (acc, curr) => {
@@ -24,7 +25,7 @@ export const N2TimesOptionMap = N2TimesOptionParamList.reduce(
     };
     return acc;
   },
-  {} as Record<N2TimesOptionName, AlterOptionObject>
+  {} as Record<N2TimesOptionName, AlterOptionObject>,
 );
 
 export const N2EtcOptionMap: Record<string, AlterOptionObject> = {
@@ -36,6 +37,6 @@ export const N2EtcOptionMap: Record<string, AlterOptionObject> = {
         const baseScore = GetDefaultScoreOf[`NUMBERS_2`](handInput);
         return baseScore * baseScore;
       };
-    }
+    },
   },
 };

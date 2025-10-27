@@ -73,7 +73,7 @@ function generateRandomColor(): HexColor {
 
 const useProps = (totalPlayersNum: PlayersNum): DefaultGameContextValues => {
   const [gameStatus, setGameStatus] = useState(
-    getInitialGameStatus(totalPlayersNum)
+    getInitialGameStatus(totalPlayersNum),
   );
 
   const navigate = useNavigate();
@@ -104,7 +104,7 @@ const useProps = (totalPlayersNum: PlayersNum): DefaultGameContextValues => {
         playerColor: generateRandomColor(),
         playerId: index as PlayerId,
       })),
-    [totalPlayersNum]
+    [totalPlayersNum],
   );
 
   return {
@@ -131,7 +131,7 @@ const useProps = (totalPlayersNum: PlayersNum): DefaultGameContextValues => {
     },
     onExit: () => {
       navigate({ to: "/" });
-    }
+    },
   };
 };
 
