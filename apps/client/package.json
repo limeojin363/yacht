@@ -17,6 +17,7 @@
     "@tanstack/react-router": "^1.131.31",
     "@tanstack/react-router-devtools": "^1.131.31",
     "@types/cors": "^2.8.18",
+    "@yacht/altered-game": "workspace:^",
     "@yacht/communications": "workspace:^",
     "@yacht/default-game": "workspace:^",
     "http-errors": "^2.0.0",
