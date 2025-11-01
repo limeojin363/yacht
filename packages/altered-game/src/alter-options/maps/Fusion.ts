@@ -17,13 +17,13 @@ const FusionOptionParamList = [
 export type FusionOptionName =
   (typeof FusionOptionParamList)[number] extends infer T
     ? T extends readonly [infer A, infer B]
-      ? `FUSION_${A & number}&${B & number}`
+      ? `NUMBER${A & number}&${B & number}_FUSION`
       : never
     : never;
 
 export const FusionOptionMap = FusionOptionParamList.reduce(
   (acc, curr) => {
-    const name = `FUSION_${curr[0]}&${curr[1]}` as FusionOptionName;
+    const name = `NUMBER${curr[0]}&${curr[1]}_FUSION` as FusionOptionName;
     acc[name] = {
       description: `NUMBERS_${curr[0]}과 NUMBERS_${curr[1]}를 곱연산`,
       handDependencies: [`NUMBERS_${curr[0]}`, `NUMBERS_${curr[1]}`],
@@ -31,7 +31,7 @@ export const FusionOptionMap = FusionOptionParamList.reduce(
         delete gameStatus.rowCalculator[`NUMBERS_${curr[0]}`];
         delete gameStatus.rowCalculator[`NUMBERS_${curr[1]}`];
 
-        gameStatus.rowCalculator[`FUSION_${curr[0]}&${curr[1]}`] = (
+        gameStatus.rowCalculator[name] = (
           handInput: number[],
         ) => {
           const baseScoreA = GetDefaultScoreOf[`NUMBERS_${curr[0]}`](handInput);

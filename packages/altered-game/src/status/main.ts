@@ -26,6 +26,10 @@ export class GameStatus {
     return false;
   }
 
+  get rowNames() {
+    return Object.keys(this.rowCalculator);
+  }
+
   get diceEyes(): DiceEyes {
     if (this.isUnusableDiceSet()) {
       throw new Error("Dice have not been rolled yet");

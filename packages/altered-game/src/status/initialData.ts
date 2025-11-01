@@ -5,6 +5,7 @@ import {
   type PlayerSelectionObject,
   type UnusableDiceSet,
 } from "./types";
+import { generateAlterOptions } from "../alter-options";
 
 export type GamePreset = {
   // TODO: 이 필드 쓰기
@@ -45,7 +46,7 @@ export const getInitialDataPart = ({
   };
 
   return {
-    alterOptions: [],
+    alterOptions: generateAlterOptions(),
     playerHandSelectionObjectMap: getPlayerHandSelectionObjectMap(),
     diceSet: getDicesInitialStatus(),
     currentPlayerId: 0,
