@@ -69,7 +69,7 @@ export type PlayerHandSelectionObjectMap = z.infer<
 
 export const AlterOptionSchema = z.object({
   revealed: z.boolean(),
-  turn: z.number(),
+  time: z.number(),
   name: z.string(),
 });
 

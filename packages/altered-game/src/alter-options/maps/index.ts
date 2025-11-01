@@ -38,7 +38,7 @@ export type AlterOptionName =
   | HoldingLimitOptionName
   | YachtOptionName;
 
-const AlterOptionMap: Record<string, AlterOptionObject> = {
+export const AlterOptionMap: Record<string, AlterOptionObject> = {
   ...FusionOptionMap,
   ...ChoiceOptionMap,
   ...N1TimesOptionMap,
@@ -47,5 +47,3 @@ const AlterOptionMap: Record<string, AlterOptionObject> = {
   ...YachtOptionMap,
   ...AllNumberBonusMissionOptionMap,
 };
-
-export default AlterOptionMap;

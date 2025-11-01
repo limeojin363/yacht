@@ -1,30 +1,14 @@
 import _ from "lodash";
-import AlterOptionMap from "../alter-options/maps";
 import { GetDefaultScoreOf } from "../score";
 import type {
   DiceEyes,
-  DiceSet,
   GameStatusDataPart,
-  UnusableDiceSet,
   UsableDiceSet,
   UserAction,
 } from "./types";
+import { AlterOptionMap } from "../alter-options";
 
 export class GameStatus {
-  static extractDiceEyes(diceSet: UsableDiceSet): DiceEyes {
-    return diceSet.map((d) => d.eye) as DiceEyes;
-  }
-
-  static isUnusableDiceSet(diceSet: DiceSet): diceSet is UnusableDiceSet {
-    if (diceSet.every((d) => d === null)) return true;
-    return false;
-  }
-
-  static generateDiceEye() {
-    const eyes = [1, 2, 3, 4, 5, 6] as const;
-    return eyes[Math.floor(Math.random() * eyes.length)]!;
-  }
-
   alterOptions: GameStatusDataPart["alterOptions"];
   currentPlayerId: GameStatusDataPart["currentPlayerId"];
   diceSet: GameStatusDataPart["diceSet"];
@@ -36,6 +20,23 @@ export class GameStatus {
   rowCalculator: Record<string, (handInput: number[]) => number> = {
     ...GetDefaultScoreOf,
   };
+
+  isUnusableDiceSet(): this is this & { diceSet: UsableDiceSet } {
+    if (this.diceSet.some((d) => d === null)) return true;
+    return false;
+  }
+
+  get diceEyes(): DiceEyes {
+    if (this.isUnusableDiceSet()) {
+      throw new Error("Dice have not been rolled yet");
+    }
+    return this.diceSet.map((d) => d!.eye) as DiceEyes;
+  }
+
+  static generateDiceEye() {
+    const eyes = [1, 2, 3, 4, 5, 6] as const;
+    return eyes[Math.floor(Math.random() * eyes.length)]!;
+  }
 
   getTotalScore({ playerId }: { playerId: number }) {
     const playerSelection = this.handSelectionObjects[playerId];
@@ -50,6 +51,7 @@ export class GameStatus {
         totalScore += rowScoreGetter(handInput);
       }
     }
+    return totalScore;
   }
 
   getScoreOf({ rowName, playerId }: { rowName: string; playerId: number }) {
@@ -70,7 +72,7 @@ export class GameStatus {
       // TODO: 턴 진행에 따라 alterOption reveal 수행되도록
       case "HAND-SELECT":
         const hand = payload;
-        if (GameStatus.isUnusableDiceSet(this.diceSet))
+        if (this.isUnusableDiceSet())
           throw new Error("Dice have not been rolled yet");
 
         const player = this.handSelectionObjects[this.currentPlayerId];
@@ -84,10 +86,17 @@ export class GameStatus {
         }
 
         if (player[hand] !== null) {
-          throw new Error("Hand already selected");
+          throw new Error("Hand is already selected");
         }
 
-        player[hand] = GameStatus.extractDiceEyes(this.diceSet);
+        player[hand] = this.diceEyes;
+
+        this.alterOptions.forEach((alterOption) => {
+          if (!alterOption.revealed && alterOption.time * this.countTotalPlayers === this.currentTurn) {
+            alterOption.revealed = true;
+            this.triggerAlterOption(alterOption.name);
+          }
+        })
 
         return this.getShallowClone();
       case "ROLL":
@@ -97,14 +106,14 @@ export class GameStatus {
 
         return this.getShallowClone();
       case "TOGGLE-HOLDING":
-        if (GameStatus.isUnusableDiceSet(this.diceSet))
+        if (this.isUnusableDiceSet())
           throw new Error("Dice have not been rolled yet");
         const diceIndex = payload;
 
         const dice = this.diceSet[diceIndex];
-        if (dice === undefined) throw new Error();
+        if (!dice) throw new Error("Dice does not exist");
 
-        if (!dice.held && this.currentHeldDices >= this.maxHolding) {
+        if (!dice.held && this.countHeldDices >= this.maxHolding) {
           throw new Error("Holding limit exceeded");
         }
 
@@ -142,17 +151,17 @@ export class GameStatus {
     return turn;
   }
 
-  get totalHand() {
+  get countTotalHand() {
     const hands = Object.keys(this.handSelectionObjects[0]!);
     return hands.length;
   }
 
-  get totalRow() {
+  get countTotalRow() {
     const rows = Object.keys(this.rowCalculator);
     return rows.length;
   }
 
-  get currentFilledRowNum() {
+  get countFilledCells() {
     let filledRowNum = 0;
     Object.values(this.handSelectionObjects).forEach((handSelectionObject) => {
       Object.values(handSelectionObject).forEach((selection) => {
@@ -181,21 +190,21 @@ export class GameStatus {
     return true;
   }
 
-  get totalPlayers() {
+  get countTotalPlayers() {
     return Object.keys(this.handSelectionObjects).length;
   }
 
-  get totalTurn() {
-    return this.totalPlayers * this.totalRow;
+  get countTotalTurn() {
+    return this.countTotalPlayers * this.countTotalRow;
   }
 
-  get currentHeldDices() {
-    if (GameStatus.isUnusableDiceSet(this.diceSet)) return 0;
+  get countHeldDices() {
+    if (this.isUnusableDiceSet()) return 0;
     return this.diceSet.filter((d) => d !== null && d.held).length;
   }
 
   generateNextDiceSet(): UsableDiceSet {
-    if (!GameStatus.isUnusableDiceSet(this.diceSet)) {
+    if (!this.isUnusableDiceSet()) {
       return this.diceSet.map((dice) =>
         dice!.held ? dice : { eye: GameStatus.generateDiceEye(), held: false }
       ) as UsableDiceSet;

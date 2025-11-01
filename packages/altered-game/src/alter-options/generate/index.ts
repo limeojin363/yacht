@@ -1,5 +1,5 @@
 import type { AlterOption } from "../../status";
-import AlterOptionMap from "../maps";
+import { AlterOptionMap } from "../maps";
 
 const getRandomItemFromArray = <T>(arr: T[]) => {
   if (arr.length === 0) {
@@ -22,35 +22,35 @@ export const generateAlterOptions = (): AlterOption[] => {
   ret.push({
     name: name1,
     revealed: false,
-    turn: 2,
+    time: 2,
   });
 
   const name2 = getRandomItemFromArray(
     Object.keys(AlterOptionMap).filter((name) =>
       AlterOptionMap[name]!.handDependencies.every(
-        (dep) => !dependencies.includes(dep),
-      ),
-    ),
+        (dep) => !dependencies.includes(dep)
+      )
+    )
   );
 
   ret.push({
     name: name2!,
     revealed: false,
-    turn: 4,
+    time: 4,
   });
 
   const name3 = getRandomItemFromArray(
     Object.keys(AlterOptionMap).filter((name) =>
       AlterOptionMap[name]!.handDependencies.every(
-        (dep) => !dependencies.includes(dep),
-      ),
-    ),
+        (dep) => !dependencies.includes(dep)
+      )
+    )
   );
 
   ret.push({
     name: name3!,
     revealed: false,
-    turn: 6,
+    time: 6,
   });
 
   return ret;
