@@ -1,4 +1,4 @@
 export * from "./initialData.js";
 export * from "./types.js";
-export * from "./main";
+export * from "./main.js";
   
