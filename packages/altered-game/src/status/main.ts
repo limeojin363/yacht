@@ -12,7 +12,8 @@ export class GameStatus {
   alterOptions: GameStatusDataPart["alterOptions"];
   currentPlayerId: GameStatusDataPart["currentPlayerId"];
   diceSet: GameStatusDataPart["diceSet"];
-  handSelectionObjects: GameStatusDataPart["playerHandSelectionObjectMap"];
+  handSelectionObjectMap: GameStatusDataPart["playerHandSelectionObjectMap"];
+  playerColorMap: GameStatusDataPart["playerColorMap"];
   remainingRoll: GameStatusDataPart["remainingRoll"];
 
   maxHolding: number;
@@ -30,6 +31,10 @@ export class GameStatus {
     return Object.keys(this.rowCalculator);
   }
 
+  get playerNames() {
+    return Object.keys(this.handSelectionObjectMap);
+  }
+
   get diceEyes(): DiceEyes {
     if (this.isUnusableDiceSet()) {
       throw new Error("Dice have not been rolled yet");
@@ -42,8 +47,8 @@ export class GameStatus {
     return eyes[Math.floor(Math.random() * eyes.length)]!;
   }
 
-  getTotalScore({ playerId }: { playerId: number }) {
-    const playerSelection = this.handSelectionObjects[playerId];
+  getTotalScore({ playerName }: { playerName: string }) {
+    const playerSelection = this.handSelectionObjectMap[playerName];
     if (playerSelection === undefined) throw new Error();
 
     let totalScore = 0;
@@ -58,8 +63,8 @@ export class GameStatus {
     return totalScore;
   }
 
-  getScoreOf({ rowName, playerId }: { rowName: string; playerId: number }) {
-    const playerSelection = this.handSelectionObjects[playerId];
+  getScoreOf({ rowName, playerName }: { rowName: string; playerName: string }) {
+    const playerSelection = this.handSelectionObjectMap[playerName];
     if (playerSelection === undefined) throw new Error();
     const handInput = playerSelection[rowName];
     if (handInput === undefined) throw new Error();
@@ -79,7 +84,7 @@ export class GameStatus {
         if (this.isUnusableDiceSet())
           throw new Error("Dice have not been rolled yet");
 
-        const player = this.handSelectionObjects[this.currentPlayerId];
+        const player = this.handSelectionObjectMap[this.currentPlayerId];
 
         if (player === undefined) {
           throw new Error("Player does not exist");
@@ -96,11 +101,14 @@ export class GameStatus {
         player[hand] = this.diceEyes;
 
         this.alterOptions.forEach((alterOption) => {
-          if (!alterOption.revealed && alterOption.time * this.countTotalPlayers === this.currentTurn) {
+          if (
+            !alterOption.revealed &&
+            alterOption.time * this.countTotalPlayers === this.currentTurn
+          ) {
             alterOption.revealed = true;
             this.triggerAlterOption(alterOption.name);
           }
-        })
+        });
 
         return this.getShallowClone();
       case "ROLL":
@@ -138,14 +146,15 @@ export class GameStatus {
       alterOptions: this.alterOptions,
       currentPlayerId: this.currentPlayerId,
       diceSet: this.diceSet,
-      playerHandSelectionObjectMap: this.handSelectionObjects,
+      playerHandSelectionObjectMap: this.handSelectionObjectMap,
       remainingRoll: this.remainingRoll,
+      playerColorMap: this.playerColorMap,
     };
   }
 
   get currentTurn() {
     let turn = 0;
-    Object.values(this.handSelectionObjects).forEach((handSelectionObject) => {
+    Object.values(this.handSelectionObjectMap).forEach((handSelectionObject) => {
       Object.values(handSelectionObject).forEach((selection) => {
         if (selection !== null) {
           turn += 1;
@@ -156,7 +165,7 @@ export class GameStatus {
   }
 
   get countTotalHand() {
-    const hands = Object.keys(this.handSelectionObjects[0]!);
+    const hands = Object.keys(this.handSelectionObjectMap[0]!);
     return hands.length;
   }
 
@@ -167,7 +176,7 @@ export class GameStatus {
 
   get countFilledCells() {
     let filledRowNum = 0;
-    Object.values(this.handSelectionObjects).forEach((handSelectionObject) => {
+    Object.values(this.handSelectionObjectMap).forEach((handSelectionObject) => {
       Object.values(handSelectionObject).forEach((selection) => {
         if (selection !== null) {
           filledRowNum += 1;
@@ -186,7 +195,7 @@ export class GameStatus {
   }
 
   get isFinished() {
-    for (const selection of Object.values(this.handSelectionObjects)) {
+    for (const selection of Object.values(this.handSelectionObjectMap)) {
       if (Object.values(selection).some((v) => v === null)) {
         return false;
       }
@@ -195,7 +204,7 @@ export class GameStatus {
   }
 
   get countTotalPlayers() {
-    return Object.keys(this.handSelectionObjects).length;
+    return Object.keys(this.handSelectionObjectMap).length;
   }
 
   get countTotalTurn() {
@@ -227,8 +236,9 @@ export class GameStatus {
     this.alterOptions = dataPart.alterOptions;
     this.currentPlayerId = dataPart.currentPlayerId;
     this.diceSet = dataPart.diceSet;
-    this.handSelectionObjects = dataPart.playerHandSelectionObjectMap;
+    this.handSelectionObjectMap = dataPart.playerHandSelectionObjectMap;
     this.remainingRoll = dataPart.remainingRoll;
+    this.playerColorMap = dataPart.playerColorMap;
 
     this.maxHolding = 5;
     this.maxRoll = 3;

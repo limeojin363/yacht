@@ -23,13 +23,13 @@ export const AllNumberBonusMissionOptionMap =
         description: `모든 NUMBERS 미션의 점수가 ${curr[0]}점 이상이면 ${curr[1]}점 획득`,
         handDependencies: [],
         onTrigger(gameStatus) {
-          gameStatus.getTotalScore = ({ playerId }) => {
-            const playerSelection = gameStatus.handSelectionObjects[playerId];
+          gameStatus.getTotalScore = ({ playerName }) => {
+            const playerSelection = gameStatus.handSelectionObjectMap[playerName];
             if (playerSelection === undefined) throw new Error();
 
             let totalScore = 0;
             for (const [rowName, handInput] of Object.entries(
-              playerSelection,
+              playerSelection
             )) {
               const rowScoreGetter = gameStatus.rowCalculator[rowName];
               if (rowScoreGetter === undefined) throw new Error();
@@ -65,5 +65,5 @@ export const AllNumberBonusMissionOptionMap =
       };
       return acc;
     },
-    {} as Record<AllNumberBonusMissionOptionName, AlterOptionObject>,
+    {} as Record<AllNumberBonusMissionOptionName, AlterOptionObject>
   );

@@ -5,8 +5,8 @@ export const SpecialHandsExodiaMap = {
     description: `STRAIGHT - FULLHOUSE - TRIPLE - FOURCARD - YACHT를 전부 채우면 99999점을 얻고 게임 종료(해당 턴까지 진행후)`,
     handDependencies: ["STRAIGHT", "FULLHOUSE", "TRIPLE", "FOURCARD", "YACHT"],
     onTrigger(gameStatus) {
-      gameStatus.getTotalScore = ({ playerId }) => {
-        const playerSelection = gameStatus.handSelectionObjects[playerId];
+      gameStatus.getTotalScore = ({ playerName }) => {
+        const playerSelection = gameStatus.handSelectionObjectMap[playerName];
         if (playerSelection === undefined) throw new Error();
 
         let totalScore = 0;
@@ -24,7 +24,7 @@ export const SpecialHandsExodiaMap = {
               return (
                 handInput !== null &&
                 handInput !== undefined &&
-                gameStatus.getScoreOf({ rowName, playerId }) !== 0
+                gameStatus.getScoreOf({ rowName, playerName }) !== 0
               );
             },
           )
@@ -38,8 +38,8 @@ export const SpecialHandsExodiaMap = {
       Object.defineProperty(gameStatus, "isFinished", {
         get: (): boolean => {
           const wasExodiaTriggered = () => {
-            Object.values(gameStatus.handSelectionObjects).forEach(
-              (playerSelection) => {
+            Object.entries(gameStatus.handSelectionObjectMap).forEach(
+              ([playerName, playerSelection]) => {
                 if (
                   [
                     "STRAIGHT",
@@ -54,7 +54,7 @@ export const SpecialHandsExodiaMap = {
                       handInput !== undefined &&
                       gameStatus.getScoreOf({
                         rowName,
-                        playerId: 0,
+                        playerName
                       }) !== 0
                     );
                   })
@@ -69,7 +69,7 @@ export const SpecialHandsExodiaMap = {
 
           const wasThisTurnEnded = () => {
             let turn: null | number = null;
-            Object.values(gameStatus.handSelectionObjects).forEach(
+            Object.values(gameStatus.handSelectionObjectMap).forEach(
               (playerSelection) => {
                 const thisPlayerTurn = Object.values(playerSelection).filter(
                   (v) => v !== null,
@@ -90,7 +90,7 @@ export const SpecialHandsExodiaMap = {
           if (wasThisTurnEnded() && wasExodiaTriggered()) return true;
 
           for (const selection of Object.values(
-            gameStatus.handSelectionObjects,
+            gameStatus.handSelectionObjectMap,
           )) {
             if (Object.values(selection).some((v) => v === null)) {
               return false;
@@ -115,8 +115,8 @@ export const NumbersExodiaMap = {
     ],
     description: `NUMBERS의 점수 합이 90점 이상이면 99999점을 얻고 게임 종료(해당 턴까지 진행후)`,
     onTrigger(gameStatus) {
-      gameStatus.getTotalScore = ({ playerId }) => {
-        const playerSelection = gameStatus.handSelectionObjects[playerId];
+      gameStatus.getTotalScore = ({ playerName }) => {
+        const playerSelection = gameStatus.handSelectionObjectMap[playerName];
         if (playerSelection === undefined) throw new Error();
 
         let totalScore = 0;
@@ -157,7 +157,7 @@ export const NumbersExodiaMap = {
       Object.defineProperty(gameStatus, "isFinished", {
         get: (): boolean => {
           const wasExodiaTriggered = () =>
-            Object.values(gameStatus.handSelectionObjects).some(
+            Object.values(gameStatus.handSelectionObjectMap).some(
               (playerSelection) => {
                 let numbersScore = 0;
 
@@ -185,7 +185,7 @@ export const NumbersExodiaMap = {
 
           const wasThisTurnEnded = () => {
             let turn: null | number = null;
-            Object.values(gameStatus.handSelectionObjects).forEach(
+            Object.values(gameStatus.handSelectionObjectMap).forEach(
               (playerSelection) => {
                 const thisPlayerTurn = Object.values(playerSelection).filter(
                   (v) => v !== null,
@@ -206,7 +206,7 @@ export const NumbersExodiaMap = {
           if (wasThisTurnEnded() && wasExodiaTriggered()) return true;
 
           for (const selection of Object.values(
-            gameStatus.handSelectionObjects,
+            gameStatus.handSelectionObjectMap,
           )) {
             if (Object.values(selection).some((v) => v === null)) {
               return false;

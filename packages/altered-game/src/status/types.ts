@@ -77,6 +77,7 @@ export type AlterOption = z.infer<typeof AlterOptionSchema>;
 
 export const GameStatusDataSchema = z.object({
   playerHandSelectionObjectMap: PlayerHandSelectionObjectSchema,
+  playerColorMap: z.record(z.string(), z.string()),
   diceSet: DicesetSchema,
   currentPlayerId: z.number(),
   remainingRoll: z.number(),

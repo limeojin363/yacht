@@ -1,20 +1,24 @@
 import _ from "lodash";
 import {
+  type AlterOption,
   type GameStatusDataPart,
   type PlayerHandSelectionObjectMap,
   type PlayerSelectionObject,
   type UnusableDiceSet,
 } from "./types";
 import { generateAlterOptions } from "../alter-options";
+import generatePlayerColor from "../color";
 
 export type GamePreset = {
-  // TODO: 이 필드 쓰기
-  alterOptionInfoList?: never;
+  alterOptionMetaList?: AlterOption[];
+  playerColors?: string[];
   playerNames: string[];
 };
 
 export const getInitialDataPart = ({
   playerNames,
+  alterOptionMetaList = generateAlterOptions(),
+  playerColors,
 }: GamePreset): GameStatusDataPart => {
   const getPlayerInitialStatus = (): PlayerSelectionObject => ({
     NUMBERS_1: null,
@@ -45,11 +49,30 @@ export const getInitialDataPart = ({
     return obj;
   };
 
+  const generatePlayerColorMap = () => {
+    if (!playerColors) {
+      playerColors = Array.from(playerNames, generatePlayerColor);
+    }
+
+    const colorMap: Record<string, string> = {};
+
+    for (let i = 0; i < playerNames.length; i++) {
+      if (!playerColors[i]) {
+        throw new Error("Player colors are not properly defined");
+      }
+
+      colorMap[playerNames[i]!] = playerColors[i]!;
+    }
+
+    return colorMap;
+  };
+
   return {
-    alterOptions: generateAlterOptions(),
+    alterOptions: alterOptionMetaList,
     playerHandSelectionObjectMap: getPlayerHandSelectionObjectMap(),
     diceSet: getDicesInitialStatus(),
     currentPlayerId: 0,
     remainingRoll: 3,
+    playerColorMap: generatePlayerColorMap(),
   };
 };
