@@ -1,4 +1,5 @@
 import _ from "lodash";
+import type { RowInfo } from "../status";
 
 const count = (handInput: number[], number: number) =>
   handInput.filter((n) => n === number).length;
@@ -40,3 +41,67 @@ export const GetDefaultScoreOf = {
   NUMBERS_5: (handInput: number[]) => count(handInput, 5) * 5,
   NUMBERS_6: (handInput: number[]) => count(handInput, 6) * 6,
 } as const satisfies Record<string, (handInput: number[]) => number>;
+
+
+export const getInitialRowInfo = (): Record<string, RowInfo> => ({
+  TRIPLE: {
+    getScore: GetDefaultScoreOf.TRIPLE,
+    description: "At least three dice showing the same number.",
+    type: "NORMAL",
+  },
+  FOURCARD: {
+    getScore: GetDefaultScoreOf.FOURCARD,
+    description: "At least four dice showing the same number.",
+    type: "NORMAL",
+  },
+  FULLHOUSE: {
+    getScore: GetDefaultScoreOf.FULLHOUSE,
+    description: "A combination of three of a kind and a pair.",
+    type: "NORMAL",
+  },
+  STRAIGHT: {
+    getScore: GetDefaultScoreOf.STRAIGHT,
+    description: "All five dice showing a sequence of numbers.",
+    type: "NORMAL",
+  },
+  YACHT: {
+    getScore: GetDefaultScoreOf.YACHT,
+    description: "All five dice showing the same number.",
+    type: "NORMAL",
+  },
+  CHOICE: {
+    getScore: GetDefaultScoreOf.CHOICE,
+    description: "Sum of all dice, regardless of their values.",
+    type: "NORMAL",
+  },
+  NUMBERS_1: {
+    getScore: GetDefaultScoreOf.NUMBERS_1,
+    description: "Sum of all dice showing the number 1.",
+    type: "NORMAL",
+  },
+  NUMBERS_2: {
+    getScore: GetDefaultScoreOf.NUMBERS_2,
+    description: "Sum of all dice showing the number 2.",
+    type: "NORMAL",
+  },
+  NUMBERS_3: {
+    getScore: GetDefaultScoreOf.NUMBERS_3,
+    description: "Sum of all dice showing the number 3.",
+    type: "NORMAL",
+  },
+  NUMBERS_4: {
+    getScore: GetDefaultScoreOf.NUMBERS_4,
+    description: "Sum of all dice showing the number 4.",
+    type: "NORMAL",
+  },
+  NUMBERS_5: {
+    getScore: GetDefaultScoreOf.NUMBERS_5,
+    description: "Sum of all dice showing the number 5.",
+    type: "NORMAL",
+  },
+  NUMBERS_6: {
+    getScore: GetDefaultScoreOf.NUMBERS_6,
+    description: "Sum of all dice showing the number 6.",
+    type: "NORMAL",
+  },
+});

@@ -17,7 +17,9 @@ export const N4TimesOptionMap = N4TimesOptionParamList.reduce(
       description: `NUMBERS_4의 점수를 ${curr}배`,
       handDependencies: [`NUMBERS_4`],
       onTrigger: (gameStatus) => {
-        gameStatus.rowCalculator[`NUMBERS_4`] = (handInput: number[]) => {
+        const row = gameStatus.rowInfoMap[`NUMBERS_4`];
+        if (!row) throw new Error("NUMBERS_4 row info not found");
+        row.getScore = (handInput: number[]) => {
           const baseScore = GetDefaultScoreOf[`NUMBERS_4`](handInput);
           return baseScore * curr;
         };

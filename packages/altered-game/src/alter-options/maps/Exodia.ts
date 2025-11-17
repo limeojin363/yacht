@@ -5,21 +5,21 @@ export const SpecialHandsExodiaMap = {
     description: `STRAIGHT - FULLHOUSE - TRIPLE - FOURCARD - YACHT를 전부 채우면 99999점을 얻고 게임 종료(해당 턴까지 진행후)`,
     handDependencies: ["STRAIGHT", "FULLHOUSE", "TRIPLE", "FOURCARD", "YACHT"],
     onTrigger(gameStatus) {
-      gameStatus.getTotalScore = ({ playerName }) => {
-        const playerSelection = gameStatus.handSelectionObjectMap[playerName];
+      gameStatus.getPlayerTotalScore = ({ playerName }) => {
+        const playerSelection = gameStatus.playerHandSelectionObjectMap[playerName];
         if (playerSelection === undefined) throw new Error();
 
         let totalScore = 0;
         for (const [rowName, handInput] of Object.entries(playerSelection)) {
-          const rowScoreGetter = gameStatus.rowCalculator[rowName];
-          if (rowScoreGetter === undefined) throw new Error();
+          const rowInfo = gameStatus.rowInfoMap[rowName];
+          if (rowInfo === undefined) throw new Error();
 
-          if (handInput !== null) totalScore += rowScoreGetter(handInput);
+          if (handInput !== null) totalScore += rowInfo.getScore(handInput as number[]);
         }
 
         if (
           ["STRAIGHT", "FULLHOUSE", "TRIPLE", "FOURCARD", "YACHT"].every(
-            (rowName) => {
+              (rowName) => {
               const handInput = playerSelection[rowName];
               return (
                 handInput !== null &&
@@ -38,7 +38,7 @@ export const SpecialHandsExodiaMap = {
       Object.defineProperty(gameStatus, "isFinished", {
         get: (): boolean => {
           const wasExodiaTriggered = () => {
-            Object.entries(gameStatus.handSelectionObjectMap).forEach(
+            Object.entries(gameStatus.playerHandSelectionObjectMap).forEach(
               ([playerName, playerSelection]) => {
                 if (
                   [
@@ -69,7 +69,7 @@ export const SpecialHandsExodiaMap = {
 
           const wasThisTurnEnded = () => {
             let turn: null | number = null;
-            Object.values(gameStatus.handSelectionObjectMap).forEach(
+            Object.values(gameStatus.playerHandSelectionObjectMap).forEach(
               (playerSelection) => {
                 const thisPlayerTurn = Object.values(playerSelection).filter(
                   (v) => v !== null,
@@ -90,7 +90,7 @@ export const SpecialHandsExodiaMap = {
           if (wasThisTurnEnded() && wasExodiaTriggered()) return true;
 
           for (const selection of Object.values(
-            gameStatus.handSelectionObjectMap,
+            gameStatus.playerHandSelectionObjectMap,
           )) {
             if (Object.values(selection).some((v) => v === null)) {
               return false;
@@ -115,16 +115,16 @@ export const NumbersExodiaMap = {
     ],
     description: `NUMBERS의 점수 합이 90점 이상이면 99999점을 얻고 게임 종료(해당 턴까지 진행후)`,
     onTrigger(gameStatus) {
-      gameStatus.getTotalScore = ({ playerName }) => {
-        const playerSelection = gameStatus.handSelectionObjectMap[playerName];
+      gameStatus.getPlayerTotalScore = ({ playerName }) => {
+        const playerSelection = gameStatus.playerHandSelectionObjectMap[playerName];
         if (playerSelection === undefined) throw new Error();
 
         let totalScore = 0;
         for (const [rowName, handInput] of Object.entries(playerSelection)) {
-          const rowScoreGetter = gameStatus.rowCalculator[rowName];
-          if (rowScoreGetter === undefined) throw new Error();
+          const rowInfo = gameStatus.rowInfoMap[rowName];
+          if (rowInfo === undefined) throw new Error();
 
-          if (handInput !== null) totalScore += rowScoreGetter(handInput);
+          if (handInput !== null) totalScore += rowInfo.getScore(handInput as number[]);
         }
 
         let numbersScore = 0;
@@ -139,11 +139,11 @@ export const NumbersExodiaMap = {
         ]) {
           const handInput = playerSelection[rowName];
           if (handInput === undefined) throw new Error();
-          const rowScoreGetter = gameStatus.rowCalculator[rowName];
-          if (rowScoreGetter === undefined) throw new Error();
+          const rowInfo = gameStatus.rowInfoMap[rowName];
+          if (rowInfo === undefined) throw new Error();
 
           if (handInput !== null) {
-            numbersScore += rowScoreGetter(handInput);
+            numbersScore += rowInfo.getScore(handInput as number[]);
           }
         }
 
@@ -157,7 +157,7 @@ export const NumbersExodiaMap = {
       Object.defineProperty(gameStatus, "isFinished", {
         get: (): boolean => {
           const wasExodiaTriggered = () =>
-            Object.values(gameStatus.handSelectionObjectMap).some(
+            Object.values(gameStatus.playerHandSelectionObjectMap).some(
               (playerSelection) => {
                 let numbersScore = 0;
 
@@ -171,11 +171,11 @@ export const NumbersExodiaMap = {
                 ]) {
                   const handInput = playerSelection[rowName];
                   if (handInput === undefined) throw new Error();
-                  const rowScoreGetter = gameStatus.rowCalculator[rowName];
-                  if (rowScoreGetter === undefined) throw new Error();
+                  const rowInfo = gameStatus.rowInfoMap[rowName];
+                  if (rowInfo === undefined) throw new Error();
 
                   if (handInput !== null) {
-                    numbersScore += rowScoreGetter(handInput);
+                    numbersScore += rowInfo.getScore(handInput as number[]);
                   }
                 }
 
@@ -185,7 +185,7 @@ export const NumbersExodiaMap = {
 
           const wasThisTurnEnded = () => {
             let turn: null | number = null;
-            Object.values(gameStatus.handSelectionObjectMap).forEach(
+            Object.values(gameStatus.playerHandSelectionObjectMap).forEach(
               (playerSelection) => {
                 const thisPlayerTurn = Object.values(playerSelection).filter(
                   (v) => v !== null,
@@ -206,7 +206,7 @@ export const NumbersExodiaMap = {
           if (wasThisTurnEnded() && wasExodiaTriggered()) return true;
 
           for (const selection of Object.values(
-            gameStatus.handSelectionObjectMap,
+            gameStatus.playerHandSelectionObjectMap,
           )) {
             if (Object.values(selection).some((v) => v === null)) {
               return false;

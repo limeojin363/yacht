@@ -11,32 +11,34 @@ const FusionOptionParamList = [
   [2, 4],
 ] as const;
 
-// TODO: 어떻게 다른건지 원리 이해하기(GPT가 짜준 코등미)
+// TODO: 타입 추출 원리 이해하기(GPT가 짜준 코드임)
 // type Changer<T extends FusionParamTuple> = `FUSION_${T[0]}&${T[1]}`;
 // export type FusionOptionName = Changer<FusionParamTuple>;
 export type FusionOptionName =
   (typeof FusionOptionParamList)[number] extends infer T
     ? T extends readonly [infer A, infer B]
-      ? `NUMBER${A & number}&${B & number}_FUSION`
+      ? `FUSION_${A & number}&${B & number}`
       : never
     : never;
 
 export const FusionOptionMap = FusionOptionParamList.reduce(
   (acc, curr) => {
-    const name = `NUMBER${curr[0]}&${curr[1]}_FUSION` as FusionOptionName;
+    const name = `FUSION_${curr[0]}&${curr[1]}` as FusionOptionName;
     acc[name] = {
       description: `NUMBERS_${curr[0]}과 NUMBERS_${curr[1]}를 곱연산`,
       handDependencies: [`NUMBERS_${curr[0]}`, `NUMBERS_${curr[1]}`],
       onTrigger: (gameStatus) => {
-        delete gameStatus.rowCalculator[`NUMBERS_${curr[0]}`];
-        delete gameStatus.rowCalculator[`NUMBERS_${curr[1]}`];
+        delete gameStatus.rowInfoMap[`NUMBERS_${curr[0]}`];
+        delete gameStatus.rowInfoMap[`NUMBERS_${curr[1]}`];
 
-        gameStatus.rowCalculator[name] = (
-          handInput: number[],
-        ) => {
-          const baseScoreA = GetDefaultScoreOf[`NUMBERS_${curr[0]}`](handInput);
-          const baseScoreB = GetDefaultScoreOf[`NUMBERS_${curr[1]}`](handInput);
-          return baseScoreA * baseScoreB;
+        gameStatus.rowInfoMap[name] = {
+          getScore: (handInput: number[]) => {
+            const baseScoreA = GetDefaultScoreOf[`NUMBERS_${curr[0]}`](handInput);
+            const baseScoreB = GetDefaultScoreOf[`NUMBERS_${curr[1]}`](handInput);
+            return baseScoreA * baseScoreB;
+          },
+          description: `NUMBERS_${curr[0]}와 NUMBERS_${curr[1]}의 곱 연산`,
+          type: "FUSION",
         };
       },
     };

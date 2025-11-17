@@ -1,23 +1,23 @@
 {
-  "name": "codespaces-blank",
-  "version": "1.0.0",
-  "author": "Limeojin <2002eojin@gmail.com>",
-  "license": "MIT",
-  "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "packageManager": "yarn@4.9.1",
-  "scripts": {
-    "dev": "yarn workspace @yacht/client dev & yarn workspace @yacht/server dev",
-    "build-packages": "yarn workspace @yacht/default-game build && yarn workspace @yacht/altered-game build && yarn workspace @yacht/communications build",
-    "build-frontend": "yarn workspace @yacht/client build",
-    "build-backend": "yarn workspace @yacht/server build",
-    "build-pnf": "yarn build-packages && yarn build-frontend",
-    "serve": "yarn workspace @yacht/client serve & yarn workspace @yacht/server serve"
-  },
-  "dependencies": {
-    "typescript": "^5.9.2"
-  }
+    "name": "codespaces-blank",
+    "version": "1.0.0",
+    "author": "Limeojin <2002eojin@gmail.com>",
+    "license": "MIT",
+    "private": true,
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "packageManager": "yarn@4.9.1",
+    "scripts": {
+        "dev": "yarn workspace @yacht/client dev & yarn workspace @yacht/server dev",
+        "build-packages": "yarn workspace @yacht/default-game build && yarn workspace @yacht/altered-game build && yarn workspace @yacht/communications build",
+        "build-frontend": "yarn workspace @yacht/client build",
+        "build-backend": "yarn workspace @yacht/server build",
+        "build-pnf": "yarn build-packages && yarn build-frontend",
+        "serve": "yarn workspace @yacht/client serve & yarn workspace @yacht/server serve"
+    },
+    "dependencies": {
+        "typescript": "^5.9.2"
+    }
 }

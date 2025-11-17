@@ -17,7 +17,9 @@ export const N1TimesOptionMap = N1TimesOptionParamList.reduce(
       description: `NUMBERS_1의 점수를 ${curr}배`,
       handDependencies: [`NUMBERS_1`],
       onTrigger: (status) => {
-        status.rowCalculator.NUMBERS_1 = (handInput: number[]) => {
+        const row = status.rowInfoMap["NUMBERS_1"];
+        if (!row) throw new Error("NUMBERS_1 row info not found");
+        row.getScore = (handInput: number[]) => {
           const baseScore = GetDefaultScoreOf.NUMBERS_1(handInput);
           return baseScore * curr;
         };
@@ -44,7 +46,9 @@ export const N1IfZeroOptionMap = N1IfZeroParamList.reduce(
       description: `NUMBERS_1의 점수가 0이라면 ${curr}가 됨`,
       handDependencies: [`NUMBERS_1`],
       onTrigger: (status) => {
-        status.rowCalculator.NUMBERS_1 = (handInput: number[]) => {
+        const row = status.rowInfoMap["NUMBERS_1"];
+        if (!row) throw new Error("NUMBERS_1 row info not found");
+        row.getScore = (handInput: number[]) => {
           const baseScore = GetDefaultScoreOf.NUMBERS_1(handInput);
           return baseScore === 0 ? curr : baseScore;
         };
@@ -60,7 +64,9 @@ export const N1EtcOptionMap = {
     description: `NUMBERS_1의 점수를 제곱`,
     handDependencies: [`NUMBERS_1`],
     onTrigger: (status) => {
-      status.rowCalculator.NUMBERS_1 = (handInput: number[]) => {
+      const row = status.rowInfoMap["NUMBERS_1"];
+      if (!row) throw new Error("NUMBERS_1 row info not found");
+      row.getScore = (handInput: number[]) => {
         const baseScore = GetDefaultScoreOf.NUMBERS_1(handInput);
         return baseScore * baseScore;
       };
@@ -70,7 +76,9 @@ export const N1EtcOptionMap = {
     description: `NUMBERS_1의 점수를 세제곱`,
     handDependencies: [`NUMBERS_1`],
     onTrigger: (status) => {
-      status.rowCalculator.NUMBERS_1 = (handInput: number[]) => {
+      const row = status.rowInfoMap["NUMBERS_1"];
+      if (!row) throw new Error("NUMBERS_1 row info not found");
+      row.getScore = (handInput: number[]) => {
         const baseScore = GetDefaultScoreOf.NUMBERS_1(handInput);
         return baseScore * baseScore * baseScore;
       };

@@ -1,11 +1,32 @@
 import styled from "@emotion/styled";
+import SideNameColumn from "./RowNameColumn";
+import PlayerScoreColumn from "./PlayerScoreColumn";
+import { use } from "react";
+import { GameContext } from "../context";
 
 const ScoreTable = () => {
-  return <S.Root></S.Root>
+  const {
+    gameStatus: { playerNames },
+  } = use(GameContext);
+
+  return (
+    <S.Root>
+      <SideNameColumn />
+      {playerNames.map((playerName) => (
+        <PlayerScoreColumn key={playerName} playerName={playerName} />
+      ))}
+    </S.Root>
+  );
 };
 
 export default ScoreTable;
 
 const S = {
-  Root: styled.div``
-}
+  Root: styled.div`
+    display: flex;
+    gap: 8px;
+
+    height: 100%;
+    width: 95%;
+  `,
+};

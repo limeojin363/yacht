@@ -10,7 +10,12 @@ const useProps = (totalPlayersNum: number): GameContextValues => {
   );
 
   const [gameStatus, setGameStatus] = useState(
-    new GameStatus(getInitialDataPart({ playerNames: playerNames }))
+    new GameStatus(
+      getInitialDataPart({
+        playerNames,
+        alterOptionMetaList: [{ name: "FUSION_1&2", revealed: false, time: 3 }],
+      })
+    )
   );
 
   return {

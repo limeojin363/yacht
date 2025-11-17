@@ -71,7 +71,7 @@ export const getInitialDataPart = ({
     alterOptions: alterOptionMetaList,
     playerHandSelectionObjectMap: getPlayerHandSelectionObjectMap(),
     diceSet: getDicesInitialStatus(),
-    currentPlayerId: 0,
+    currentPlayerName: playerNames[0]!,
     remainingRoll: 3,
     playerColorMap: generatePlayerColorMap(),
   };

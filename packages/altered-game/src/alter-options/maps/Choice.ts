@@ -26,9 +26,13 @@ export const ChoiceOptionMap = ChoiceOptionParamList.reduce(
       handDependencies: [],
       onTrigger(gameStatus) {
         Array.from({ length: curr[1] }, (_, idx) => {
-          gameStatus.rowCalculator[`CHOICE_x${curr[1]}_${Postfix[idx]}`] = (
-            handInput: number[],
-          ) => GetDefaultScoreOf.CHOICE(handInput) * curr[1];
+          const rowName = `CHOICE_x${curr[1]}_${Postfix[idx]}`;
+          gameStatus.rowInfoMap[rowName] = {
+            getScore: (handInput: number[]) =>
+              GetDefaultScoreOf.CHOICE(handInput) * curr[1],
+            description: `CHOICE_x${curr[1]}_${Postfix[idx]}`,
+            type: "SINGLE_ALTERED",
+          };
         });
       },
     };

@@ -17,7 +17,9 @@ export const N5TimesOptionMap = N5TimesOptionParamList.reduce(
       description: `NUMBERS_5의 점수를 ${curr}배`,
       handDependencies: [`NUMBERS_5`],
       onTrigger(gameStatus) {
-        gameStatus.rowCalculator[`NUMBERS_5`] = (handInput: number[]) => {
+        const row = gameStatus.rowInfoMap[`NUMBERS_5`];
+        if (!row) throw new Error("NUMBERS_5 row info not found");
+        row.getScore = (handInput: number[]) => {
           const baseScore = GetDefaultScoreOf[`NUMBERS_5`](handInput);
           return baseScore * curr;
         };

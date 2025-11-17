@@ -22,7 +22,7 @@ export const generateAlterOptions = (): AlterOption[] => {
   ret.push({
     name: name1,
     revealed: false,
-    time: 2,
+    time: 3,
   });
 
   const name2 = getRandomItemFromArray(
@@ -36,7 +36,7 @@ export const generateAlterOptions = (): AlterOption[] => {
   ret.push({
     name: name2!,
     revealed: false,
-    time: 4,
+    time: 5,
   });
 
   const name3 = getRandomItemFromArray(
@@ -50,7 +50,7 @@ export const generateAlterOptions = (): AlterOption[] => {
   ret.push({
     name: name3!,
     revealed: false,
-    time: 6,
+    time: 7,
   });
 
   return ret;

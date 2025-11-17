@@ -50,7 +50,7 @@ export type DiceEyes = z.infer<typeof DiceEyesSchema>;
 
 export const PlayerSelectionObjectSchema = z.record(
   z.string(),
-  DiceEyesSchema.nullable(),
+  DiceEyesSchema.nullable()
 );
 
 export const DicesetSchema = z.union([
@@ -60,7 +60,7 @@ export const DicesetSchema = z.union([
 
 export const PlayerHandSelectionObjectSchema = z.record(
   z.string(),
-  PlayerSelectionObjectSchema,
+  PlayerSelectionObjectSchema
 );
 
 export type PlayerHandSelectionObjectMap = z.infer<
@@ -75,11 +75,12 @@ export const AlterOptionSchema = z.object({
 
 export type AlterOption = z.infer<typeof AlterOptionSchema>;
 
+// TODO: playerHandSelectionObjectMap, playerColorMap PlayerInfo로 통합
 export const GameStatusDataSchema = z.object({
   playerHandSelectionObjectMap: PlayerHandSelectionObjectSchema,
   playerColorMap: z.record(z.string(), z.string()),
   diceSet: DicesetSchema,
-  currentPlayerId: z.number(),
+  currentPlayerName: z.string(),
   remainingRoll: z.number(),
   alterOptions: z.array(AlterOptionSchema),
 });
@@ -94,3 +95,11 @@ export type DiceSet = z.infer<typeof DicesetSchema>;
 
 // GameStatus에서 DB에 저장되는 부분
 export type GameStatusDataPart = z.infer<typeof GameStatusDataSchema>;
+
+export type RowInfo = {
+  getScore: (handInput: number[]) => number;
+  description: string;
+  type: RowType;
+};
+
+export type RowType = "NORMAL" | "SINGLE_ALTERED" | "FUSION";

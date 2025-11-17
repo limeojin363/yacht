@@ -3,7 +3,7 @@ import { createContext } from "react";
 
 export type GameContextValues = {
   gameStatus: GameStatus;
-  onClickCell: (handName: string, playerId: number) => void;
+  onClickCell: (handName: string, playerName: string) => void;
   onClickDice: (diceIndex: number) => void;
   onClickRoll: () => void;
   onExit: () => void;

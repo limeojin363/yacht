@@ -1,8 +1,10 @@
 import _ from "lodash";
-import { GetDefaultScoreOf } from "../score";
+import { getInitialRowInfo } from "../score";
 import type {
   DiceEyes,
   GameStatusDataPart,
+  RowInfo,
+  UnusableDiceSet,
   UsableDiceSet,
   UserAction,
 } from "./types";
@@ -10,29 +12,34 @@ import { AlterOptionMap } from "../alter-options";
 
 export class GameStatus {
   alterOptions: GameStatusDataPart["alterOptions"];
-  currentPlayerId: GameStatusDataPart["currentPlayerId"];
+  currentPlayerName: GameStatusDataPart["currentPlayerName"];
   diceSet: GameStatusDataPart["diceSet"];
-  handSelectionObjectMap: GameStatusDataPart["playerHandSelectionObjectMap"];
+  playerHandSelectionObjectMap: GameStatusDataPart["playerHandSelectionObjectMap"];
   playerColorMap: GameStatusDataPart["playerColorMap"];
   remainingRoll: GameStatusDataPart["remainingRoll"];
 
   maxHolding: number;
   maxRoll: number;
-  rowCalculator: Record<string, (handInput: number[]) => number> = {
-    ...GetDefaultScoreOf,
-  };
+  rowInfoMap: Record<string, RowInfo>;
 
-  isUnusableDiceSet(): this is this & { diceSet: UsableDiceSet } {
+  isUnusableDiceSet(): this is this & { diceSet: UnusableDiceSet } {
     if (this.diceSet.some((d) => d === null)) return true;
     return false;
   }
 
+  getRowTypeOf(rowName: string) {
+    const rowInfo = this.rowInfoMap[rowName];
+    if (rowInfo === undefined) throw new Error("No such row");
+
+    return rowInfo.type;
+  }
+
   get rowNames() {
-    return Object.keys(this.rowCalculator);
+    return Object.keys(this.rowInfoMap);
   }
 
   get playerNames() {
-    return Object.keys(this.handSelectionObjectMap);
+    return Object.keys(this.playerHandSelectionObjectMap);
   }
 
   get diceEyes(): DiceEyes {
@@ -47,32 +54,32 @@ export class GameStatus {
     return eyes[Math.floor(Math.random() * eyes.length)]!;
   }
 
-  getTotalScore({ playerName }: { playerName: string }) {
-    const playerSelection = this.handSelectionObjectMap[playerName];
+  getPlayerTotalScore({ playerName }: { playerName: string }) {
+    const playerSelection = this.playerHandSelectionObjectMap[playerName];
     if (playerSelection === undefined) throw new Error();
 
     let totalScore = 0;
     for (const [rowName, handInput] of Object.entries(playerSelection)) {
-      const rowScoreGetter = this.rowCalculator[rowName];
-      if (rowScoreGetter === undefined) throw new Error();
+      const currRowInfo = this.rowInfoMap[rowName];
+      if (currRowInfo === undefined) throw new Error();
 
       if (handInput !== null) {
-        totalScore += rowScoreGetter(handInput);
+        totalScore += currRowInfo.getScore(handInput);
       }
     }
     return totalScore;
   }
 
   getScoreOf({ rowName, playerName }: { rowName: string; playerName: string }) {
-    const playerSelection = this.handSelectionObjectMap[playerName];
+    const playerSelection = this.playerHandSelectionObjectMap[playerName];
     if (playerSelection === undefined) throw new Error();
     const handInput = playerSelection[rowName];
     if (handInput === undefined) throw new Error();
-    const rowScoreGetter = this.rowCalculator[rowName];
-    if (rowScoreGetter === undefined) throw new Error();
+    const currRowInfo = this.rowInfoMap[rowName];
+    if (currRowInfo === undefined) throw new Error();
 
     if (handInput === null) return null;
-    return rowScoreGetter(handInput);
+    return currRowInfo.getScore(handInput);
   }
 
   dispatch({ type, payload }: UserAction) {
@@ -84,7 +91,7 @@ export class GameStatus {
         if (this.isUnusableDiceSet())
           throw new Error("Dice have not been rolled yet");
 
-        const player = this.handSelectionObjectMap[this.currentPlayerId];
+        const player = this.playerHandSelectionObjectMap[this.currentPlayerName];
 
         if (player === undefined) {
           throw new Error("Player does not exist");
@@ -103,12 +110,20 @@ export class GameStatus {
         this.alterOptions.forEach((alterOption) => {
           if (
             !alterOption.revealed &&
-            alterOption.time * this.countTotalPlayers === this.currentTurn
+            alterOption.time === this.currentTurn
           ) {
             alterOption.revealed = true;
             this.triggerAlterOption(alterOption.name);
           }
         });
+
+        const nextPlayerIdx =
+          (this.playerNames.indexOf(this.currentPlayerName) + 1) %
+          this.countTotalPlayers;
+        const nextPlayerName = this.playerNames[nextPlayerIdx]!;
+        this.currentPlayerName = nextPlayerName;
+        this.remainingRoll = this.maxRoll;
+        this.diceSet = [null,null, null, null, null];
 
         return this.getShallowClone();
       case "ROLL":
@@ -144,45 +159,52 @@ export class GameStatus {
   extractDataPart(): GameStatusDataPart {
     return {
       alterOptions: this.alterOptions,
-      currentPlayerId: this.currentPlayerId,
+      currentPlayerName: this.currentPlayerName,
       diceSet: this.diceSet,
-      playerHandSelectionObjectMap: this.handSelectionObjectMap,
+      playerHandSelectionObjectMap: this.playerHandSelectionObjectMap,
       remainingRoll: this.remainingRoll,
       playerColorMap: this.playerColorMap,
     };
   }
 
+  // 각 유저가 한 칸씩 채우면 다음 턴이 된다 
   get currentTurn() {
-    let turn = 0;
-    Object.values(this.handSelectionObjectMap).forEach((handSelectionObject) => {
-      Object.values(handSelectionObject).forEach((selection) => {
-        if (selection !== null) {
-          turn += 1;
-        }
-      });
-    });
-    return turn;
+    let filled = 0;
+    Object.values(this.playerHandSelectionObjectMap).forEach(
+      (handSelectionObject) => {
+        Object.values(handSelectionObject).forEach((selection) => {
+          if (selection !== null) {
+            filled += 1;
+          }
+        });
+      }
+    );
+    return Math.floor(filled / this.countTotalPlayers + 1);
   }
 
   get countTotalHand() {
-    const hands = Object.keys(this.handSelectionObjectMap[0]!);
+    const hands = Object.keys(
+      this.playerHandSelectionObjectMap[this.playerNames[0]!]!
+    );
     return hands.length;
   }
 
   get countTotalRow() {
-    const rows = Object.keys(this.rowCalculator);
+    const rows = Object.keys(this.rowInfoMap);
     return rows.length;
   }
 
   get countFilledCells() {
     let filledRowNum = 0;
-    Object.values(this.handSelectionObjectMap).forEach((handSelectionObject) => {
-      Object.values(handSelectionObject).forEach((selection) => {
-        if (selection !== null) {
-          filledRowNum += 1;
-        }
-      });
-    });
+    Object.values(this.playerHandSelectionObjectMap).forEach(
+      (handSelectionObject) => {
+        Object.values(handSelectionObject).forEach((selection) => {
+          if (selection !== null) {
+            filledRowNum += 1;
+          }
+        });
+      }
+    );
     return filledRowNum;
   }
 
@@ -195,20 +217,18 @@ export class GameStatus {
   }
 
   get isFinished() {
-    for (const selection of Object.values(this.handSelectionObjectMap)) {
-      if (Object.values(selection).some((v) => v === null)) {
-        return false;
-      }
-    }
+    for (const selection of Object.values(this.playerHandSelectionObjectMap))
+      if (Object.values(selection).some((v) => v === null)) return false;
+
     return true;
   }
 
   get countTotalPlayers() {
-    return Object.keys(this.handSelectionObjectMap).length;
+    return Object.keys(this.playerHandSelectionObjectMap).length;
   }
 
   get countTotalTurn() {
-    return this.countTotalPlayers * this.countTotalRow;
+    return this.countTotalHand;
   }
 
   get countHeldDices() {
@@ -234,13 +254,14 @@ export class GameStatus {
 
   constructor(dataPart: GameStatusDataPart) {
     this.alterOptions = dataPart.alterOptions;
-    this.currentPlayerId = dataPart.currentPlayerId;
+    this.currentPlayerName = dataPart.currentPlayerName;
     this.diceSet = dataPart.diceSet;
-    this.handSelectionObjectMap = dataPart.playerHandSelectionObjectMap;
+    this.playerHandSelectionObjectMap = dataPart.playerHandSelectionObjectMap;
     this.remainingRoll = dataPart.remainingRoll;
     this.playerColorMap = dataPart.playerColorMap;
 
     this.maxHolding = 5;
     this.maxRoll = 3;
+    this.rowInfoMap = getInitialRowInfo();
   }
 }

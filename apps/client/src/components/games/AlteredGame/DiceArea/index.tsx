@@ -1,15 +1,36 @@
 import styled from "@emotion/styled";
-import { GameContext } from "../context";
-import { use } from "react";
+import DiceSet from "./DiceSet";
+import DiceMetaInfo from "./DiceMetaInfo";
+import RollButton from "./RollButton";
 
 const DiceArea = () => {
-  const {gameStatus} = use(GameContext);
-
-  return <S.Root></S.Root>
+  return (
+    <S.Root>
+      <DiceMetaInfo />
+      <S.Row>
+        <DiceSet />
+        <RollButton />
+      </S.Row>
+    </S.Root>
+  );
 };
 
 export default DiceArea;
 
 const S = {
-  Root: styled.div``
-}
+  Root: styled.div`
+    height: 100%;
+
+    margin-bottom: 20px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  `,
+  Row: styled.div`
+    display: flex;
+    gap: 12px;
+  `,
+};

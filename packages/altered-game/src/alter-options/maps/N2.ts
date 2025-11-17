@@ -17,7 +17,9 @@ export const N2TimesOptionMap = N2TimesOptionParamList.reduce(
       description: `NUMBERS_2의 점수를 ${curr}배`,
       handDependencies: [`NUMBERS_2`],
       onTrigger: (gameStatus) => {
-        gameStatus.rowCalculator[`NUMBERS_2`] = (handInput: number[]) => {
+        const row = gameStatus.rowInfoMap[`NUMBERS_2`];
+        if (!row) throw new Error("NUMBERS_2 row info not found");
+        row.getScore = (handInput: number[]) => {
           const baseScore = GetDefaultScoreOf[`NUMBERS_2`](handInput);
           return baseScore * curr;
         };
@@ -33,7 +35,9 @@ export const N2EtcOptionMap: Record<string, AlterOptionObject> = {
     description: `NUMBERS_2의 점수를 제곱`,
     handDependencies: [`NUMBERS_2`],
     onTrigger: (gameStatus) => {
-      gameStatus.rowCalculator[`NUMBERS_2`] = (handInput: number[]) => {
+      const row = gameStatus.rowInfoMap[`NUMBERS_2`];
+      if (!row) throw new Error("NUMBERS_2 row info not found");
+      row.getScore = (handInput: number[]) => {
         const baseScore = GetDefaultScoreOf[`NUMBERS_2`](handInput);
         return baseScore * baseScore;
       };

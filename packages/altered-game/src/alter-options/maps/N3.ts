@@ -17,7 +17,9 @@ export const N3TimesOptionMap = N3TimesOptionParamList.reduce(
       description: `NUMBERS_3의 점수를 ${curr}배`,
       handDependencies: [`NUMBERS_3`],
       onTrigger: (gameStatus) => {
-        gameStatus.rowCalculator[`NUMBERS_3`] = (handInput: number[]) => {
+        const row = gameStatus.rowInfoMap[`NUMBERS_3`];
+        if (!row) throw new Error("NUMBERS_3 row info not found");
+        row.getScore = (handInput: number[]) => {
           const baseScore = GetDefaultScoreOf[`NUMBERS_3`](handInput);
           return baseScore * curr;
         };
