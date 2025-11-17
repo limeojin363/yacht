@@ -35,7 +35,20 @@ export class GameStatus {
   }
 
   get rowNames() {
-    return Object.keys(this.rowInfoMap);
+    const rowNames = Object.keys(this.rowInfoMap);
+
+    const upperRows = rowNames
+      .filter(
+        (name) => name.startsWith("NUMBERS_") || name.startsWith("FUSION_")
+      )
+      .sort((a, b) => {
+        return parseInt(a.split("_")[1]![0]!) - parseInt(b.split("_")[1]![0]!);
+      });
+    const lowerRows = rowNames.filter(
+      (name) => !name.startsWith("NUMBERS_") && !name.startsWith("FUSION_")
+    );
+
+    return [...upperRows, ...lowerRows];
   }
 
   get playerNames() {
@@ -91,7 +104,8 @@ export class GameStatus {
         if (this.isUnusableDiceSet())
           throw new Error("Dice have not been rolled yet");
 
-        const player = this.playerHandSelectionObjectMap[this.currentPlayerName];
+        const player =
+          this.playerHandSelectionObjectMap[this.currentPlayerName];
 
         if (player === undefined) {
           throw new Error("Player does not exist");
@@ -108,10 +122,7 @@ export class GameStatus {
         player[hand] = this.diceEyes;
 
         this.alterOptions.forEach((alterOption) => {
-          if (
-            !alterOption.revealed &&
-            alterOption.time === this.currentTurn
-          ) {
+          if (!alterOption.revealed && alterOption.time === this.currentTurn) {
             alterOption.revealed = true;
             this.triggerAlterOption(alterOption.name);
           }
@@ -123,7 +134,7 @@ export class GameStatus {
         const nextPlayerName = this.playerNames[nextPlayerIdx]!;
         this.currentPlayerName = nextPlayerName;
         this.remainingRoll = this.maxRoll;
-        this.diceSet = [null,null, null, null, null];
+        this.diceSet = [null, null, null, null, null];
 
         return this.getShallowClone();
       case "ROLL":
@@ -143,6 +154,8 @@ export class GameStatus {
         if (!dice.held && this.countHeldDices >= this.maxHolding) {
           throw new Error("Holding limit exceeded");
         }
+
+        dice.held = !dice.held;
 
         return this.getShallowClone();
     }
@@ -167,7 +180,7 @@ export class GameStatus {
     };
   }
 
-  // 각 유저가 한 칸씩 채우면 다음 턴이 된다 
+  // 각 유저가 한 칸씩 채우면 다음 턴이 된다
   get currentTurn() {
     let filled = 0;
     Object.values(this.playerHandSelectionObjectMap).forEach(
