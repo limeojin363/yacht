@@ -17,13 +17,22 @@ export const N4TimesOptionMap = N4TimesOptionParamList.reduce(
       description: `NUMBERS_4의 점수를 ${curr}배`,
       handDependencies: [`NUMBERS_4`],
       onTrigger: (gameStatus) => {
-        const row = gameStatus.rowInfoMap[`NUMBERS_4`];
-        if (!row) throw new Error("NUMBERS_4 row info not found");
-        row.getScore = (handInput: number[]) => {
-          const baseScore = GetDefaultScoreOf[`NUMBERS_4`](handInput);
-          return baseScore * curr;
-        };
-      },
+        gameStatus.updateRowInfo({
+          rowName: `NUMBERS_4`,
+          rowInfo: {
+            getScoreFrom: ({ handInputMap }) => {
+              const handInput = handInputMap["NUMBERS_4"];
+              if (handInput === undefined || handInput === null)
+                throw new Error();
+
+              const baseScore = GetDefaultScoreOf[`NUMBERS_4`](handInput);
+              return baseScore * curr;
+            },
+            description: `NUMBERS_4의 점수를 ${curr}배`,
+            type: "SINGLE_ALTERED",
+          },
+        });
+      }
     };
     return acc;
   },

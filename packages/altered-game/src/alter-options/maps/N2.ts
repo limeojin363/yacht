@@ -17,17 +17,26 @@ export const N2TimesOptionMap = N2TimesOptionParamList.reduce(
       description: `NUMBERS_2의 점수를 ${curr}배`,
       handDependencies: [`NUMBERS_2`],
       onTrigger: (gameStatus) => {
-        const row = gameStatus.rowInfoMap[`NUMBERS_2`];
-        if (!row) throw new Error("NUMBERS_2 row info not found");
-        row.getScore = (handInput: number[]) => {
-          const baseScore = GetDefaultScoreOf[`NUMBERS_2`](handInput);
-          return baseScore * curr;
-        };
+        gameStatus.updateRowInfo({
+          rowName: `NUMBERS_2`,
+          rowInfo: {
+            getScoreFrom: ({ handInputMap }) => {
+              const handInput = handInputMap["NUMBERS_2"];
+              if (handInput === undefined || handInput === null)
+                throw new Error();
+
+              const baseScore = GetDefaultScoreOf[`NUMBERS_2`](handInput);
+              return baseScore * curr;
+            },
+            description: `NUMBERS_2의 점수를 ${curr}배`,
+            type: "SINGLE_ALTERED",
+          },
+        });
       },
     };
     return acc;
   },
-  {} as Record<N2TimesOptionName, AlterOptionObject>,
+  {} as Record<N2TimesOptionName, AlterOptionObject>
 );
 
 export const N2EtcOptionMap: Record<string, AlterOptionObject> = {
@@ -35,12 +44,20 @@ export const N2EtcOptionMap: Record<string, AlterOptionObject> = {
     description: `NUMBERS_2의 점수를 제곱`,
     handDependencies: [`NUMBERS_2`],
     onTrigger: (gameStatus) => {
-      const row = gameStatus.rowInfoMap[`NUMBERS_2`];
-      if (!row) throw new Error("NUMBERS_2 row info not found");
-      row.getScore = (handInput: number[]) => {
-        const baseScore = GetDefaultScoreOf[`NUMBERS_2`](handInput);
-        return baseScore * baseScore;
-      };
+      gameStatus.updateRowInfo({
+        rowName: `NUMBERS_2`,
+        rowInfo: {
+          getScoreFrom: ({ handInputMap }) => {
+            const handInput = handInputMap["NUMBERS_2"];
+            if (handInput === undefined || handInput === null)
+              throw new Error();
+            const baseScore = GetDefaultScoreOf[`NUMBERS_2`](handInput);
+            return baseScore * baseScore;
+          },
+          description: `NUMBERS_2의 점수를 제곱`,
+          type: "SINGLE_ALTERED",
+        },
+      });
     },
   },
 };

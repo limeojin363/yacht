@@ -28,21 +28,37 @@ export const FusionOptionMap = FusionOptionParamList.reduce(
       description: `NUMBERS_${curr[0]}과 NUMBERS_${curr[1]}를 곱연산`,
       handDependencies: [`NUMBERS_${curr[0]}`, `NUMBERS_${curr[1]}`],
       onTrigger: (gameStatus) => {
-        delete gameStatus.rowInfoMap[`NUMBERS_${curr[0]}`];
-        delete gameStatus.rowInfoMap[`NUMBERS_${curr[1]}`];
+        gameStatus.removeRowInfo({ rowName: `NUMBERS_${curr[0]}` });
+        gameStatus.removeRowInfo({ rowName: `NUMBERS_${curr[1]}` });
 
-        gameStatus.rowInfoMap[name] = {
-          getScore: (handInput: number[]) => {
-            const baseScoreA = GetDefaultScoreOf[`NUMBERS_${curr[0]}`](handInput);
-            const baseScoreB = GetDefaultScoreOf[`NUMBERS_${curr[1]}`](handInput);
-            return baseScoreA * baseScoreB;
+        gameStatus.addRowInfo({
+          rowName: name,
+          rowInfo: {
+            getScoreFrom: ({ handInputMap }) => {
+              const handInputA = handInputMap[`NUMBERS_${curr[0]}`];
+              const handInputB = handInputMap[`NUMBERS_${curr[1]}`];
+              if (
+                handInputA === undefined ||
+                handInputA === null ||
+                handInputB === undefined ||
+                handInputB === null
+              )
+                throw new Error();
+
+              const baseScoreA =
+                GetDefaultScoreOf[`NUMBERS_${curr[0]}`](handInputA);
+              const baseScoreB =
+                GetDefaultScoreOf[`NUMBERS_${curr[1]}`](handInputB);
+
+              return baseScoreA * baseScoreB;
+            },
+            description: `NUMBERS_${curr[0]}와 NUMBERS_${curr[1]}의 곱 연산`,
+            type: "FUSION",
           },
-          description: `NUMBERS_${curr[0]}와 NUMBERS_${curr[1]}의 곱 연산`,
-          type: "FUSION",
-        };
+        });
       },
     };
     return acc;
   },
-  {} as Record<FusionOptionName, AlterOptionObject>,
+  {} as Record<FusionOptionName, AlterOptionObject>
 );

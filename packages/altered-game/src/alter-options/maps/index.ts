@@ -14,12 +14,12 @@ import { N5TimesOptionName } from "./N5";
 import { N6TimesOptionName } from "./N6";
 import { RollLimitOptionName, HoldingLimitOptionName } from "./UserActionLimit";
 import { YachtOptionName } from "./Yacht";
-import type { GameStatus } from "../../status/main";
+import type { Game } from "../../status/main";
 
 export type AlterOptionObject = {
   description: string;
   handDependencies: string[]; // 의존하는 hand
-  onTrigger: (gameStatus: GameStatus) => void;
+  onTrigger: (gameStatus: Game) => void;
 };
 
 export type AlterOptionName =

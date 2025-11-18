@@ -16,16 +16,20 @@ export const YachtOptionMap = YachtOptionParamList.reduce(
       description: `YACHT가 ${curr}점이 됨`,
       handDependencies: [],
       onTrigger(gameStatus) {
-        const yachtRowInfo = gameStatus.rowInfoMap["YACHT"];
-        if (!yachtRowInfo) {
-          throw new Error("YACHT row info not found");
-        }
-
-        yachtRowInfo.getScore = (handInput: number[]) => {
-          if (handInput.every((n) => n === handInput[0])) {
-            return curr;
-          } else return 0;
-        };
+        gameStatus.updateRowInfo({
+          rowName: "YACHT",
+          rowInfo: {
+            getScoreFrom({ handInputMap }) {
+              const handInput = handInputMap["YACHT"];
+              if (handInput === undefined || handInput === null) throw new Error();
+              if (handInput.every((n) => n === handInput[0])) {
+                return curr;
+              } else return 0;
+            },
+            description: `YACHT 완성 시 ${curr} 점 획득`,
+            type: "SINGLE_ALTERED",
+          },
+        });
       },
     };
     return acc;

@@ -16,7 +16,7 @@ export const RollLimitMap = RollLimitOptionParamList.reduce(
       description: `롤 횟수를 ${curr}개로 제한`,
       handDependencies: [],
       onTrigger(gameStatus) {
-        gameStatus.maxRoll = curr;
+        gameStatus.setMaxRoll(curr);
       },
     };
     return acc;
@@ -40,7 +40,7 @@ export const HoldingLimitOptionMap = HoldingLimitParamList.reduce(
       description: `주사위 고정 가능 최대 개수를 ${curr}개로 제한`,
       handDependencies: [],
       onTrigger(gameStatus) {
-        gameStatus.maxHolding = curr;
+        gameStatus.setMaxHolding(curr);
       },
     };
     return acc;

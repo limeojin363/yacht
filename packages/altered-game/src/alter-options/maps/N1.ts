@@ -17,17 +17,26 @@ export const N1TimesOptionMap = N1TimesOptionParamList.reduce(
       description: `NUMBERS_1의 점수를 ${curr}배`,
       handDependencies: [`NUMBERS_1`],
       onTrigger: (status) => {
-        const row = status.rowInfoMap["NUMBERS_1"];
-        if (!row) throw new Error("NUMBERS_1 row info not found");
-        row.getScore = (handInput: number[]) => {
-          const baseScore = GetDefaultScoreOf.NUMBERS_1(handInput);
-          return baseScore * curr;
-        };
+        status.updateRowInfo({
+          rowName: "NUMBERS_1",
+          rowInfo: {
+            getScoreFrom({ handInputMap }) {
+              const handInput = handInputMap["NUMBERS_1"];
+              if (handInput === undefined || handInput === null)
+                throw new Error();
+
+              const baseScore = GetDefaultScoreOf.NUMBERS_1(handInput);
+              return baseScore * curr;
+            },
+            description: `NUMBERS_1의 점수를 ${curr}배`,
+            type: "SINGLE_ALTERED",
+          },
+        });
       },
     };
     return acc;
   },
-  {} as Record<string, AlterOptionObject>,
+  {} as Record<string, AlterOptionObject>
 );
 
 export const N1IfZeroParamList = [10, 20, -10, -20] as const;
@@ -46,17 +55,30 @@ export const N1IfZeroOptionMap = N1IfZeroParamList.reduce(
       description: `NUMBERS_1의 점수가 0이라면 ${curr}가 됨`,
       handDependencies: [`NUMBERS_1`],
       onTrigger: (status) => {
-        const row = status.rowInfoMap["NUMBERS_1"];
-        if (!row) throw new Error("NUMBERS_1 row info not found");
-        row.getScore = (handInput: number[]) => {
-          const baseScore = GetDefaultScoreOf.NUMBERS_1(handInput);
-          return baseScore === 0 ? curr : baseScore;
-        };
+        status.updateRowInfo({
+          rowName: "NUMBERS_1",
+          rowInfo: {
+            getScoreFrom({ handInputMap }) {
+              const handInput = handInputMap["NUMBERS_1"];
+              if (handInput === undefined || handInput === null)
+                throw new Error();
+
+              const baseScore = GetDefaultScoreOf.NUMBERS_1(handInput);
+              if (baseScore === 0) {
+                return curr;
+              } else {
+                return baseScore;
+              }
+            },
+            description: `NUMBERS_1의 점수가 0이라면 ${curr}가 됨`,
+            type: "SINGLE_ALTERED",
+          },
+        });
       },
     };
     return acc;
   },
-  {} as Record<string, AlterOptionObject>,
+  {} as Record<string, AlterOptionObject>
 );
 
 export const N1EtcOptionMap = {
@@ -64,24 +86,42 @@ export const N1EtcOptionMap = {
     description: `NUMBERS_1의 점수를 제곱`,
     handDependencies: [`NUMBERS_1`],
     onTrigger: (status) => {
-      const row = status.rowInfoMap["NUMBERS_1"];
-      if (!row) throw new Error("NUMBERS_1 row info not found");
-      row.getScore = (handInput: number[]) => {
-        const baseScore = GetDefaultScoreOf.NUMBERS_1(handInput);
-        return baseScore * baseScore;
-      };
+      status.updateRowInfo({
+        rowName: "NUMBERS_1",
+        rowInfo: {
+          getScoreFrom({ handInputMap }) {
+            const handInput = handInputMap["NUMBERS_1"];
+            if (handInput === undefined || handInput === null)
+              throw new Error();
+
+            const baseScore = GetDefaultScoreOf.NUMBERS_1(handInput);
+            return baseScore * baseScore;
+          },
+          description: `NUMBERS_1의 점수를 제곱`,
+          type: "SINGLE_ALTERED",
+        },
+      });
     },
   },
   NUMBERS_1_CUBE: {
     description: `NUMBERS_1의 점수를 세제곱`,
     handDependencies: [`NUMBERS_1`],
     onTrigger: (status) => {
-      const row = status.rowInfoMap["NUMBERS_1"];
-      if (!row) throw new Error("NUMBERS_1 row info not found");
-      row.getScore = (handInput: number[]) => {
-        const baseScore = GetDefaultScoreOf.NUMBERS_1(handInput);
-        return baseScore * baseScore * baseScore;
-      };
+      status.updateRowInfo({
+        rowName: "NUMBERS_1",
+        rowInfo: {
+          getScoreFrom({ handInputMap }) {
+            const handInput = handInputMap["NUMBERS_1"];
+            if (handInput === undefined || handInput === null)
+              throw new Error();
+
+            const baseScore = GetDefaultScoreOf.NUMBERS_1(handInput);
+            return baseScore * baseScore * baseScore;
+          },
+          description: `NUMBERS_1의 점수를 세제곱`,
+          type: "SINGLE_ALTERED",
+        },
+      });
     },
   },
 } as const satisfies Record<string, AlterOptionObject>;

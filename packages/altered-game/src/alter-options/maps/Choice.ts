@@ -25,18 +25,28 @@ export const ChoiceOptionMap = ChoiceOptionParamList.reduce(
       description: `CHOICE_x${curr[1]}을 ${curr[0]}개 생성`,
       handDependencies: [],
       onTrigger(gameStatus) {
-        Array.from({ length: curr[1] }, (_, idx) => {
-          const rowName = `CHOICE_x${curr[1]}_${Postfix[idx]}`;
-          gameStatus.rowInfoMap[rowName] = {
-            getScore: (handInput: number[]) =>
-              GetDefaultScoreOf.CHOICE(handInput) * curr[1],
-            description: `CHOICE_x${curr[1]}_${Postfix[idx]}`,
-            type: "SINGLE_ALTERED",
-          };
-        });
+        for (let i = 0; i < curr[0]; i++) {
+          const rowName = `CHOICE_x${curr[1]}_${Postfix[i]}`;
+          const handName = rowName;
+
+          gameStatus.addHand({ handName });
+          gameStatus.addRowInfo({
+            rowName,
+            rowInfo: {
+              getScoreFrom({ handInputMap }) {
+                const handInput = handInputMap[rowName];
+                if (handInput === undefined || handInput === null)
+                  throw new Error();
+                return GetDefaultScoreOf.CHOICE(handInput) * curr[1];
+              },
+              description: `CHOICE_x${curr[1]}_${Postfix[i]}`,
+              type: "SINGLE_ALTERED",
+            },
+          });
+        }
       },
     };
     return acc;
   },
-  {} as Record<ChoiceOptionName, AlterOptionObject>,
+  {} as Record<ChoiceOptionName, AlterOptionObject>
 );

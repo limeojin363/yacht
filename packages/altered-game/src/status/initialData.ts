@@ -1,9 +1,9 @@
 import _ from "lodash";
 import {
   type AlterOption,
-  type GameStatusDataPart,
-  type PlayerHandSelectionObjectMap,
-  type PlayerSelectionObject,
+  type GameDBPart,
+  type HandInputMap,
+  type HandInputMapType,
   type UnusableDiceSet,
 } from "./types";
 import { generateAlterOptions } from "../alter-options";
@@ -19,8 +19,8 @@ export const getInitialDataPart = ({
   playerNames,
   alterOptionMetaList = generateAlterOptions(),
   playerColors,
-}: GamePreset): GameStatusDataPart => {
-  const getPlayerInitialStatus = (): PlayerSelectionObject => ({
+}: GamePreset): GameDBPart => {
+  const getPlayerInitialStatus = (): HandInputMapType => ({
     NUMBERS_1: null,
     NUMBERS_2: null,
     NUMBERS_3: null,
@@ -43,8 +43,8 @@ export const getInitialDataPart = ({
     null,
   ];
 
-  const getPlayerHandSelectionObjectMap = (): PlayerHandSelectionObjectMap => {
-    const obj: PlayerHandSelectionObjectMap = {};
+  const getPlayerHandSelectionObjectMap = (): HandInputMap => {
+    const obj: HandInputMap = {};
     playerNames.forEach((name) => (obj[name] = getPlayerInitialStatus()));
     return obj;
   };
@@ -68,7 +68,7 @@ export const getInitialDataPart = ({
   };
 
   return {
-    alterOptions: alterOptionMetaList,
+    alterOptionMetaInfoList: alterOptionMetaList,
     playerHandSelectionObjectMap: getPlayerHandSelectionObjectMap(),
     diceSet: getDicesInitialStatus(),
     currentPlayerName: playerNames[0]!,

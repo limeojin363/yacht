@@ -17,13 +17,23 @@ export const N3TimesOptionMap = N3TimesOptionParamList.reduce(
       description: `NUMBERS_3의 점수를 ${curr}배`,
       handDependencies: [`NUMBERS_3`],
       onTrigger: (gameStatus) => {
-        const row = gameStatus.rowInfoMap[`NUMBERS_3`];
-        if (!row) throw new Error("NUMBERS_3 row info not found");
-        row.getScore = (handInput: number[]) => {
-          const baseScore = GetDefaultScoreOf[`NUMBERS_3`](handInput);
-          return baseScore * curr;
-        };
-      },
+
+        gameStatus.updateRowInfo({
+          rowName: `NUMBERS_3`,
+          rowInfo: {
+            getScoreFrom: ({ handInputMap }) => {
+              const handInput = handInputMap["NUMBERS_3"];
+              if (handInput === undefined || handInput === null)
+                throw new Error();
+
+              const baseScore = GetDefaultScoreOf[`NUMBERS_3`](handInput);
+              return baseScore * curr;
+            },
+            description: `NUMBERS_3의 점수를 ${curr}배`,
+            type: "SINGLE_ALTERED",
+          },
+        });
+      }
     };
     return acc;
   },

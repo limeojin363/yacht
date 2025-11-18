@@ -42,65 +42,113 @@ export const GetDefaultScoreOf = {
   NUMBERS_6: (handInput: number[]) => count(handInput, 6) * 6,
 } as const satisfies Record<string, (handInput: number[]) => number>;
 
-
 export const getInitialRowInfo = (): Record<string, RowInfo> => ({
   TRIPLE: {
-    getScore: GetDefaultScoreOf.TRIPLE,
+    getScoreFrom: ({ handInputMap }) => {
+      const targetHandInput = handInputMap.TRIPLE;
+      if (targetHandInput === undefined || targetHandInput === null)
+        throw new Error();
+      return GetDefaultScoreOf.TRIPLE(targetHandInput);
+    },
     description: "At least three dice showing the same number.",
     type: "NORMAL",
   },
   FOURCARD: {
-    getScore: GetDefaultScoreOf.FOURCARD,
+    getScoreFrom: ({ handInputMap }) => {
+      const handInput = handInputMap.FOURCARD;
+      if (handInput === undefined || handInput === null) throw new Error();
+      return GetDefaultScoreOf.FOURCARD(handInput);
+    },
     description: "At least four dice showing the same number.",
     type: "NORMAL",
   },
   FULLHOUSE: {
-    getScore: GetDefaultScoreOf.FULLHOUSE,
+    getScoreFrom: ({ handInputMap }) => {
+      const handInput = handInputMap.FULLHOUSE;
+      if (handInput === undefined || handInput === null) throw new Error();
+      return GetDefaultScoreOf.FULLHOUSE(handInput);
+    },
     description: "A combination of three of a kind and a pair.",
     type: "NORMAL",
   },
   STRAIGHT: {
-    getScore: GetDefaultScoreOf.STRAIGHT,
+    getScoreFrom: ({ handInputMap }) => {
+      const handInput = handInputMap.STRAIGHT;
+      if (handInput === undefined || handInput === null) throw new Error();
+      return GetDefaultScoreOf.STRAIGHT(handInput);
+    },
     description: "All five dice showing a sequence of numbers.",
     type: "NORMAL",
   },
   YACHT: {
-    getScore: GetDefaultScoreOf.YACHT,
+    getScoreFrom: ({ handInputMap }) => {
+      const handInput = handInputMap.YACHT;
+      if (handInput === undefined || handInput === null) throw new Error();
+      return GetDefaultScoreOf.YACHT(handInput);
+    },
     description: "All five dice showing the same number.",
     type: "NORMAL",
   },
   CHOICE: {
-    getScore: GetDefaultScoreOf.CHOICE,
+    getScoreFrom: ({ handInputMap }) => {
+      const handInput = handInputMap.CHOICE;
+      if (handInput === undefined || handInput === null) throw new Error();
+      return GetDefaultScoreOf.CHOICE(handInput);
+    },
     description: "Sum of all dice, regardless of their values.",
     type: "NORMAL",
   },
   NUMBERS_1: {
-    getScore: GetDefaultScoreOf.NUMBERS_1,
+    getScoreFrom: ({ handInputMap }) => {
+      const handInput = handInputMap.NUMBERS_1;
+      if (handInput === undefined || handInput === null) throw new Error();
+      return GetDefaultScoreOf.NUMBERS_1(handInput);
+    },
     description: "Sum of all dice showing the number 1.",
     type: "NORMAL",
   },
   NUMBERS_2: {
-    getScore: GetDefaultScoreOf.NUMBERS_2,
+    getScoreFrom: ({ handInputMap }) => {
+      const handInput = handInputMap.NUMBERS_2;
+      if (handInput === undefined || handInput === null) throw new Error();
+      return GetDefaultScoreOf.NUMBERS_2(handInput);
+    },
     description: "Sum of all dice showing the number 2.",
     type: "NORMAL",
   },
   NUMBERS_3: {
-    getScore: GetDefaultScoreOf.NUMBERS_3,
+    getScoreFrom: ({ handInputMap }) => {
+      const handInput = handInputMap.NUMBERS_3;
+      if (handInput === undefined || handInput === null) throw new Error();
+      return GetDefaultScoreOf.NUMBERS_3(handInput);
+    },
     description: "Sum of all dice showing the number 3.",
     type: "NORMAL",
   },
   NUMBERS_4: {
-    getScore: GetDefaultScoreOf.NUMBERS_4,
+    getScoreFrom: ({ handInputMap }) => {
+      const handInput = handInputMap.NUMBERS_4;
+      if (handInput === undefined || handInput === null) throw new Error();
+      return GetDefaultScoreOf.NUMBERS_4(handInput);
+    },
     description: "Sum of all dice showing the number 4.",
     type: "NORMAL",
   },
   NUMBERS_5: {
-    getScore: GetDefaultScoreOf.NUMBERS_5,
+    getScoreFrom: ({ handInputMap }) => {
+      const handInput = handInputMap.NUMBERS_5;
+      if (handInput === undefined || handInput === null) throw new Error();
+      return GetDefaultScoreOf.NUMBERS_5(handInput);
+    },
     description: "Sum of all dice showing the number 5.",
     type: "NORMAL",
   },
   NUMBERS_6: {
-    getScore: GetDefaultScoreOf.NUMBERS_6,
+    getScoreFrom: ({ handInputMap }) => {
+      const handInput = handInputMap.NUMBERS_6;
+      if (handInput === undefined || handInput === null) throw new Error();
+      return GetDefaultScoreOf.NUMBERS_6(handInput);
+    },
     description: "Sum of all dice showing the number 6.",
     type: "NORMAL",
   },

@@ -2,40 +2,111 @@ import _ from "lodash";
 import { getInitialRowInfo } from "../score";
 import type {
   DiceEyes,
-  GameStatusDataPart,
+  GameDBPart,
   RowInfo,
-  UnusableDiceSet,
   UsableDiceSet,
   UserAction,
 } from "./types";
 import { AlterOptionMap } from "../alter-options";
 
-export class GameStatus {
-  alterOptions: GameStatusDataPart["alterOptions"];
-  currentPlayerName: GameStatusDataPart["currentPlayerName"];
-  diceSet: GameStatusDataPart["diceSet"];
-  playerHandSelectionObjectMap: GameStatusDataPart["playerHandSelectionObjectMap"];
-  playerColorMap: GameStatusDataPart["playerColorMap"];
-  remainingRoll: GameStatusDataPart["remainingRoll"];
+// 유저가 넣는 칸이 hand고, 계산 시 나오는 결과가 row다.
+// 대체로 hand == row이지만 예외가 있다.
+// Ex) Fusion Row의 경우 hand 두 개로 구성
+export class Game {
+  #diceSet: GameDBPart["diceSet"];
+  #alterOptions: GameDBPart["alterOptionMetaInfoList"];
+  #currentPlayerName: GameDBPart["currentPlayerName"];
+  #remainingRoll: GameDBPart["remainingRoll"];
+  #playerMap: GameDBPart["playerInfoMap"];
 
-  maxHolding: number;
-  maxRoll: number;
-  rowInfoMap: Record<string, RowInfo>;
+  #maxHolding: number;
+  #maxRoll: number;
+  #rowInfoMap: Record<string, RowInfo>;
 
-  isUnusableDiceSet(): this is this & { diceSet: UnusableDiceSet } {
-    if (this.diceSet.some((d) => d === null)) return true;
-    return false;
+  // 수동 assuring이 요구됨 - 가능하다면 수정
+  isDiceSetUsable() {
+    return this.#diceSet.every((d) => d !== null);
   }
 
-  getRowTypeOf(rowName: string) {
-    const rowInfo = this.rowInfoMap[rowName];
-    if (rowInfo === undefined) throw new Error("No such row");
+  /** Extract eye only from diceSet */
+  extractDiceEyes(): DiceEyes {
+    if (!this.isDiceSetUsable()) {
+      throw new Error("Dice have not been rolled yet");
+    }
 
-    return rowInfo.type;
+    return this.#diceSet.map((d) => d!.eye) as DiceEyes;
   }
 
-  get rowNames() {
-    const rowNames = Object.keys(this.rowInfoMap);
+  toggleDice(diceIndex: number) {
+    if (!this.isDiceSetUsable()) {
+      throw new Error("Dice have not been rolled yet");
+    }
+
+    const dice = this.#diceSet[diceIndex];
+    if (!dice) throw new Error("Dice does not exist");
+
+    if (!dice.held && this.countHeldDices() >= this.#maxHolding) {
+      throw new Error("Holding limit exceeded");
+    }
+
+    dice.held = !dice.held;
+  }
+
+  getMaxRoll() {
+    return this.#maxRoll;
+  }
+
+  setMaxRoll(value: number) {
+    this.#maxRoll = value;
+  }
+
+  getMaxHolding() {
+    return this.#maxHolding;
+  }
+
+  setMaxHolding(value: number) {
+    this.#maxHolding = value;
+  }
+
+  generateNextDiceSet(): UsableDiceSet {
+    if (this.isDiceSetUsable()) {
+      return this.#diceSet.map((dice) =>
+        dice!.held ? dice : { eye: Game.generateDiceEye(), held: false }
+      ) as UsableDiceSet;
+    }
+
+    return [
+      { eye: Game.generateDiceEye(), held: false },
+      { eye: Game.generateDiceEye(), held: false },
+      { eye: Game.generateDiceEye(), held: false },
+      { eye: Game.generateDiceEye(), held: false },
+      { eye: Game.generateDiceEye(), held: false },
+    ];
+  }
+
+  hasMoreRoll() {
+    return this.#remainingRoll > 0;
+  }
+
+  countHeldDices() {
+    if (!this.isDiceSetUsable()) return 0;
+    return this.#diceSet.filter((d) => d !== null && d.held).length;
+  }
+
+  getDiceSet() {
+    return [...this.#diceSet];
+  }
+
+  updateDiceSet(diceSet: GameDBPart["diceSet"]) {
+    this.#diceSet = diceSet;
+  }
+
+  resetDiceSet() {
+    this.#diceSet = [null, null, null, null, null];
+  }
+
+  getRowNameList() {
+    const rowNames = Object.keys(this.#rowInfoMap);
 
     const upperRows = rowNames
       .filter(
@@ -51,15 +122,96 @@ export class GameStatus {
     return [...upperRows, ...lowerRows];
   }
 
-  get playerNames() {
-    return Object.keys(this.playerHandSelectionObjectMap);
+  getPlayerInfoOf(playerName: string) {
+    const playerInfo = this.#playerMap[playerName];
+    if (playerInfo === undefined) throw new Error("No such player");
+    return playerInfo;
   }
 
-  get diceEyes(): DiceEyes {
-    if (this.isUnusableDiceSet()) {
-      throw new Error("Dice have not been rolled yet");
-    }
-    return this.diceSet.map((d) => d!.eye) as DiceEyes;
+  getColorOf(playerName: string) {
+    return this.getPlayerInfoOf(playerName).color;
+  }
+
+  getPlayerNameList() {
+    return Object.keys(this.#playerMap);
+  }
+
+  getHandInputMapOf(playerName: string) {
+    return this.getPlayerInfoOf(playerName).handInputMap;
+  }
+
+  getHandOf({
+    handName,
+    playerName,
+  }: {
+    playerName: string;
+    handName: string;
+  }) {
+    const handInputMap = this.getHandInputMapOf(playerName);
+    const handInput = handInputMap[handName];
+    if (handInput === undefined) throw new Error("No such hand");
+    return handInput;
+  }
+
+  getRowInfoOf(rowName: string) {
+    const targetRowInfo = this.#rowInfoMap[rowName];
+    if (targetRowInfo === undefined) throw new Error("No such row");
+    return targetRowInfo;
+  }
+
+  removeHand({ handName }: { handName: string }) {
+    Object.values(this.#playerMap).forEach((playerInfo) => {
+      delete playerInfo.handInputMap[handName];
+    });
+  }
+
+  addHand({ handName }: { handName: string }) {
+    Object.values(this.#playerMap).forEach((playerInfo) => {
+      playerInfo.handInputMap[handName] = null;
+    });
+  }
+
+  enterUserHandInput({ handName, eyes }: { handName: string; eyes: DiceEyes }) {
+    const playerInfo = this.#playerMap[this.#currentPlayerName];
+    if (playerInfo === undefined) throw new Error("No such player");
+
+    if (playerInfo.handInputMap[handName] === undefined)
+      throw new Error("No such hand");
+
+    playerInfo.handInputMap[handName] = eyes;
+  }
+
+  getScoreOf({ rowName, playerName }: { rowName: string; playerName: string }) {
+    const handInputMap = this.getHandInputMapOf(playerName);
+    const targetRowInfo = this.getRowInfoOf(rowName);
+
+    return targetRowInfo.getScoreFrom({
+      handInputMap,
+    });
+  }
+
+  getRowTypeOf(rowName: string) {
+    return this.getRowInfoOf(rowName).type;
+  }
+
+  removeRowInfo({ rowName }: { rowName: string }) {
+    delete this.#rowInfoMap[rowName];
+  }
+
+  addRowInfo({ rowName, rowInfo }: { rowName: string; rowInfo: RowInfo }) {
+    this.#rowInfoMap[rowName] = rowInfo;
+  }
+
+  updateRowInfo({ rowName, rowInfo }: { rowName: string; rowInfo: RowInfo }) {
+    this.#rowInfoMap[rowName] = rowInfo;
+  }
+
+  countTotalPlayers() {
+    return Object.keys(this.#playerMap).length;
+  }
+
+  getPlayerNames() {
+    return Object.keys(this.#playerMap);
   }
 
   static generateDiceEye() {
@@ -67,99 +219,106 @@ export class GameStatus {
     return eyes[Math.floor(Math.random() * eyes.length)]!;
   }
 
-  getPlayerTotalScore({ playerName }: { playerName: string }) {
-    const playerSelection = this.playerHandSelectionObjectMap[playerName];
-    if (playerSelection === undefined) throw new Error();
+  getBasePlayerTotalScore({ playerName }: { playerName: string }) {
+    const handInputMap = this.getHandInputMapOf(playerName);
 
     let totalScore = 0;
-    for (const [rowName, handInput] of Object.entries(playerSelection)) {
-      const currRowInfo = this.rowInfoMap[rowName];
-      if (currRowInfo === undefined) throw new Error();
+    Object.keys(this.#rowInfoMap).forEach((rowName) => {
+      const rowInfo = this.#rowInfoMap[rowName]!;
+      totalScore += rowInfo.getScoreFrom({ handInputMap });
+    });
 
-      if (handInput !== null) {
-        totalScore += currRowInfo.getScore(handInput);
-      }
-    }
     return totalScore;
   }
 
-  getScoreOf({ rowName, playerName }: { rowName: string; playerName: string }) {
-    const playerSelection = this.playerHandSelectionObjectMap[playerName];
-    if (playerSelection === undefined) throw new Error();
-    const handInput = playerSelection[rowName];
-    if (handInput === undefined) throw new Error();
-    const currRowInfo = this.rowInfoMap[rowName];
-    if (currRowInfo === undefined) throw new Error();
-
-    if (handInput === null) return null;
-    return currRowInfo.getScore(handInput);
+  getPlayerTotalScore({ playerName }: { playerName: string }) {
+    return this.getBasePlayerTotalScore({ playerName });
   }
 
-  dispatch({ type, payload }: UserAction) {
-    // TODO: 객체 리팩토링을 통해 fall-through 회피
-    switch (type) {
-      // TODO: 턴 진행에 따라 alterOption reveal 수행되도록
-      case "HAND-SELECT":
-        const hand = payload;
-        if (this.isUnusableDiceSet())
-          throw new Error("Dice have not been rolled yet");
-
-        const player =
-          this.playerHandSelectionObjectMap[this.currentPlayerName];
-
-        if (player === undefined) {
-          throw new Error("Player does not exist");
-        }
-
-        if (player[hand] === undefined) {
-          throw new Error("Hand does not exist");
-        }
-
-        if (player[hand] !== null) {
-          throw new Error("Hand is already selected");
-        }
-
-        player[hand] = this.diceEyes;
-
-        this.alterOptions.forEach((alterOption) => {
-          if (!alterOption.revealed && alterOption.time === this.currentTurn) {
-            alterOption.revealed = true;
-            this.triggerAlterOption(alterOption.name);
-          }
-        });
-
-        const nextPlayerIdx =
-          (this.playerNames.indexOf(this.currentPlayerName) + 1) %
-          this.countTotalPlayers;
-        const nextPlayerName = this.playerNames[nextPlayerIdx]!;
-        this.currentPlayerName = nextPlayerName;
-        this.remainingRoll = this.maxRoll;
-        this.diceSet = [null, null, null, null, null];
-
-        return this.getShallowClone();
-      case "ROLL":
-        if (this.remainingRoll <= 0) throw new Error("No remaining rolls left");
-        this.diceSet = payload;
-        this.remainingRoll -= 1;
-
-        return this.getShallowClone();
-      case "TOGGLE-HOLDING":
-        if (this.isUnusableDiceSet())
-          throw new Error("Dice have not been rolled yet");
-        const diceIndex = payload;
-
-        const dice = this.diceSet[diceIndex];
-        if (!dice) throw new Error("Dice does not exist");
-
-        if (!dice.held && this.countHeldDices >= this.maxHolding) {
-          throw new Error("Holding limit exceeded");
-        }
-
-        dice.held = !dice.held;
-
-        return this.getShallowClone();
-    }
+  setPlayerTotalScoreGetter({ getter }: { getter: (args: { playerName: string }) => number }) {
+    this.getPlayerTotalScore = getter;
   }
+
+  isFinishedBase() {
+    const totalHands = this.countTotalHand();
+    return this.countFilledCells() >= totalHands * this.countTotalPlayers();
+  }
+
+  isFinished() {
+    return this.isFinishedBase();
+  }
+
+  setIsFinishedGetter({ getter }: { getter: () => boolean }) {
+    this.isFinished = getter;
+  }
+
+  // dispatch({ type, payload }: UserAction) {
+  //   // TODO: 객체 리팩토링을 통해 fall-through 회피
+  //   switch (type) {
+  //     // TODO: 턴 진행에 따라 alterOption reveal 수행되도록
+  //     case "HAND-SELECT":
+  //       const hand = payload;
+  //       if (!this.isDiceSetUsable())
+  //         throw new Error("Dice have not been rolled yet");
+
+  //       const playerInfo = this.#playerMap[this.#currentPlayerName];
+
+  //       if (playerInfo === undefined) {
+  //         throw new Error("Player does not exist");
+  //       }
+
+  //       if (playerInfo.handInputMap[hand] === undefined) {
+  //         throw new Error("Target hand does not exist");
+  //       }
+
+  //       if (playerInfo.handInputMap[hand] !== null) {
+  //         throw new Error("Target hand is already selected");
+  //       }
+
+  //       playerInfo.handInputMap[hand] = this.extractDiceEyes();
+
+  //       // TODO: 여기 구현좀요
+  //       this.#alterOptions.forEach((alterOption) => {
+  //         // if (!alterOption.revealed && alterOption.time === this.getCurrentTurn()) {
+  //         //   alterOption.revealed = true;
+  //         //   this.triggerAlterOption(alterOption.name);
+  //         // }
+  //       });
+
+  //       // TODO: 구현
+  //       const nextPlayerIdx =
+  //         (this.getPlayerNames().indexOf(this.#currentPlayerName) + 1) %
+  //         this.countTotalPlayers();
+  //       const nextPlayerName = this.getPlayerNames()[nextPlayerIdx]!;
+  //       this.#currentPlayerName = nextPlayerName;
+  //       this.#remainingRoll = this.#maxRoll;
+  //       this.#diceSet = [null, null, null, null, null];
+
+  //       return this.getShallowClone();
+  //     case "ROLL":
+  //       if (this.#remainingRoll <= 0)
+  //         throw new Error("No remaining rolls left");
+  //       this.#diceSet = payload;
+  //       this.#remainingRoll -= 1;
+
+  //       return this.getShallowClone();
+  //     case "TOGGLE-HOLDING":
+  //       if (!this.isDiceSetUsable())
+  //         throw new Error("Dice have not been rolled yet");
+  //       const diceIndex = payload;
+
+  //       const dice = this.#diceSet[diceIndex];
+  //       if (!dice) throw new Error("Dice does not exist");
+
+  //       if (!dice.held && this.countHeldDices() >= this.#maxHolding) {
+  //         throw new Error("Holding limit exceeded");
+  //       }
+
+  //       dice.held = !dice.held;
+
+  //       return this.getShallowClone();
+  //   }
+  // }
 
   triggerAlterOption(alterOptionName: string) {
     const alterOption = AlterOptionMap[alterOptionName];
@@ -169,55 +328,35 @@ export class GameStatus {
   }
 
   /** Extracts the relevant data part from the game status */
-  extractDataPart(): GameStatusDataPart {
+  extractDataPart(): GameDBPart {
     return {
-      alterOptions: this.alterOptions,
-      currentPlayerName: this.currentPlayerName,
-      diceSet: this.diceSet,
-      playerHandSelectionObjectMap: this.playerHandSelectionObjectMap,
-      remainingRoll: this.remainingRoll,
-      playerColorMap: this.playerColorMap,
+      alterOptionMetaInfoList: this.#alterOptions,
+      currentPlayerName: this.#currentPlayerName,
+      diceSet: this.#diceSet,
+      playerInfoMap: this.#playerMap,
+      remainingRoll: this.#remainingRoll,
     };
   }
 
-  // 각 유저가 한 칸씩 채우면 다음 턴이 된다
-  get currentTurn() {
-    let filled = 0;
-    Object.values(this.playerHandSelectionObjectMap).forEach(
-      (handSelectionObject) => {
-        Object.values(handSelectionObject).forEach((selection) => {
-          if (selection !== null) {
-            filled += 1;
-          }
-        });
-      }
-    );
-    return Math.floor(filled / this.countTotalPlayers + 1);
+  countTotalHand() {
+    const hands = Object.values(this.#playerMap)[0]!.handInputMap;
+    return Object.keys(hands).length;
   }
 
-  get countTotalHand() {
-    const hands = Object.keys(
-      this.playerHandSelectionObjectMap[this.playerNames[0]!]!
-    );
-    return hands.length;
-  }
-
-  get countTotalRow() {
-    const rows = Object.keys(this.rowInfoMap);
+  countTotalRow() {
+    const rows = Object.keys(this.#rowInfoMap);
     return rows.length;
   }
 
-  get countFilledCells() {
+  countFilledCells() {
     let filledRowNum = 0;
-    Object.values(this.playerHandSelectionObjectMap).forEach(
-      (handSelectionObject) => {
-        Object.values(handSelectionObject).forEach((selection) => {
-          if (selection !== null) {
-            filledRowNum += 1;
-          }
-        });
-      }
-    );
+    Object.values(this.#playerMap).forEach((playerMap) => {
+      Object.values(playerMap.handInputMap).forEach((selection) => {
+        if (selection !== null) {
+          filledRowNum += 1;
+        }
+      });
+    });
     return filledRowNum;
   }
 
@@ -229,52 +368,15 @@ export class GameStatus {
     return _.clone(this);
   }
 
-  get isFinished() {
-    for (const selection of Object.values(this.playerHandSelectionObjectMap))
-      if (Object.values(selection).some((v) => v === null)) return false;
+  constructor(dbPart: GameDBPart) {
+    this.#alterOptions = dbPart.alterOptionMetaInfoList;
+    this.#currentPlayerName = dbPart.currentPlayerName;
+    this.#diceSet = dbPart.diceSet;
+    this.#playerMap = dbPart.playerInfoMap;
+    this.#remainingRoll = dbPart.remainingRoll;
 
-    return true;
-  }
-
-  get countTotalPlayers() {
-    return Object.keys(this.playerHandSelectionObjectMap).length;
-  }
-
-  get countTotalTurn() {
-    return this.countTotalHand;
-  }
-
-  get countHeldDices() {
-    if (this.isUnusableDiceSet()) return 0;
-    return this.diceSet.filter((d) => d !== null && d.held).length;
-  }
-
-  generateNextDiceSet(): UsableDiceSet {
-    if (!this.isUnusableDiceSet()) {
-      return this.diceSet.map((dice) =>
-        dice!.held ? dice : { eye: GameStatus.generateDiceEye(), held: false }
-      ) as UsableDiceSet;
-    }
-
-    return [
-      { eye: GameStatus.generateDiceEye(), held: false },
-      { eye: GameStatus.generateDiceEye(), held: false },
-      { eye: GameStatus.generateDiceEye(), held: false },
-      { eye: GameStatus.generateDiceEye(), held: false },
-      { eye: GameStatus.generateDiceEye(), held: false },
-    ];
-  }
-
-  constructor(dataPart: GameStatusDataPart) {
-    this.alterOptions = dataPart.alterOptions;
-    this.currentPlayerName = dataPart.currentPlayerName;
-    this.diceSet = dataPart.diceSet;
-    this.playerHandSelectionObjectMap = dataPart.playerHandSelectionObjectMap;
-    this.remainingRoll = dataPart.remainingRoll;
-    this.playerColorMap = dataPart.playerColorMap;
-
-    this.maxHolding = 5;
-    this.maxRoll = 3;
-    this.rowInfoMap = getInitialRowInfo();
+    this.#maxHolding = 5;
+    this.#maxRoll = 3;
+    this.#rowInfoMap = getInitialRowInfo();
   }
 }

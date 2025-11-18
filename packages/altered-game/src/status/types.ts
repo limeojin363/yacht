@@ -48,7 +48,7 @@ export const DiceEyesSchema = z.tuple([
 
 export type DiceEyes = z.infer<typeof DiceEyesSchema>;
 
-export const PlayerSelectionObjectSchema = z.record(
+export const HandInputMapSchema = z.record(
   z.string(),
   DiceEyesSchema.nullable()
 );
@@ -60,12 +60,8 @@ export const DicesetSchema = z.union([
 
 export const PlayerHandSelectionObjectSchema = z.record(
   z.string(),
-  PlayerSelectionObjectSchema
+  HandInputMapSchema
 );
-
-export type PlayerHandSelectionObjectMap = z.infer<
-  typeof PlayerHandSelectionObjectSchema
->;
 
 export const AlterOptionSchema = z.object({
   revealed: z.boolean(),
@@ -77,15 +73,18 @@ export type AlterOption = z.infer<typeof AlterOptionSchema>;
 
 // TODO: playerHandSelectionObjectMap, playerColorMap PlayerInfo로 통합
 export const GameStatusDataSchema = z.object({
-  playerHandSelectionObjectMap: PlayerHandSelectionObjectSchema,
-  playerColorMap: z.record(z.string(), z.string()),
+  // 나중에고민: array -> object 왜 했지? 롤백?
+  playerInfoMap: z.record(z.string(), z.object({
+    color: z.string(),
+    handInputMap: HandInputMapSchema
+  })),
   diceSet: DicesetSchema,
   currentPlayerName: z.string(),
   remainingRoll: z.number(),
-  alterOptions: z.array(AlterOptionSchema),
+  alterOptionMetaInfoList: z.array(AlterOptionSchema),
 });
 
-export type PlayerSelectionObject = z.infer<typeof PlayerSelectionObjectSchema>;
+export type HandInputMapType = z.infer<typeof HandInputMapSchema>;
 
 export type UsableDiceSet = z.infer<typeof UsableDiceSetSchema>;
 
@@ -94,10 +93,10 @@ export type UnusableDiceSet = z.infer<typeof UnusableDiceSetSchema>;
 export type DiceSet = z.infer<typeof DicesetSchema>;
 
 // GameStatus에서 DB에 저장되는 부분
-export type GameStatusDataPart = z.infer<typeof GameStatusDataSchema>;
+export type GameDBPart = z.infer<typeof GameStatusDataSchema>;
 
 export type RowInfo = {
-  getScore: (handInput: number[]) => number;
+  getScoreFrom: ({ handInputMap }: { handInputMap: HandInputMapType }) => number;
   description: string;
   type: RowType;
 };
