@@ -11,7 +11,7 @@
     "packageManager": "yarn@4.9.1",
     "scripts": {
         "dev": "yarn workspace @yacht/client dev & yarn workspace @yacht/server dev",
-        "build-packages": "yarn workspace @yacht/default-game build && yarn workspace @yacht/altered-game build && yarn workspace @yacht/communications build",
+        "build-packages": "yarn workspace @yacht/default-game build && yarn workspace @yacht/game-core build && yarn workspace @yacht/communications build",
         "build-frontend": "yarn workspace @yacht/client build",
         "build-backend": "yarn workspace @yacht/server build",
         "build-pnf": "yarn build-packages && yarn build-frontend",

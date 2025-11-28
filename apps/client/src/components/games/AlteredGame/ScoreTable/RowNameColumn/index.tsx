@@ -2,21 +2,14 @@ import styled from "@emotion/styled";
 import { use } from "react";
 import { GameContext } from "../../context";
 
-const getSorted = (rowNames: string[]) => {
-  const upperRows = rowNames.filter((name) => name.startsWith("NUMBERS_"));
-  const lowerRows = rowNames.filter((name) => !name.startsWith("NUMBERS_"));
-
-  return [...upperRows, ...lowerRows];
-};
-
 const SideNameColumn = () => {
   const context = use(GameContext);
-  const { gameStatus } = context;
-  const rowNames = gameStatus.rowNames;
+  const { game: gameStatus } = context;
+  const rowNames = gameStatus.getRowNameList();
 
   return (
     <S.Root>
-      {[" ", ...getSorted(rowNames)].map((name) => (
+      {[" ", ...rowNames, "TOTAL"].map((name) => (
         <S.Cell key={name}>{name}</S.Cell>
       ))}
     </S.Root>

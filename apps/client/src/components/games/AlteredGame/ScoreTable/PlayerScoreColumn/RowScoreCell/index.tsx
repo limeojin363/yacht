@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
 import { GameContext } from "../../../context";
 import { use } from "react";
-import { css } from "@emotion/react";
 import FusionCell from "./FusionCell";
+import { getCellStyle } from "./style";
 
 export type ViewStatus = "EMPTY" | "SELECTED" | "SELECTABLE";
 
@@ -14,30 +14,31 @@ export type RowScoreCellProps = {
 };
 
 const useSingleViewData = ({ playerName, rowName }: RowScoreCellProps) => {
-  const { gameStatus } = use(GameContext);
-  const playerColor = gameStatus.playerColorMap[playerName];
-  const score = gameStatus.getScoreOf({ playerName, rowName }); // 점수 존재 유무 확인
-  const isCurrentPlayer = gameStatus.currentPlayerName === playerName;
+  const { game } = use(GameContext);
+  const playerColor = game.getColorOf(playerName);
+  const isCurrentPlayer = game.getCurrentPlayerName() === playerName;
   const viewStatus: ViewStatus =
-    score !== null
+    game.getHandOf({ handName: rowName, playerName }) !== null
       ? "SELECTED"
-      : isCurrentPlayer && !gameStatus.isUnusableDiceSet()
+      : isCurrentPlayer && game.isDiceSetUsable()
         ? "SELECTABLE"
         : "EMPTY";
 
   const content =
     viewStatus === "SELECTED"
-      ? score
+      ? game.getScoreOf({ playerName, rowName })
       : viewStatus === "SELECTABLE"
-        ? gameStatus.rowInfoMap[rowName].getScore(gameStatus.diceEyes)
+        ? game.getRowInfoOf(rowName).getScoreFrom({
+            handInputMap: { [rowName]: game.extractDiceEyes() },
+          })
         : null;
 
   return { playerColor, viewStatus, content };
 };
 
 const RowScoreCell = ({ playerName, rowName }: RowScoreCellProps) => {
-  const { gameStatus } = use(GameContext);
-  const isSingle = gameStatus.getRowTypeOf(rowName) !== "FUSION";
+  const { game } = use(GameContext);
+  const isSingle = game.getRowTypeOf(rowName) !== "FUSION";
 
   return (
     <S.CellContainer>
@@ -70,27 +71,6 @@ const SingleCell = ({ playerName, rowName }: RowScoreCellProps) => {
   );
 };
 
-const getStyle = ({
-  playerColor,
-  viewStatus,
-}: StyleProps): ReturnType<typeof css> =>
-  ({
-    EMPTY: css``,
-    SELECTED: css`
-      background-color: ${playerColor};
-      cursor: pointer;
-    `,
-    SELECTABLE: css`
-      background-color: ${playerColor}50;
-      cursor: pointer;
-      color: gray;
-
-      :active {
-        background-color: ${playerColor}80;
-      }
-    `,
-  })[viewStatus];
-
 const S = {
   CellContainer: styled.div`
     flex: 1;
@@ -108,7 +88,8 @@ const S = {
     font-weight: bold;
     font-size: 1.3rem;
 
-    ${({ playerColor, viewStatus }) => getStyle({ playerColor, viewStatus })};
+    ${({ playerColor, viewStatus }) =>
+      getCellStyle({ playerColor, viewStatus })};
   `,
 };
 

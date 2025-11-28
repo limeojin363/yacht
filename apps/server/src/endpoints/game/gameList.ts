@@ -5,7 +5,7 @@ import {
   GetGameListResBodySchema,
   type GetGameListResBody,
 } from "@yacht/communications";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../../generated/client.js";
 
 export const gameListEndpoint = defaultEndpointsFactory
   .addMiddleware(userCheckMiddleWare)

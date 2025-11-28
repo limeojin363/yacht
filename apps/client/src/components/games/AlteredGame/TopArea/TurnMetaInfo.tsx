@@ -3,12 +3,12 @@ import { use } from "react";
 import { GameContext } from "../context";
 
 const TurnMetaInfo = () => {
-  const { gameStatus } = use(GameContext);
+  const { game } = use(GameContext);
 
   return (
     <S.Root>
-        <S.Detail>전체 턴: {gameStatus.countTotalTurn}</S.Detail>
-        <S.Detail>현재 턴: {gameStatus.currentTurn}</S.Detail>
+        <S.Detail>전체 턴: {game.getTotalTurn()}</S.Detail>
+        <S.Detail>현재 턴: {game.getCurrentTurn()}</S.Detail>
     </S.Root>
   );
 };

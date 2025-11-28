@@ -1,7 +1,7 @@
 import { useState } from "react";
 import GameComponent from "../../../../../components/games/AlteredGame";
 import type { GameContextValues } from "../../../../../components/games/AlteredGame/context";
-import { GameStatus, getInitialDataPart } from "@yacht/altered-game";
+import { Game, getInitialDataPart } from "@yacht/game-core";
 
 const useProps = (totalPlayersNum: number): GameContextValues => {
   const playerNames = Array.from(
@@ -10,33 +10,45 @@ const useProps = (totalPlayersNum: number): GameContextValues => {
   );
 
   const [gameStatus, setGameStatus] = useState(
-    new GameStatus(
+    new Game(
       getInitialDataPart({
         playerNames,
-        alterOptionMetaList: [{ name: "FUSION_1&2", revealed: false, time: 3 }],
+        alterOptionMetaList: [
+          { name: "HOLDING_LIMIT_1", revealed: false, time: 2 },
+        ],
       })
     )
   );
 
+  // useEffect(() => {
+  //   console.log(gameStatus);
+  // }, [gameStatus]);
+
   return {
-    gameStatus,
+    game: gameStatus,
     onClickCell: (handName) => {
-      setGameStatus(
-        gameStatus.dispatch({ type: "HAND-SELECT", payload: handName })
-      );
+      gameStatus.enterUserHandInput({
+        handName,
+        eyes: gameStatus.extractDiceEyes(),
+      });
+      setGameStatus(gameStatus.getShallowClone());
     },
     onClickDice: (diceIndex) => {
-      setGameStatus(
-        gameStatus.dispatch({ type: "TOGGLE-HOLDING", payload: diceIndex })
-      );
+      if (!gameStatus.isDiceSetUsable())
+        throw new Error("Dice set is not usable");
+
+      gameStatus.toggleDice(diceIndex);
+
+      setGameStatus(gameStatus.getShallowClone());
     },
     onClickRoll: () => {
-      setGameStatus(
-        gameStatus.dispatch({
-          type: "ROLL",
-          payload: gameStatus.generateNextDiceSet(),
-        })
-      );
+      console.log("onClickRoll");
+
+      if (!gameStatus.hasMoreRoll()) throw new Error("No more roll");
+      gameStatus.diceSet = gameStatus.generateNextDiceSet();
+      gameStatus.remainingRoll = gameStatus.remainingRoll - 1;
+
+      setGameStatus(gameStatus.getShallowClone());
     },
     onExit: () => {},
   };

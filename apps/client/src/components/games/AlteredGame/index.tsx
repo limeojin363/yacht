@@ -9,7 +9,7 @@ import TopArea from "./TopArea";
 
 const GameComponent = (contextValues: GameContextValues) => {
   const [resultModalVisible, setResultModalVisible] = useState(false);
-  const isFinished = contextValues.gameStatus.isFinished;
+  const isFinished = contextValues.game.isFinished();
 
   useEffect(() => {
     if (isFinished) setResultModalVisible(true);

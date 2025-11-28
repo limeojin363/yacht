@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { GameStatusSchema, PlayersNumSchema } from "@yacht/default-game";
-import { ProgressTypeSchema } from "../../../fields";
+import { ProgressTypeSchema } from "../../../fields/index.js";
 
 export const EnterGameReqBodySchema = z.object({});
 

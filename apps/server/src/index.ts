@@ -15,9 +15,10 @@ import { deleteGameEndpoint } from "./endpoints/game/deleteGame.js";
 import { updateGameEndpoint } from "./endpoints/game/updateGame.js";
 import { registerSocket } from "./sockets/index.js";
 import z from "zod";
-import { PrismaClient } from "@prisma/client";
 import { createHashedPassword, createSalt } from "./auths/hash.js";
 import refreshEndpoint from "./endpoints/user/refresh.js";
+import { PrismaClient } from "./generated/client.js";
+
 
 const routing: Routing = {
   "get /": defaultEndpointsFactory.build({

@@ -1,38 +1,38 @@
 {
-  "name": "@yacht/server",
-  "packageManager": "yarn@4.9.1",
-  "private": true,
-  "version": "1.0.0",
-  "type": "module",
-  "dependencies": {
-    "@yacht/communications": "workspace:^",
-    "@yacht/default-game": "workspace:^",
-    "express": "^5.1.0",
-    "express-zod-api": "^25.5.3",
-    "http-errors": "^2.0.0",
-    "jsonwebtoken": "^9.0.2",
-    "mysql2": "^3.14.3",
-    "socket.io": "^4.8.1",
-    "ws": "^8.18.3",
-    "zod": "^4.1.5"
-  },
-  "license": "MIT",
-  "devDependencies": {
-    "@prisma/client": "6.16.3",
-    "@types/express": "^5",
-    "@types/http-errors": "^2.0.5",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^22.15.16",
-    "@types/ws": "^8",
-    "dotenv": "^17.2.2",
-    "nodemon": "^3.1.10",
-    "prisma": "^6.16.3",
-    "tsc-watch": "^7.1.1",
-    "typescript": "^5.9.3"
-  },
-  "scripts": {
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "dev": "tsc-watch --onSuccess \"node dist/index.js\""
-  }
+    "name": "@yacht/server",
+    "private": true,
+    "version": "1.0.0",
+    "type": "module",
+    "dependencies": {
+        "@yacht/communications": "workspace:^",
+        "@yacht/default-game": "workspace:^",
+        "@yacht/game-core": "workspace:^",
+        "express": "^5.1.0",
+        "express-zod-api": "^25.5.3",
+        "http-errors": "^2.0.0",
+        "jsonwebtoken": "^9.0.2",
+        "mysql2": "^3.14.3",
+        "socket.io": "^4.8.1",
+        "ws": "^8.18.3",
+        "zod": "^4.1.5"
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@prisma/client": "6.16.3",
+        "@types/express": "^5",
+        "@types/http-errors": "^2.0.5",
+        "@types/jsonwebtoken": "^9.0.10",
+        "@types/node": "^22.15.16",
+        "@types/ws": "^8",
+        "dotenv": "^17.2.2",
+        "nodemon": "^3.1.10",
+        "prisma": "^6.16.3",
+        "tsc-watch": "^7.1.1",
+        "typescript": "^5.9.3"
+    },
+    "scripts": {
+        "build": "tsc",
+        "start": "node dist/index.js",
+        "dev": "tsc-watch --onSuccess \"node dist/index.js\""
+    }
 }

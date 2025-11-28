@@ -1,8 +1,8 @@
-import { GameStatus, getInitialDataPart } from "@yacht/altered-game";
+import { Game, getInitialDataPart } from "@yacht/game-core";
 import { createContext } from "react";
 
 export type GameContextValues = {
-  gameStatus: GameStatus;
+  game: Game;
   onClickCell: (handName: string, playerName: string) => void;
   onClickDice: (diceIndex: number) => void;
   onClickRoll: () => void;
@@ -10,7 +10,7 @@ export type GameContextValues = {
 };
 
 export const GameContext = createContext<GameContextValues>({
-  gameStatus: new GameStatus(
+  game: new Game(
     getInitialDataPart({ playerNames: ["PLAYER_1", "PLAYER_2"] })
   ),
   onClickCell: () => {},

@@ -2,35 +2,27 @@ import styled from "@emotion/styled";
 import { use } from "react";
 import { GameContext } from "../../context";
 import RowScoreCell from "./RowScoreCell";
+import TotalScoreCell from "./TotalScoreCell";
 
 const PlayerNameCell = ({ playerName }: { playerName: string }) => {
   return <S.PlayerNameCell>{playerName}</S.PlayerNameCell>;
 };
 
-const getSorted = (rowNames: string[]) => {
-  const upperRows = rowNames.filter((name) => name.startsWith("NUMBERS_"));
-  const lowerRows = rowNames.filter((name) => !name.startsWith("NUMBERS_"));
-
-  return [...upperRows, ...lowerRows];
-};
-
-const TotalCell = () => {};
-
 const PlayerScoreColumn = ({ playerName }: { playerName: string }) => {
-  const {
-    gameStatus: { rowNames },
-  } = use(GameContext);
+  const { game } = use(GameContext);
 
   return (
     <S.Root>
       <PlayerNameCell playerName={playerName} />
-      {getSorted(rowNames).map((rowName) => (
+      {game.getRowNameList().map((rowName) => (
         <RowScoreCell
           key={`${playerName}-${rowName}`}
           playerName={playerName}
           rowName={rowName}
         />
+        
       ))}
+      <TotalScoreCell playerName={playerName} />
     </S.Root>
   );
 };

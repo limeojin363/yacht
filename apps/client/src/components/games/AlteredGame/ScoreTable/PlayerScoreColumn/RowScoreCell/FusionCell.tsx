@@ -1,32 +1,28 @@
 import styled from "@emotion/styled";
-import { GetDefaultScoreOf } from "@yacht/altered-game";
+import { GetDefaultScoreOf } from "@yacht/game-core";
 import type { RowScoreCellProps, ViewStatus } from ".";
 import { GameContext } from "../../../context";
 import { use } from "react";
-import { css } from "@emotion/react";
+import { getCellStyle } from "./style";
 
 const FusionCell = ({ playerName, rowName }: RowScoreCellProps) => {
-  const { gameStatus, onClickCell } = use(GameContext);
+  const { game: game, onClickCell } = use(GameContext);
 
-  const playerColor = gameStatus.playerColorMap[playerName];
-  const isCurrentPlayer = gameStatus.currentPlayerName === playerName;
+  const playerColor = game.getColorOf(playerName);
+  const isCurrentPlayer = game.currentPlayerName === playerName;
 
   const [firstNumber, secondNumber] = rowName
     .replace("FUSION_", "")
     .split("&")
-    .map((str) => parseInt(str.replace("NUMBER", ""), 10)) as [
+    .map((str) => parseInt(str, 10)) as [
     1 | 2 | 3 | 4 | 5 | 6,
     1 | 2 | 3 | 4 | 5 | 6,
   ];
 
   const firstHand =
-    gameStatus.playerHandSelectionObjectMap[playerName][
-      `NUMBERS_${firstNumber}`
-    ];
+    game.getHandOf({ handName: `NUMBERS_${firstNumber}`, playerName });
   const secondHand =
-    gameStatus.playerHandSelectionObjectMap[playerName][
-      `NUMBERS_${secondNumber}`
-    ];
+    game.getHandOf({ handName: `NUMBERS_${secondNumber}`, playerName });
   const firstValue =
     firstHand !== null
       ? GetDefaultScoreOf[`NUMBERS_${firstNumber}`](firstHand)
@@ -36,7 +32,7 @@ const FusionCell = ({ playerName, rowName }: RowScoreCellProps) => {
       ? GetDefaultScoreOf[`NUMBERS_${secondNumber}`](secondHand)
       : null;
 
-  const isCompleted = !!firstValue && !!secondValue;
+  const isCompleted = firstValue !== null && secondValue !== null;
 
   if (isCompleted) {
     const finalValue = firstValue * secondValue;
@@ -51,7 +47,7 @@ const FusionCell = ({ playerName, rowName }: RowScoreCellProps) => {
     // TODO: 어떻게 좀 해봐라
     const firstViewStatus: ViewStatus = firstValue
       ? "SELECTED"
-      : isCurrentPlayer && !gameStatus.isUnusableDiceSet()
+      : isCurrentPlayer && game.isDiceSetUsable()
         ? "SELECTABLE"
         : "EMPTY";
 
@@ -59,12 +55,12 @@ const FusionCell = ({ playerName, rowName }: RowScoreCellProps) => {
       firstValue !== null
         ? firstValue
         : firstViewStatus === "SELECTABLE"
-          ? GetDefaultScoreOf[`NUMBERS_${firstNumber}`](gameStatus.diceEyes)
+          ? GetDefaultScoreOf[`NUMBERS_${firstNumber}`](game.extractDiceEyes())
           : null;
 
     const secondViewStatus: ViewStatus = secondValue
       ? "SELECTED"
-      : isCurrentPlayer && !gameStatus.isUnusableDiceSet()
+      : isCurrentPlayer && game.isDiceSetUsable()
         ? "SELECTABLE"
         : "EMPTY";
 
@@ -72,7 +68,7 @@ const FusionCell = ({ playerName, rowName }: RowScoreCellProps) => {
       secondValue !== null
         ? secondValue
         : secondViewStatus === "SELECTABLE"
-          ? GetDefaultScoreOf[`NUMBERS_${secondNumber}`](gameStatus.diceEyes)
+          ? GetDefaultScoreOf[`NUMBERS_${secondNumber}`](game.extractDiceEyes())
           : null;
 
     return (
@@ -114,7 +110,7 @@ const S = {
     font-weight: bold;
     font-size: 1.3rem;
 
-    ${({ playerColor }) => getStyle({ playerColor, viewStatus: "SELECTED" })};
+    ${({ playerColor }) => getCellStyle({ playerColor, viewStatus: "SELECTED" })};
   `,
   PiecesWrapper: styled.div`
     height: 100%;
@@ -138,30 +134,6 @@ const S = {
     font-weight: bold;
     font-size: 1.3rem;
 
-    ${({ playerColor, viewStatus }) => getStyle({ playerColor, viewStatus })};
+    ${({ playerColor, viewStatus }) => getCellStyle({ playerColor, viewStatus })};
   `,
 };
-
-const getStyle = ({
-  playerColor,
-  viewStatus,
-}: {
-  playerColor: string;
-  viewStatus: ViewStatus;
-}): ReturnType<typeof css> =>
-  ({
-    EMPTY: css``,
-    SELECTED: css`
-      background-color: ${playerColor};
-      cursor: pointer;
-    `,
-    SELECTABLE: css`
-      background-color: ${playerColor}50;
-      cursor: pointer;
-      color: gray;
-
-      :active {
-        background-color: ${playerColor}80;
-      }
-    `,
-  })[viewStatus];

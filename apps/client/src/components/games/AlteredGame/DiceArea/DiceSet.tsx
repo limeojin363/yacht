@@ -4,7 +4,7 @@ import { use } from "react";
 import SingleDiceView from "../../SingleDiceView";
 
 const SingleDice = ({ index }: { index: number }) => {
-  const { gameStatus, onClickDice } = use(GameContext);
+  const { game: gameStatus, onClickDice } = use(GameContext);
 
   const dice = gameStatus.diceSet[index];
 

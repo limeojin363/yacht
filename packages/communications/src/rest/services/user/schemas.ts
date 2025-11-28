@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AuthorityLevelSchema } from "../../../fields";
+import { AuthorityLevelSchema } from "../../../fields/index.js";
 
 export const LoginReqBodySchema = z.object({
   password: z.string(),

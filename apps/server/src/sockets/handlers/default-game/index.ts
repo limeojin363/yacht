@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import type { Socket } from "socket.io";
-import { getUser, getUserId } from "../../../auths/middleware.js";
+import { getUser } from "../../../auths/middleware.js";
 import z from "zod";
 import { ProgressTypeSchema, type Player } from "@yacht/communications";
 import {
@@ -13,7 +13,7 @@ import exitHandler from "./exit.js";
 import gameInteractionHandler from "./game-interaction.js";
 import gameStartHandler from "./game-start.js";
 import disconnectHandler from "./disconnect.js";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../../../generated/client.js";
 
 export const getGameInfo = async (gameId: number) => {
   const prismaClient = new PrismaClient();

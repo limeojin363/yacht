@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { AlterOptionMap } from "@yacht/altered-game";
+import { AlterOptionMap } from "@yacht/game-core";
 import { use } from "react";
 import { GameContext } from "../context";
 
@@ -29,7 +29,7 @@ const AlterOptionList = () => {
   return (
     <S.ListWrapper>
       <S.ListRoot>
-        {contextValues.gameStatus.alterOptions.map((optionMetaInfo) => (
+        {contextValues.game.alterOptionMetaInfoList.map((optionMetaInfo) => (
           <AlterOptionItem
             key={optionMetaInfo.name}
             optionMetaInfo={optionMetaInfo}

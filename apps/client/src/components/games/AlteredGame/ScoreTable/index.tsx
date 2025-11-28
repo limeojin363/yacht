@@ -5,14 +5,12 @@ import { use } from "react";
 import { GameContext } from "../context";
 
 const ScoreTable = () => {
-  const {
-    gameStatus: { playerNames },
-  } = use(GameContext);
+  const { game: gameStatus } = use(GameContext);
 
   return (
     <S.Root>
       <SideNameColumn />
-      {playerNames.map((playerName) => (
+      {gameStatus.getPlayerNames().map((playerName) => (
         <PlayerScoreColumn key={playerName} playerName={playerName} />
       ))}
     </S.Root>

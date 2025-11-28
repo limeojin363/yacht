@@ -1,15 +1,28 @@
 {
   "compilerOptions": {
-    "target": "ES2022", // Or a recent ES version supported by your Node.js runtime
-    "module": "NodeNext", // Or "NodeNext" for Node.js 16+ for better interoperability
-    "moduleResolution": "NodeNext", // Or "Node16" for Node.js 16+
-    "outDir": "./dist",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2022",
+
     "strict": true,
     "esModuleInterop": true,
+
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "sourceMap": true,
+
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "sourceMap": true
+
+    "composite": true,
+
+    "paths": {
+      "@yacht/communications": ["../../packages/communications/src"],  
+      "@yacht/game-core": ["../../packages/game-core/src"]  
+    }
   },
+  "references": [
+    { "path": "../../packages/communications" },
+    { "path": "../../packages/game-core" }
+  ],
   "include": ["src/**/*"]
 }
