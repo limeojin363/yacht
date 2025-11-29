@@ -14,7 +14,7 @@ import { N5TimesOptionName } from "./N5";
 import { N6TimesOptionName } from "./N6";
 import { RollLimitOptionName, HoldingLimitOptionName, RollLimitOptionMap, HoldingLimitOptionMap } from "./UserActionLimit";
 import { YachtOptionName } from "./Yacht";
-import type { Game } from "../../status/main";
+import type { Game } from "../../core/main";
 
 export type AlterOptionObject = {
   description: string;

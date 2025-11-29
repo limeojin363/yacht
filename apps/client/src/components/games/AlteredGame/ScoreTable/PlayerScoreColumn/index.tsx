@@ -8,21 +8,21 @@ const PlayerNameCell = ({ playerName }: { playerName: string }) => {
   return <S.PlayerNameCell>{playerName}</S.PlayerNameCell>;
 };
 
-const PlayerScoreColumn = ({ playerName }: { playerName: string }) => {
+const PlayerScoreColumn = ({ playerIdx }: { playerIdx: number }) => {
   const { game } = use(GameContext);
 
   return (
     <S.Root>
-      <PlayerNameCell playerName={playerName} />
+      <PlayerNameCell playerName={game.playerInfoList[playerIdx].name} />
       {game.getRowNameList().map((rowName) => (
         <RowScoreCell
-          key={`${playerName}-${rowName}`}
-          playerName={playerName}
+          key={`${game.playerInfoList[playerIdx].name}-${rowName}`}
+          playerIdx={playerIdx}
           rowName={rowName}
         />
         
       ))}
-      <TotalScoreCell playerName={playerName} />
+      <TotalScoreCell playerIdx={playerIdx} />
     </S.Root>
   );
 };

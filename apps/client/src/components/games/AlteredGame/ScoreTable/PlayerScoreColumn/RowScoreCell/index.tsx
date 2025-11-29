@@ -10,15 +10,15 @@ export type StyleProps = { playerColor: string; viewStatus: ViewStatus };
 
 export type RowScoreCellProps = {
   rowName: string;
-  playerName: string;
+  playerIdx: number;
 };
 
-const useSingleViewData = ({ playerName, rowName }: RowScoreCellProps) => {
+const useSingleViewData = ({ playerIdx, rowName }: RowScoreCellProps) => {
   const { game } = use(GameContext);
-  const playerColor = game.getColorOf(playerName);
-  const isCurrentPlayer = game.getCurrentPlayerName() === playerName;
+  const playerColor = game.getColorOf({playerIdx});
+  const isCurrentPlayer = game.currentPlayerIdx === playerIdx;
   const viewStatus: ViewStatus =
-    game.getHandOf({ handName: rowName, playerName }) !== null
+    game.getHandOf({ handName: rowName, playerIdx }) !== null
       ? "SELECTED"
       : isCurrentPlayer && game.isDiceSetUsable()
         ? "SELECTABLE"
@@ -26,7 +26,7 @@ const useSingleViewData = ({ playerName, rowName }: RowScoreCellProps) => {
 
   const content =
     viewStatus === "SELECTED"
-      ? game.getScoreOf({ playerName, rowName })
+      ? game.getScoreOf({ playerIdx, rowName })
       : viewStatus === "SELECTABLE"
         ? game.getRowInfoOf(rowName).getScoreFrom({
             handInputMap: { [rowName]: game.extractDiceEyes() },
@@ -36,24 +36,24 @@ const useSingleViewData = ({ playerName, rowName }: RowScoreCellProps) => {
   return { playerColor, viewStatus, content };
 };
 
-const RowScoreCell = ({ playerName, rowName }: RowScoreCellProps) => {
+const RowScoreCell = ({ playerIdx, rowName }: RowScoreCellProps) => {
   const { game } = use(GameContext);
   const isSingle = game.getRowTypeOf(rowName) !== "FUSION";
 
   return (
     <S.CellContainer>
       {isSingle ? (
-        <SingleCell playerName={playerName} rowName={rowName} />
+        <SingleCell playerIdx={playerIdx} rowName={rowName} />
       ) : (
-        <FusionCell playerName={playerName} rowName={rowName} />
+        <FusionCell playerIdx={playerIdx} rowName={rowName} />
       )}
     </S.CellContainer>
   );
 };
 
-const SingleCell = ({ playerName, rowName }: RowScoreCellProps) => {
+const SingleCell = ({ playerIdx, rowName }: RowScoreCellProps) => {
   const { playerColor, viewStatus, content } = useSingleViewData({
-    playerName,
+    playerIdx,
     rowName,
   });
 
@@ -62,7 +62,7 @@ const SingleCell = ({ playerName, rowName }: RowScoreCellProps) => {
   // rowName === handName
   return (
     <S.SingleCellContent
-      onClick={() => onClickCell(rowName, playerName)}
+      onClick={() => onClickCell(rowName, playerIdx)}
       playerColor={playerColor}
       viewStatus={viewStatus}
     >

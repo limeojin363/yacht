@@ -63,32 +63,39 @@ export const PlayerHandSelectionObjectSchema = z.record(
   HandInputMapSchema
 );
 
-export const AlterOptionSchema = z.object({
+export const AlterOptionMetaInfoSchema = z.object({
   revealed: z.boolean(),
-  time: z.number(),
+  turn: z.number(),
   name: z.string(),
 });
 
-export type AlterOption = z.infer<typeof AlterOptionSchema>;
+export type AlterOptionMetaInfo = z.infer<typeof AlterOptionMetaInfoSchema>;
 
-export const PlayerInfoMapSchema = z.record(
-  z.string(),
+// export const PlayerInfoListSchema = z.record(
+//   z.string(),
+//   z.object({
+//     color: z.string(),
+//     handInputMap: HandInputMapSchema,
+//   })
+// );
+
+export const PlayerInfoSchema = 
   z.object({
+    name: z.string(),
     color: z.string(),
     handInputMap: HandInputMapSchema,
-  })
-);
+  });
 
 export const GameStatusDataSchema = z.object({
   // 나중에고민: array -> object 왜 했지? 롤백?
-  playerInfoMap: PlayerInfoMapSchema,
   diceSet: DicesetSchema,
-  currentPlayerName: z.string(),
   remainingRoll: z.number(),
-  alterOptionMetaInfoList: z.array(AlterOptionSchema),
+  playerInfoList: z.array(PlayerInfoSchema),
+  currentPlayerIdx: z.number(),
+  alterOptionMetaInfoList: z.array(AlterOptionMetaInfoSchema),
 });
 
-export type PlayerInfoMapType = z.infer<typeof PlayerInfoMapSchema>;
+export type PlayerInfoType = z.infer<typeof PlayerInfoSchema>;
 
 export type HandInputMapType = z.infer<typeof HandInputMapSchema>;
 

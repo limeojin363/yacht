@@ -1,5 +1,5 @@
 import _ from "lodash";
-import type { RowInfo } from "../status";
+import type { RowInfo } from "../core";
 
 const count = (handInput: number[], number: number) =>
   handInput.filter((n) => n === number).length;

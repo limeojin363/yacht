@@ -1,4 +1,4 @@
-import type { AlterOption } from "../../status";
+import type { AlterOptionMetaInfo } from "../../core";
 import { AlterOptionMap } from "../maps";
 
 const getRandomItemFromArray = <T>(arr: T[]) => {
@@ -10,9 +10,9 @@ const getRandomItemFromArray = <T>(arr: T[]) => {
   return arr[randomIndex];
 };
 
-export const generateAlterOptions = (): AlterOption[] => {
+export const generateAlterOptions = (): AlterOptionMetaInfo[] => {
   const dependencies: string[] = [];
-  const ret: AlterOption[] = [];
+  const ret: AlterOptionMetaInfo[] = [];
 
   const name1 = getRandomItemFromArray(Object.keys(AlterOptionMap))!;
   AlterOptionMap[name1]?.handDependencies.forEach((dep) => {
@@ -22,7 +22,7 @@ export const generateAlterOptions = (): AlterOption[] => {
   ret.push({
     name: name1,
     revealed: false,
-    time: 3,
+    turn: 3,
   });
 
   const name2 = getRandomItemFromArray(
@@ -36,7 +36,7 @@ export const generateAlterOptions = (): AlterOption[] => {
   ret.push({
     name: name2!,
     revealed: false,
-    time: 5,
+    turn: 5,
   });
 
   const name3 = getRandomItemFromArray(
@@ -50,7 +50,7 @@ export const generateAlterOptions = (): AlterOption[] => {
   ret.push({
     name: name3!,
     revealed: false,
-    time: 7,
+    turn: 7,
   });
 
   return ret;

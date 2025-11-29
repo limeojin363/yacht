@@ -1,17 +1,23 @@
 import _ from "lodash";
 import { getInitialRowInfo } from "../score";
-import type { DiceEyes, GameDBPart, RowInfo, UsableDiceSet } from "./types";
-import { AlterOptionMap } from "../alter-options";
+import type {
+  DiceEyes,
+  GameDBPart,
+  RowInfo,
+  UnusableDiceSet,
+  UsableDiceSet,
+} from "./types";
+import { AlterOptionMap, generateAlterOptions } from "../alter-options";
 
 // 유저가 넣는 칸이 hand고, 계산 시 나오는 결과가 row다.
 // 대체로 hand == row이지만 예외가 있다.
 // Ex) Fusion Row의 경우 hand 두 개로 구성
 export class Game {
   diceSet: GameDBPart["diceSet"];
-  alterOptionMetaInfoList: GameDBPart["alterOptionMetaInfoList"];
-  currentPlayerName: GameDBPart["currentPlayerName"];
   remainingRoll: GameDBPart["remainingRoll"];
-  playerMap: GameDBPart["playerInfoMap"];
+  currentPlayerIdx: GameDBPart["currentPlayerIdx"];
+  playerInfoList: GameDBPart["playerInfoList"];
+  alterOptionMetaInfoList: GameDBPart["alterOptionMetaInfoList"];
 
   maxHolding: number;
   maxRoll: number;
@@ -91,32 +97,26 @@ export class Game {
     return [...upperRows, ...lowerRows];
   }
 
-  getPlayerInfoOf(playerName: string) {
-    const playerInfo = this.playerMap[playerName];
+  getPlayerInfoOf({ playerIdx }: { playerIdx: number }) {
+    const playerInfo = this.playerInfoList[playerIdx];
     if (playerInfo === undefined) throw new Error("No such player");
     return playerInfo;
   }
 
-  getColorOf(playerName: string) {
-    return this.getPlayerInfoOf(playerName).color;
+  getColorOf({ playerIdx }: { playerIdx: number }) {
+    return this.getPlayerInfoOf({ playerIdx }).color;
   }
 
   getPlayerNameList() {
-    return Object.keys(this.playerMap);
+    return Object.keys(this.playerInfoList);
   }
 
-  getHandInputMapOf(playerName: string) {
-    return this.getPlayerInfoOf(playerName).handInputMap;
+  getHandInputMapOf({ playerIdx }: { playerIdx: number }) {
+    return this.getPlayerInfoOf({ playerIdx }).handInputMap;
   }
 
-  getHandOf({
-    handName,
-    playerName,
-  }: {
-    playerName: string;
-    handName: string;
-  }) {
-    const handInputMap = this.getHandInputMapOf(playerName);
+  getHandOf({ handName, playerIdx }: { handName: string; playerIdx: number }) {
+    const handInputMap = this.getHandInputMapOf({ playerIdx });
     const handInput = handInputMap[handName];
     if (handInput === undefined) throw new Error("No such hand");
     return handInput;
@@ -129,20 +129,20 @@ export class Game {
   }
 
   removeHand({ handName }: { handName: string }) {
-    Object.values(this.playerMap).forEach((playerInfo) => {
+    Object.values(this.playerInfoList).forEach((playerInfo) => {
       delete playerInfo.handInputMap[handName];
     });
   }
 
   addHand({ handName }: { handName: string }) {
-    Object.values(this.playerMap).forEach((playerInfo) => {
+    Object.values(this.playerInfoList).forEach((playerInfo) => {
       playerInfo.handInputMap[handName] = null;
     });
   }
 
   checkAlterOptions() {
     this.alterOptionMetaInfoList.forEach((alterOption) => {
-      if (!alterOption.revealed && alterOption.time === this.getCurrentTurn()) {
+      if (!alterOption.revealed && this.getCurrentTurn() >= alterOption.turn) {
         alterOption.revealed = true;
         this.triggerAlterOption(alterOption.name);
       }
@@ -150,7 +150,7 @@ export class Game {
   }
 
   enterUserHandInput({ handName, eyes }: { handName: string; eyes: DiceEyes }) {
-    const playerInfo = this.playerMap[this.currentPlayerName];
+    const playerInfo = this.playerInfoList[this.currentPlayerIdx];
     if (playerInfo === undefined) throw new Error("No such player");
 
     if (playerInfo.handInputMap[handName] === undefined)
@@ -163,17 +163,14 @@ export class Game {
 
     this.checkAlterOptions();
 
-    const nextPlayerIdx =
-      (this.getPlayerNames().indexOf(this.currentPlayerName) + 1) %
-      this.countTotalPlayers();
-    const nextPlayerName = this.getPlayerNames()[nextPlayerIdx]!;
-    this.currentPlayerName = nextPlayerName;
+    this.currentPlayerIdx =
+      (this.currentPlayerIdx + 1) % this.countTotalPlayers();
     this.remainingRoll = this.maxRoll;
     this.diceSet = [null, null, null, null, null];
   }
 
-  getScoreOf({ rowName, playerName }: { rowName: string; playerName: string }) {
-    const handInputMap = this.getHandInputMapOf(playerName);
+  getScoreOf({ rowName, playerIdx }: { rowName: string; playerIdx: number }) {
+    const handInputMap = this.getHandInputMapOf({ playerIdx });
     const targetRowInfo = this.getRowInfoOf(rowName);
 
     return targetRowInfo.getScoreFrom({
@@ -198,11 +195,7 @@ export class Game {
   }
 
   countTotalPlayers() {
-    return Object.keys(this.playerMap).length;
-  }
-
-  getPlayerNames() {
-    return Object.keys(this.playerMap);
+    return Object.keys(this.playerInfoList).length;
   }
 
   static generateDiceEye() {
@@ -210,8 +203,8 @@ export class Game {
     return eyes[Math.floor(Math.random() * eyes.length)]!;
   }
 
-  getBasePlayerTotalScore({ playerName }: { playerName: string }) {
-    const handInputMap = this.getHandInputMapOf(playerName);
+  getBasePlayerTotalScore({ playerIdx }: { playerIdx: number }) {
+    const handInputMap = this.getHandInputMapOf({ playerIdx });
 
     let totalScore = 0;
     Object.keys(this.rowInfoMap).forEach((rowName) => {
@@ -222,8 +215,8 @@ export class Game {
     return totalScore;
   }
 
-  getPlayerTotalScore({ playerName }: { playerName: string }) {
-    return this.getBasePlayerTotalScore({ playerName });
+  getPlayerTotalScore({ playerIdx }: { playerIdx: number }) {
+    return this.getBasePlayerTotalScore({ playerIdx });
   }
 
   isFinishedBase() {
@@ -246,15 +239,15 @@ export class Game {
   extractDataPart(): GameDBPart {
     return {
       alterOptionMetaInfoList: this.alterOptionMetaInfoList,
-      currentPlayerName: this.currentPlayerName,
+      currentPlayerIdx: this.currentPlayerIdx,
       diceSet: this.diceSet,
-      playerInfoMap: this.playerMap,
+      playerInfoList: this.playerInfoList,
       remainingRoll: this.remainingRoll,
     };
   }
 
   countTotalHand() {
-    const playerMap = this.playerMap;
+    const playerMap = this.playerInfoList;
     const hands = Object.values(playerMap)[0]!.handInputMap;
     return Object.keys(hands).length;
   }
@@ -277,7 +270,7 @@ export class Game {
 
   countFilledCells() {
     let filledRowNum = 0;
-    Object.values(this.playerMap).forEach((playerMap) => {
+    Object.values(this.playerInfoList).forEach((playerMap) => {
       Object.values(playerMap.handInputMap).forEach((selection) => {
         if (selection !== null) {
           filledRowNum += 1;
@@ -285,10 +278,6 @@ export class Game {
       });
     });
     return filledRowNum;
-  }
-
-  getCurrentPlayerName() {
-    return this.currentPlayerName;
   }
 
   getClone() {
@@ -299,15 +288,21 @@ export class Game {
     return _.clone(this);
   }
 
-  constructor(dbPart: GameDBPart) {
-    this.alterOptionMetaInfoList = dbPart.alterOptionMetaInfoList;
-    this.currentPlayerName = dbPart.currentPlayerName;
-    this.diceSet = dbPart.diceSet;
-    this.playerMap = dbPart.playerInfoMap;
-    this.remainingRoll = dbPart.remainingRoll;
+  static getInitialDiceSet(): UnusableDiceSet {
+    return [null, null, null, null, null];
+  }
 
+  constructor(dbPart: GameDBPart) {
     this.maxHolding = 5;
     this.maxRoll = 3;
     this.rowInfoMap = getInitialRowInfo();
+
+    this.alterOptionMetaInfoList = dbPart.alterOptionMetaInfoList;
+    this.currentPlayerIdx = dbPart.currentPlayerIdx;
+    this.diceSet = dbPart.diceSet;
+    this.playerInfoList = dbPart.playerInfoList;
+    this.remainingRoll = dbPart.remainingRoll;
+
+    this.checkAlterOptions();
   }
 }

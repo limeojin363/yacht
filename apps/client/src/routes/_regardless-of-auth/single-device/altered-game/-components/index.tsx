@@ -1,21 +1,18 @@
 import { useState } from "react";
 import GameComponent from "../../../../../components/games/AlteredGame";
 import type { GameContextValues } from "../../../../../components/games/AlteredGame/context";
-import { Game, getInitialDataPart } from "@yacht/game-core";
+import { Game, generateAlterOptions, getInitialDBPart } from "@yacht/game-core";
+import { generateRandomColor } from "../../default-game/-components";
 
 const useProps = (totalPlayersNum: number): GameContextValues => {
-  const playerNames = Array.from(
-    { length: totalPlayersNum },
-    (_, i) => `Player ${i + 1}`
-  );
-
   const [gameStatus, setGameStatus] = useState(
     new Game(
-      getInitialDataPart({
-        playerNames,
-        alterOptionMetaList: [
-          { name: "HOLDING_LIMIT_1", revealed: false, time: 2 },
-        ],
+      getInitialDBPart({
+        alterOptionMetaList: generateAlterOptions(),
+        playerPresetList: Array.from({ length: totalPlayersNum }, (_, i) => ({
+          name: `Player ${i + 1}`,
+          color: generateRandomColor(),
+        })),
       })
     )
   );

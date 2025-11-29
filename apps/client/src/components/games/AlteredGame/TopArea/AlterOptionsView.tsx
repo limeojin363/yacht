@@ -1,18 +1,18 @@
 import styled from "@emotion/styled";
-import { AlterOptionMap } from "@yacht/game-core";
+import { AlterOptionMap, type AlterOptionMetaInfo } from "@yacht/game-core";
 import { use } from "react";
 import { GameContext } from "../context";
 
-const AlterOptionItem = ({
+const AlterOptionsView = ({
   optionMetaInfo,
 }: {
-  optionMetaInfo: { revealed: boolean; time: number; name: string };
+  optionMetaInfo: AlterOptionMetaInfo;
 }) => {
-  const { revealed, time, name } = optionMetaInfo;
+  const { revealed, turn, name } = optionMetaInfo;
   const { description } = AlterOptionMap[name];
 
   if (!revealed)
-    return <S.ItemRoot>{`${time}턴에 공개`}</S.ItemRoot>;
+    return <S.ItemRoot>{`${turn}턴에 공개`}</S.ItemRoot>;
 
   return (
     <S.ItemRoot>
@@ -30,7 +30,7 @@ const AlterOptionList = () => {
     <S.ListWrapper>
       <S.ListRoot>
         {contextValues.game.alterOptionMetaInfoList.map((optionMetaInfo) => (
-          <AlterOptionItem
+          <AlterOptionsView
             key={optionMetaInfo.name}
             optionMetaInfo={optionMetaInfo}
           />

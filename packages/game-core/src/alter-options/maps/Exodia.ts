@@ -27,11 +27,11 @@ export const SpecialHandsExodiaMap = {
         );
       };
 
-      gameStatus.getPlayerTotalScore = ({ playerName }) => {
-        const handInputMap = gameStatus.getHandInputMapOf(playerName);
+      gameStatus.getPlayerTotalScore = ({ playerIdx }) => {
+        const handInputMap = gameStatus.getHandInputMapOf({ playerIdx });
         if (handInputMap === undefined) throw new Error();
 
-        let totalScore = gameStatus.getBasePlayerTotalScore({ playerName });
+        let totalScore = gameStatus.getBasePlayerTotalScore({ playerIdx });
 
         if (exodia(handInputMap)) {
           totalScore += 99999;
@@ -44,13 +44,13 @@ export const SpecialHandsExodiaMap = {
         const isThisTurnEnded =
           gameStatus.countFilledCells() % gameStatus.countTotalPlayers() === 0;
 
-        const isExodiaTriggered = gameStatus
-          .getPlayerNames()
-          .some((playerName) => {
-            const handInputMap = gameStatus.getHandInputMapOf(playerName);
+        const isExodiaTriggered = gameStatus.playerInfoList.some(
+          (_, playerIdx) => {
+            const handInputMap = gameStatus.getHandInputMapOf({ playerIdx });
             if (handInputMap === undefined) throw new Error();
             return exodia(handInputMap);
-          });
+          }
+        );
 
         return isThisTurnEnded && isExodiaTriggered;
       };
@@ -99,12 +99,12 @@ export const NumbersExodiaMap = {
         return numbersScore >= 90;
       };
 
-      gameStatus.getPlayerTotalScore = ({ playerName }) => {
-        const handInputMap = gameStatus.getHandInputMapOf(playerName);
+      gameStatus.getPlayerTotalScore = ({ playerIdx }) => {
+        const handInputMap = gameStatus.getHandInputMapOf({playerIdx});
         if (handInputMap === undefined)
-          throw new Error(`No such player: ${playerName}`);
+          throw new Error(`No such player: ${playerIdx}`);
 
-        let totalScore = gameStatus.getBasePlayerTotalScore({ playerName });
+        let totalScore = gameStatus.getBasePlayerTotalScore({ playerIdx });
 
         if (exodia(handInputMap)) {
           totalScore += 99999;
@@ -117,12 +117,11 @@ export const NumbersExodiaMap = {
         const isThisTurnEnded =
           gameStatus.countFilledCells() % gameStatus.countTotalPlayers() === 0;
 
-        const isExodiaTriggered = gameStatus
-          .getPlayerNames()
-          .some((playerName) => {
-            const handInputMap = gameStatus.getHandInputMapOf(playerName);
+        const isExodiaTriggered = gameStatus.playerInfoList
+          .some((_, playerIdx) => {
+            const handInputMap = gameStatus.getHandInputMapOf({ playerIdx });
             if (handInputMap === undefined)
-              throw new Error(`No such player: ${playerName}`);
+              throw new Error(`No such player: ${playerIdx}`);
 
             return exodia(handInputMap);
           });

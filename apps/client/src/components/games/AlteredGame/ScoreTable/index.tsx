@@ -10,8 +10,8 @@ const ScoreTable = () => {
   return (
     <S.Root>
       <SideNameColumn />
-      {gameStatus.getPlayerNames().map((playerName) => (
-        <PlayerScoreColumn key={playerName} playerName={playerName} />
+      {gameStatus.playerInfoList.map((_, playerIdx) => (
+        <PlayerScoreColumn key={playerIdx} playerIdx={playerIdx} />
       ))}
     </S.Root>
   );

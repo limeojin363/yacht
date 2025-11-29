@@ -5,11 +5,11 @@ import { GameContext } from "../../../context";
 import { use } from "react";
 import { getCellStyle } from "./style";
 
-const FusionCell = ({ playerName, rowName }: RowScoreCellProps) => {
+const FusionCell = ({ playerIdx: playerName, rowName }: RowScoreCellProps) => {
   const { game: game, onClickCell } = use(GameContext);
 
   const playerColor = game.getColorOf(playerName);
-  const isCurrentPlayer = game.currentPlayerName === playerName;
+  const isCurrentPlayer = game.currentPlayerIdx === playerName;
 
   const [firstNumber, secondNumber] = rowName
     .replace("FUSION_", "")

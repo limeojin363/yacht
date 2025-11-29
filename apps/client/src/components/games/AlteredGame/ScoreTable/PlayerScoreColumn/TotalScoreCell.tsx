@@ -2,10 +2,10 @@ import styled from "@emotion/styled";
 import { use } from "react";
 import { GameContext } from "../../context";
 
-const TotalScoreCell = ({ playerName }: { playerName: string }) => {
+const TotalScoreCell = ({ playerIdx }: { playerIdx: number }) => {
   const { game: gameStatus } = use(GameContext);
-  const playerColor = gameStatus.getColorOf(playerName);
-  const totalScore = gameStatus.getPlayerTotalScore({ playerName });
+  const playerColor = gameStatus.getColorOf({ playerIdx });
+  const totalScore = gameStatus.getPlayerTotalScore({ playerIdx });
 
   return <S.Root playerColor={playerColor}>{totalScore}</S.Root>;
 };

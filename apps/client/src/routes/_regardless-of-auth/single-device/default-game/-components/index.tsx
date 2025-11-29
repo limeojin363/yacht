@@ -19,7 +19,7 @@ type HexColor = `#${string}`;
 const fixedSaturation = 0.7; // 예시 채도 (70%)
 const fixedLightness = 0.4; // 예시 명도 (40%)
 
-function generateRandomColor(): HexColor {
+export function generateRandomColor(): HexColor {
   // 최우측 원색 팔레트에서 랜덤 색상 각도 (hue) 선택 (0 - 360 사이)
   const randomHue = Math.floor(Math.random() * 360); // 0부터 360 사이의 랜덤 값
 

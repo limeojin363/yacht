@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import SideMenuButton from "./SideMenuButton";
-import AlterOptionList from "./AlterOptionList";
+import AlterOptionList from "./AlterOptionsView";
 import TurnMetaInfo from "./TurnMetaInfo";
 
 const TopArea = () => {

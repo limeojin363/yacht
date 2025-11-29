@@ -51,11 +51,11 @@ export const AllNumberBonusMissionOptionMap =
             return totalNumbersScore >= curr[0];
           };
 
-          gameStatus.getPlayerTotalScore = ({ playerName }) => {
+          gameStatus.getPlayerTotalScore = ({ playerIdx }) => {
             const baseTotalScore = gameStatus.getBasePlayerTotalScore({
-              playerName,
+              playerIdx,
             })
-            const handInputMap = gameStatus.getHandInputMapOf(playerName);
+            const handInputMap = gameStatus.getHandInputMapOf({ playerIdx });
 
             if (isMissionCleared(handInputMap)) {
               return baseTotalScore + curr[1];
