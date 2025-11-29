@@ -4,8 +4,8 @@ import {
   GetMyInfoResBodySchema,
 } from "@yacht/communications";
 import { defaultEndpointsFactory } from "express-zod-api";
-import { PrismaClient } from "@prisma/client";
 import { userCheckMiddleWare } from "../../auths/middleware.js";
+import { PrismaClient } from "../../generated/client.js";
 
 const myInfoEndpoint = defaultEndpointsFactory
   .addMiddleware(userCheckMiddleWare)

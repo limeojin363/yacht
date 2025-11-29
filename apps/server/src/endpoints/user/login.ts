@@ -10,7 +10,7 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../../auths/token.js";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../../generated/client.js";
 
 const loginEndpoint = defaultEndpointsFactory.build({
   method: "post",

@@ -6,7 +6,7 @@ import {
   type ProgressType,
 } from "@yacht/communications";
 import { getInitialGameStatus } from "@yacht/default-game";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../../generated/client.js";
 
 export const generateGameEndpoint = defaultEndpointsFactory
   .addMiddleware(userCheckMiddleWare)

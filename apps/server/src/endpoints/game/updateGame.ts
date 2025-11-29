@@ -5,7 +5,7 @@ import {
   UpdateGameResBodySchema,
 } from "@yacht/communications";
 import { GameStatusSchema, getInitialGameStatus } from "@yacht/default-game";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../../generated/client.js";
 
 export const updateGameEndpoint = defaultEndpointsFactory
   .addMiddleware(adminCheckMiddleWare)
