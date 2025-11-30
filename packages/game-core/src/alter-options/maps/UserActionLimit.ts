@@ -24,7 +24,7 @@ export const RollLimitOptionMap = RollLimitOptionParamList.reduce(
   {} as Record<RollLimitOptionName, AlterOptionObject>,
 );
 
-const HoldingLimitParamList = [0, 1, 2, 3, 4] as const;
+const HoldingLimitParamList = [3, 4] as const;
 
 export type HoldingLimitOptionName =
   (typeof HoldingLimitParamList)[number] extends infer T

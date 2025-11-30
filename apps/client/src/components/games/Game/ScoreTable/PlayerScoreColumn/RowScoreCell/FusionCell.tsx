@@ -5,11 +5,11 @@ import { GameContext } from "../../../context";
 import { use } from "react";
 import { getCellStyle } from "./style";
 
-const FusionCell = ({ playerIdx: playerName, rowName }: RowScoreCellProps) => {
-  const { game: game, onClickCell } = use(GameContext);
+const FusionCell = ({ playerIdx: playerIdx, rowName }: RowScoreCellProps) => {
+  const { game, onClickCell } = use(GameContext);
 
-  const playerColor = game.getColorOf(playerName);
-  const isCurrentPlayer = game.currentPlayerIdx === playerName;
+  const playerColor = game.getColorOf({ playerIdx });
+  const isCurrentPlayer = game.currentPlayerIdx === playerIdx;
 
   const [firstNumber, secondNumber] = rowName
     .replace("FUSION_", "")
@@ -19,10 +19,14 @@ const FusionCell = ({ playerIdx: playerName, rowName }: RowScoreCellProps) => {
     1 | 2 | 3 | 4 | 5 | 6,
   ];
 
-  const firstHand =
-    game.getHandOf({ handName: `NUMBERS_${firstNumber}`, playerName });
-  const secondHand =
-    game.getHandOf({ handName: `NUMBERS_${secondNumber}`, playerName });
+  const firstHand = game.getHandOf({
+    handName: `NUMBERS_${firstNumber}`,
+    playerIdx,
+  });
+  const secondHand = game.getHandOf({
+    handName: `NUMBERS_${secondNumber}`,
+    playerIdx,
+  });
   const firstValue =
     firstHand !== null
       ? GetDefaultScoreOf[`NUMBERS_${firstNumber}`](firstHand)
@@ -45,43 +49,49 @@ const FusionCell = ({ playerIdx: playerName, rowName }: RowScoreCellProps) => {
     );
   } else {
     // TODO: 어떻게 좀 해봐라
-    const firstViewStatus: ViewStatus = firstValue
-      ? "SELECTED"
-      : isCurrentPlayer && game.isDiceSetUsable()
-        ? "SELECTABLE"
-        : "EMPTY";
+    const firstViewStatus: ViewStatus =
+      firstValue !== null
+        ? "SELECTED"
+        : isCurrentPlayer && game.isDiceSetUsable()
+          ? "SELECTABLE"
+          : "EMPTY";
 
     const firstContent =
       firstValue !== null
         ? firstValue
         : firstViewStatus === "SELECTABLE"
-          ? GetDefaultScoreOf[`NUMBERS_${firstNumber}`](game.extractDiceEyes())
+          ? GetDefaultScoreOf[`NUMBERS_${firstNumber}`](
+              game.extractDiceEyes()
+            )
           : null;
 
-    const secondViewStatus: ViewStatus = secondValue
-      ? "SELECTED"
-      : isCurrentPlayer && game.isDiceSetUsable()
-        ? "SELECTABLE"
-        : "EMPTY";
+    const secondViewStatus: ViewStatus =
+      secondValue !== null
+        ? "SELECTED"
+        : isCurrentPlayer && game.isDiceSetUsable()
+          ? "SELECTABLE"
+          : "EMPTY";
 
     const secondContent =
       secondValue !== null
         ? secondValue
         : secondViewStatus === "SELECTABLE"
-          ? GetDefaultScoreOf[`NUMBERS_${secondNumber}`](game.extractDiceEyes())
+          ? GetDefaultScoreOf[`NUMBERS_${secondNumber}`](
+              game.extractDiceEyes()
+            )
           : null;
 
     return (
       <S.PiecesWrapper>
         <S.Piece
-          onClick={() => onClickCell(`NUMBERS_${firstNumber}`, playerName)}
+          onClick={() => onClickCell(`NUMBERS_${firstNumber}`, playerIdx)}
           playerColor={playerColor}
           viewStatus={firstViewStatus}
         >
           {firstContent}
         </S.Piece>
         <S.Piece
-          onClick={() => onClickCell(`NUMBERS_${secondNumber}`, playerName)}
+          onClick={() => onClickCell(`NUMBERS_${secondNumber}`, playerIdx)}
           playerColor={playerColor}
           viewStatus={secondViewStatus}
         >
@@ -110,7 +120,8 @@ const S = {
     font-weight: bold;
     font-size: 1.3rem;
 
-    ${({ playerColor }) => getCellStyle({ playerColor, viewStatus: "SELECTED" })};
+    ${({ playerColor }) =>
+      getCellStyle({ playerColor, viewStatus: "SELECTED" })};
   `,
   PiecesWrapper: styled.div`
     height: 100%;
@@ -134,6 +145,7 @@ const S = {
     font-weight: bold;
     font-size: 1.3rem;
 
-    ${({ playerColor, viewStatus }) => getCellStyle({ playerColor, viewStatus })};
+    ${({ playerColor, viewStatus }) =>
+      getCellStyle({ playerColor, viewStatus })};
   `,
 };

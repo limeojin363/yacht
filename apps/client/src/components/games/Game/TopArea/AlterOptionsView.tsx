@@ -3,7 +3,7 @@ import { AlterOptionMap, type AlterOptionMetaInfo } from "@yacht/game-core";
 import { use } from "react";
 import { GameContext } from "../context";
 
-const AlterOptionsView = ({
+const AlterOptionMetaListView = ({
   optionMetaInfo,
 }: {
   optionMetaInfo: AlterOptionMetaInfo;
@@ -30,7 +30,7 @@ const AlterOptionList = () => {
     <S.ListWrapper>
       <S.ListRoot>
         {contextValues.game.alterOptionMetaInfoList.map((optionMetaInfo) => (
-          <AlterOptionsView
+          <AlterOptionMetaListView
             key={optionMetaInfo.name}
             optionMetaInfo={optionMetaInfo}
           />

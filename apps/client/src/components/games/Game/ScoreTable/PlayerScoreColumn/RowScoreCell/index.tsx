@@ -15,7 +15,7 @@ export type RowScoreCellProps = {
 
 const useSingleViewData = ({ playerIdx, rowName }: RowScoreCellProps) => {
   const { game } = use(GameContext);
-  const playerColor = game.getColorOf({playerIdx});
+  const playerColor = game.getColorOf({ playerIdx });
   const isCurrentPlayer = game.currentPlayerIdx === playerIdx;
   const viewStatus: ViewStatus =
     game.getHandOf({ handName: rowName, playerIdx }) !== null

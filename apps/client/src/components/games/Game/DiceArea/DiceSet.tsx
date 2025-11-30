@@ -4,15 +4,27 @@ import { use } from "react";
 import SingleDiceView from "../../SingleDiceView";
 
 const SingleDice = ({ index }: { index: number }) => {
-  const { game: gameStatus, onClickDice } = use(GameContext);
+  const { game, onClickDice } = use(GameContext);
 
-  const dice = gameStatus.diceSet[index];
+  const dice = game.diceSet[index];
 
   const isHeld = dice ? dice.held : false;
   const content = dice ? dice.eye : null;
 
   return (
-    <SingleDiceView isHeld={isHeld} onClick={() => onClickDice(index)}>
+    <SingleDiceView
+      isHeld={isHeld}
+      onKeyDown={(e) => {
+        if (dice == null) return;
+        if (Number(e.key) >= 1 && Number(e.key) <= 6) {
+          game.diceSet[index] = {
+            eye: Number(e.key),
+            held: dice ? dice.held : false,
+          };
+        }
+      }}
+      onClick={() => onClickDice(index)}
+    >
       {content}
     </SingleDiceView>
   );

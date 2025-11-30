@@ -3,9 +3,9 @@ import { use } from "react";
 import { GameContext } from "../../context";
 
 const TotalScoreCell = ({ playerIdx }: { playerIdx: number }) => {
-  const { game: gameStatus } = use(GameContext);
-  const playerColor = gameStatus.getColorOf({ playerIdx });
-  const totalScore = gameStatus.getPlayerTotalScore({ playerIdx });
+  const { game } = use(GameContext);
+  const playerColor = game.getColorOf({ playerIdx });
+  const totalScore = game.getPlayerTotalScore({ playerIdx });
 
   return <S.Root playerColor={playerColor}>{totalScore}</S.Root>;
 };

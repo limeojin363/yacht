@@ -1,8 +1,8 @@
-import { useState } from "react";
-import GameComponent from "../../../../../components/games/AlteredGame";
-import type { GameContextValues } from "../../../../../components/games/AlteredGame/context";
+import GameComponent from "../../../../../components/games/Game";
+import type { GameContextValues } from "../../../../../components/games/Game/context";
 import { Game, generateAlterOptions, getInitialDBPart } from "@yacht/game-core";
 import { generateRandomColor } from "../../default-game/-components";
+import { useState } from "react";
 
 const useProps = (totalPlayersNum: number): GameContextValues => {
   const [gameStatus, setGameStatus] = useState(
@@ -17,35 +17,48 @@ const useProps = (totalPlayersNum: number): GameContextValues => {
     )
   );
 
-  // useEffect(() => {
-  //   console.log(gameStatus);
-  // }, [gameStatus]);
-
   return {
     game: gameStatus,
     onClickCell: (handName) => {
-      gameStatus.enterUserHandInput({
-        handName,
-        eyes: gameStatus.extractDiceEyes(),
+      setGameStatus((draft) => {
+        return draft.enterUserHandInput({
+          handName,
+          eyes: draft.extractDiceEyes(),
+        });
       });
-      setGameStatus(gameStatus.getShallowClone());
+
+      // gameStatus.enterUserHandInput({
+      //   handName,
+      //   eyes: gameStatus.extractDiceEyes(),
+      // });
+      // setGameStatus(gameStatus.getShallowClone());
     },
     onClickDice: (diceIndex) => {
-      if (!gameStatus.isDiceSetUsable())
-        throw new Error("Dice set is not usable");
+      // if (!gameStatus.isDiceSetUsable())
+      //   throw new Error("Dice set is not usable");
 
-      gameStatus.toggleDice(diceIndex);
+      // gameStatus.toggleDice(diceIndex);
 
-      setGameStatus(gameStatus.getShallowClone());
+      // setGameStatus(gameStatus.getShallowClone());
+      setGameStatus((draft) => {
+        if (!draft.isDiceSetUsable()) throw new Error("Dice set is not usable");
+
+        return draft.toggleDice(diceIndex);
+      });
     },
     onClickRoll: () => {
-      console.log("onClickRoll");
+      // if (!gameStatus.hasMoreRoll()) throw new Error("No more roll");
+      // gameStatus.diceSet = gameStatus.generateNextDiceSet();
+      // gameStatus.remainingRoll = gameStatus.remainingRoll - 1;
 
-      if (!gameStatus.hasMoreRoll()) throw new Error("No more roll");
-      gameStatus.diceSet = gameStatus.generateNextDiceSet();
-      gameStatus.remainingRoll = gameStatus.remainingRoll - 1;
+      // setGameStatus(gameStatus.getShallowClone());
 
-      setGameStatus(gameStatus.getShallowClone());
+      setGameStatus((draft) => {
+        if (!draft.hasMoreRoll()) throw new Error("No more roll");
+
+        const rolledDiceSet = draft.generateRolledDiceSet();
+        return draft.applyRolledDiceSet(rolledDiceSet);
+      });
     },
     onExit: () => {},
   };

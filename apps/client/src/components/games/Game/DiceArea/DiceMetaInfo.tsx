@@ -3,7 +3,7 @@ import { use } from "react";
 import { GameContext } from "../context";
 
 const DiceMetaInfo = () => {
-  const { game } = use(GameContext);
+  const { game: game } = use(GameContext);
 
   return (
     <S.Root>

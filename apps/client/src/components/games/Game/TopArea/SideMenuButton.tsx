@@ -1,12 +1,8 @@
 import styled from "@emotion/styled";
-import { use } from "react";
-import { GameContext } from "../context";
 
 const SideMenuButton = () => {
-  const contextValues = use(GameContext);
-
   return <S.Wrapper>
-    <S.Button onClick={contextValues.onExit}>X</S.Button>
+    <S.Button onClick={() => {}}>X</S.Button>
   </S.Wrapper>;
 };
 
@@ -21,7 +17,6 @@ const S = {
   `,
   Button: styled.button`
     all: unset;
-
 
     height: 40px;
     aspect-ratio: 1;
