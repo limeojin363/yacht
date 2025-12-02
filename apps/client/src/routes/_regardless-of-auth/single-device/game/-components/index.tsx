@@ -3,40 +3,55 @@ import type { GameContextValues } from "../../../../../components/games/Game/con
 import {
   Game,
   getInitialDBPart,
+  UnavailableInteractionError,
   type GamePreset,
 } from "@yacht/game-core";
 import { useState } from "react";
 import GamePresetComponent from "./GamePresetComponent";
 import { generateRandomColor } from "../../default-game/-components";
 import {useImmer} from "use-immer"
+import { toast } from "react-toastify";
 
+const toastOnUnavailableInteractionError = (callback: () => void) => {
+  try {
+    callback();
+  } catch (error) {
+    if (error instanceof UnavailableInteractionError) {
+      toast.error(error.message);
+      return;
+    }
+    throw error;
+  }
+}
 
 const useProps = (preset: GamePreset): GameContextValues => {
   const [game, setGame] = useImmer(new Game(getInitialDBPart(preset)));
 
   return {
     game,
-    onClickCell: (handName) => {
+    onClickCell: (handName, playerIdx) => {
       setGame((prev) => {
-        prev.enterUserHandInput({
-          handName,
-          eyes: prev.extractDiceEyes(),
+        toastOnUnavailableInteractionError(() => {
+          prev.enterUserHandInput({
+            handName,
+            playerIdx,
+          });
         });
       });
     },
     onClickDice: (diceIndex) => {
       setGame((prev) => {
-        if (!prev.isDiceSetUsable()) throw new Error("Dice set is not usable");
-
-        prev.toggleDice(diceIndex);
+        toastOnUnavailableInteractionError(() => {
+          prev.toggleDice(diceIndex);
+        });
       });
     },
     onClickRoll: () => {
       setGame((prev) => {
-        if (!prev.hasMoreRoll()) throw new Error("No more roll");
-
-        const rolledDiceSet = prev.generateRolledDiceSet();
-        prev.applyRolledDiceSet(rolledDiceSet);
+        toastOnUnavailableInteractionError(() => {
+          const rolledDiceSet = prev.generateRolledDiceSet();
+          prev.applyRolledDiceSet(rolledDiceSet);
+        });
       });
     },
     onExit: () => {},

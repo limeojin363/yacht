@@ -2,6 +2,7 @@ import _ from "lodash";
 import { getInitialRowInfo } from "../score";
 import type {
   DiceEyes,
+  DiceSet,
   GameDBPart,
   RowInfo,
   UnusableDiceSet,
@@ -9,6 +10,7 @@ import type {
 } from "./types";
 import { AlterOptionMap } from "../alter-options";
 import { immerable } from "immer";
+import { DevError, UnavailableInteractionError } from "../error";
 
 // 유저가 넣는 칸이 hand고, 계산 시 나오는 결과가 row다.
 // 대체로 hand == row이지만 예외가 있다.
@@ -34,7 +36,7 @@ export class Game {
   /** Extract eye only from diceSet */
   extractDiceEyes(): DiceEyes {
     if (!this.isDiceSetUsable()) {
-      throw new Error("Dice have not been rolled yet");
+      throw new UnavailableInteractionError("Dice have not been rolled yet");
     }
 
     return this.diceSet.map((d) => d!.eye) as DiceEyes;
@@ -42,14 +44,14 @@ export class Game {
 
   toggleDice(diceIndex: number) {
     if (!this.isDiceSetUsable()) {
-      throw new Error("Dice have not been rolled yet");
+      throw new UnavailableInteractionError("Dice have not been rolled yet");
     }
 
     const dice = this.diceSet[diceIndex];
-    if (!dice) throw new Error("Dice does not exist");
+    if (!dice) throw new DevError("Dice does not exist");
 
     if (!dice.held && this.countHeldDices() >= this.maxHolding) {
-      throw new Error("Holding limit exceeded");
+      throw new UnavailableInteractionError("Holding limit exceeded");
     }
 
     dice.held = !dice.held;
@@ -72,6 +74,9 @@ export class Game {
   }
 
   applyRolledDiceSet(newDiceSet: UsableDiceSet) {
+    if (!this.hasMoreRoll()) {
+      throw new UnavailableInteractionError("No remaining rolls");
+    }
     this.diceSet = newDiceSet;
     this.remainingRoll -= 1;
   }
@@ -104,7 +109,7 @@ export class Game {
 
   getPlayerInfoOf({ playerIdx }: { playerIdx: number }) {
     const playerInfo = this.playerInfoList[playerIdx];
-    if (playerInfo === undefined) throw new Error("No such player");
+    if (playerInfo === undefined) throw new DevError("No such player");
     return playerInfo;
   }
 
@@ -119,13 +124,13 @@ export class Game {
   getHandOf({ handName, playerIdx }: { handName: string; playerIdx: number }) {
     const handInputMap = this.getHandInputMapOf({ playerIdx });
     const handInput = handInputMap[handName];
-    if (handInput === undefined) throw new Error("No such hand");
+    if (handInput === undefined) throw new DevError("No such hand");
     return handInput;
   }
 
   getRowInfoOf(rowName: string) {
     const targetRowInfo = this.rowInfoMap[rowName];
-    if (targetRowInfo === undefined) throw new Error("No such row");
+    if (targetRowInfo === undefined) throw new DevError("No such row");
     return targetRowInfo;
   }
 
@@ -150,15 +155,31 @@ export class Game {
     });
   }
 
-  enterUserHandInput({ handName, eyes }: { handName: string; eyes: DiceEyes }) {
-    const playerInfo = this.playerInfoList[this.currentPlayerIdx];
-    if (playerInfo === undefined) throw new Error("No such player");
+  enterUserHandInput({
+    handName,
+    playerIdx,
+  }: {
+    handName: string;
+    playerIdx: number;
+  }) {
+    if (this.currentPlayerIdx !== playerIdx) {
+      throw new UnavailableInteractionError("Not this player's turn");
+    }
+
+    const playerInfo = this.playerInfoList[playerIdx];
+    if (playerInfo === undefined) throw new DevError("No such player");
 
     if (playerInfo.handInputMap[handName] === undefined)
-      throw new Error("No such hand");
+      throw new DevError("No such hand");
 
     if (playerInfo.handInputMap[handName] !== null)
-      throw new Error("Hand is already filled");
+      throw new UnavailableInteractionError("Hand is already filled");
+
+    if (!this.isDiceSetUsable()) {
+      throw new UnavailableInteractionError("Dice have not been rolled yet");
+    }
+
+    const eyes = this.extractDiceEyes();
 
     playerInfo.handInputMap[handName] = eyes;
 
@@ -167,27 +188,7 @@ export class Game {
     this.currentPlayerIdx =
       (this.currentPlayerIdx + 1) % this.countTotalPlayers();
     this.remainingRoll = this.maxRoll;
-    this.diceSet = [null, null, null, null, null];
-
-    // return produce(this, (draft) => {
-    //   const playerInfo = draft.playerInfoList[draft.currentPlayerIdx];
-    //   if (playerInfo === undefined) throw new Error("No such player");
-
-    //   if (playerInfo.handInputMap[handName] === undefined)
-    //     throw new Error("No such hand");
-
-    //   if (playerInfo.handInputMap[handName] !== null)
-    //     throw new Error("Hand is already filled");
-
-    //   playerInfo.handInputMap[handName] = eyes;
-
-    //   draft.checkAlterOptions();
-
-    //   draft.currentPlayerIdx =
-    //     (draft.currentPlayerIdx + 1) % draft.countTotalPlayers();
-    //   draft.remainingRoll = draft.maxRoll;
-    //   draft.diceSet = [null, null, null, null, null];
-    // });
+    (this.diceSet as DiceSet) = Game.getInitialDiceSet();
   }
 
   getScoreOf({ rowName, playerIdx }: { rowName: string; playerIdx: number }) {
@@ -204,23 +205,14 @@ export class Game {
   }
 
   removeRowInfo({ rowName }: { rowName: string }) {
-    // return produce(this, draft => {
-    //   delete draft.rowInfoMap[rowName];
-    // })
     delete this.rowInfoMap[rowName];
   }
 
   addRowInfo({ rowName, rowInfo }: { rowName: string; rowInfo: RowInfo }) {
-    // return produce(this, draft => {
-    //   draft.rowInfoMap[rowName] = rowInfo;
-    // })
     this.rowInfoMap[rowName] = rowInfo;
   }
 
   updateRowInfo({ rowName, rowInfo }: { rowName: string; rowInfo: RowInfo }) {
-    // return produce(this, draft => {
-    //   draft.rowInfoMap[rowName] = rowInfo;
-    // })
     this.rowInfoMap[rowName] = rowInfo;
   }
 
@@ -260,7 +252,7 @@ export class Game {
 
   triggerAlterOption(alterOptionName: string) {
     const alterOption = AlterOptionMap[alterOptionName];
-    if (alterOption === undefined) throw new Error("No alterOption");
+    if (alterOption === undefined) throw new DevError("No alterOption");
 
     alterOption.onTrigger(this);
   }

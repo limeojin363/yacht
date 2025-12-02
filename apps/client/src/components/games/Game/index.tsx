@@ -17,22 +17,22 @@ const GameComponent = (contextValues: GameContextValues) => {
 
   return (
     <GameContext.Provider value={contextValues}>
-      <S.Root>
-        <S.TopWrapper>
-          <TopArea />
-        </S.TopWrapper>
-        <S.TableWrapper>
-          <ScoreTable />
-        </S.TableWrapper>
-        <S.DiceAreaWrapper>
-          <DiceArea />
-        </S.DiceAreaWrapper>
-        {resultModalVisible && (
-          <AlertModal onConfirm={contextValues.onExit}>
-            <ResultView />
-          </AlertModal>
-        )}
-      </S.Root>
+        <S.Root>
+          <S.TopWrapper>
+            <TopArea />
+          </S.TopWrapper>
+          <S.TableWrapper>
+            <ScoreTable />
+          </S.TableWrapper>
+          <S.DiceAreaWrapper>
+            <DiceArea />
+          </S.DiceAreaWrapper>
+          {resultModalVisible && (
+            <AlertModal onConfirm={contextValues.onExit}>
+              <ResultView />
+            </AlertModal>
+          )}
+        </S.Root>
     </GameContext.Provider>
   );
 };
