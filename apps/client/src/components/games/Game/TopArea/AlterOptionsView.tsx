@@ -16,7 +16,6 @@ const AlterOptionMetaListView = ({
 
   return (
     <S.ItemRoot>
-      <S.ItemDetail>공개됨</S.ItemDetail>
       <S.ItemDetail>{name}</S.ItemDetail>
       <S.ItemDetail>{description}</S.ItemDetail>
     </S.ItemRoot>

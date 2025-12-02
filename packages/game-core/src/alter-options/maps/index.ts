@@ -7,11 +7,11 @@ import { AllNumberBonusMissionOptionName } from "./BonusMission";
 import { ChoiceOptionName } from "./Choice";
 import { FusionOptionName } from "./Fusion";
 import { N1TimesOptionName, N1IfZeroOptionName, N1EtcOptionName } from "./N1";
-import { N2TimesOptionName } from "./N2";
-import { N3TimesOptionName } from "./N3";
-import { N4TimesOptionName } from "./N4";
-import { N5TimesOptionName } from "./N5";
-import { N6TimesOptionName } from "./N6";
+import { N2TimesOptionMap, N2EtcOptionMap, N2TimesOptionName } from "./N2";
+import { N3TimesOptionName, N3TimesOptionMap } from "./N3";
+import { N4TimesOptionName, N4TimesOptionMap } from "./N4";
+import { N5TimesOptionName,N5TimesOptionMap } from "./N5";
+import { N6TimesOptionName ,N6TimesOptionMap} from "./N6";
 import { RollLimitOptionName, HoldingLimitOptionName, RollLimitOptionMap, HoldingLimitOptionMap } from "./UserActionLimit";
 import { YachtOptionName } from "./Yacht";
 import type { Game } from "../../core/main";
@@ -44,6 +44,12 @@ export const AlterOptionMap: Record<string, AlterOptionObject> = {
   ...N1TimesOptionMap,
   ...N1IfZeroOptionMap,
   ...N1EtcOptionMap,
+  ...N2TimesOptionMap,
+  ...N2EtcOptionMap,
+  ...N3TimesOptionMap,
+  ...N4TimesOptionMap,
+  ...N5TimesOptionMap,
+  ...N6TimesOptionMap,
   ...YachtOptionMap,
   ...AllNumberBonusMissionOptionMap,
   ...RollLimitOptionMap,

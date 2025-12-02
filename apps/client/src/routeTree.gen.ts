@@ -18,8 +18,8 @@ import { Route as UnauthenticatedOnlySignupIndexRouteImport } from './routes/_un
 import { Route as UnauthenticatedOnlyLoginIndexRouteImport } from './routes/_unauthenticated-only/login/index'
 import { Route as AuthenticatedOnlyMeIndexRouteImport } from './routes/_authenticated-only/me/index'
 import { Route as AdminOnlyAdminIndexRouteImport } from './routes/_admin-only/admin/index'
+import { Route as RegardlessOfAuthSingleDeviceGameIndexRouteImport } from './routes/_regardless-of-auth/single-device/game/index'
 import { Route as RegardlessOfAuthSingleDeviceDefaultGameIndexRouteImport } from './routes/_regardless-of-auth/single-device/default-game/index'
-import { Route as RegardlessOfAuthSingleDeviceAlteredGameIndexRouteImport } from './routes/_regardless-of-auth/single-device/altered-game/index'
 import { Route as AuthenticatedOnlyMultipleDeviceDefaultGameIndexRouteImport } from './routes/_authenticated-only/multiple-device/default-game/index'
 import { Route as AuthenticatedOnlyMultipleDeviceAlteredGameIndexRouteImport } from './routes/_authenticated-only/multiple-device/altered-game/index'
 import { Route as AuthenticatedOnlyMultipleDeviceDefaultGameGameIdIndexRouteImport } from './routes/_authenticated-only/multiple-device/default-game.$gameId/index'
@@ -70,16 +70,16 @@ const AdminOnlyAdminIndexRoute = AdminOnlyAdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => AdminOnlyRouteRoute,
 } as any)
+const RegardlessOfAuthSingleDeviceGameIndexRoute =
+  RegardlessOfAuthSingleDeviceGameIndexRouteImport.update({
+    id: '/single-device/game/',
+    path: '/single-device/game/',
+    getParentRoute: () => RegardlessOfAuthRouteRoute,
+  } as any)
 const RegardlessOfAuthSingleDeviceDefaultGameIndexRoute =
   RegardlessOfAuthSingleDeviceDefaultGameIndexRouteImport.update({
     id: '/single-device/default-game/',
     path: '/single-device/default-game/',
-    getParentRoute: () => RegardlessOfAuthRouteRoute,
-  } as any)
-const RegardlessOfAuthSingleDeviceAlteredGameIndexRoute =
-  RegardlessOfAuthSingleDeviceAlteredGameIndexRouteImport.update({
-    id: '/single-device/altered-game/',
-    path: '/single-device/altered-game/',
     getParentRoute: () => RegardlessOfAuthRouteRoute,
   } as any)
 const AuthenticatedOnlyMultipleDeviceDefaultGameIndexRoute =
@@ -115,8 +115,8 @@ export interface FileRoutesByFullPath {
   '/signup': typeof UnauthenticatedOnlySignupIndexRoute
   '/multiple-device/altered-game': typeof AuthenticatedOnlyMultipleDeviceAlteredGameIndexRoute
   '/multiple-device/default-game': typeof AuthenticatedOnlyMultipleDeviceDefaultGameIndexRoute
-  '/single-device/altered-game': typeof RegardlessOfAuthSingleDeviceAlteredGameIndexRoute
   '/single-device/default-game': typeof RegardlessOfAuthSingleDeviceDefaultGameIndexRoute
+  '/single-device/game': typeof RegardlessOfAuthSingleDeviceGameIndexRoute
   '/multiple-device/altered-game/$gameId': typeof AuthenticatedOnlyMultipleDeviceAlteredGameGameIdIndexRoute
   '/multiple-device/default-game/$gameId': typeof AuthenticatedOnlyMultipleDeviceDefaultGameGameIdIndexRoute
 }
@@ -128,8 +128,8 @@ export interface FileRoutesByTo {
   '/signup': typeof UnauthenticatedOnlySignupIndexRoute
   '/multiple-device/altered-game': typeof AuthenticatedOnlyMultipleDeviceAlteredGameIndexRoute
   '/multiple-device/default-game': typeof AuthenticatedOnlyMultipleDeviceDefaultGameIndexRoute
-  '/single-device/altered-game': typeof RegardlessOfAuthSingleDeviceAlteredGameIndexRoute
   '/single-device/default-game': typeof RegardlessOfAuthSingleDeviceDefaultGameIndexRoute
+  '/single-device/game': typeof RegardlessOfAuthSingleDeviceGameIndexRoute
   '/multiple-device/altered-game/$gameId': typeof AuthenticatedOnlyMultipleDeviceAlteredGameGameIdIndexRoute
   '/multiple-device/default-game/$gameId': typeof AuthenticatedOnlyMultipleDeviceDefaultGameGameIdIndexRoute
 }
@@ -146,8 +146,8 @@ export interface FileRoutesById {
   '/_unauthenticated-only/signup/': typeof UnauthenticatedOnlySignupIndexRoute
   '/_authenticated-only/multiple-device/altered-game/': typeof AuthenticatedOnlyMultipleDeviceAlteredGameIndexRoute
   '/_authenticated-only/multiple-device/default-game/': typeof AuthenticatedOnlyMultipleDeviceDefaultGameIndexRoute
-  '/_regardless-of-auth/single-device/altered-game/': typeof RegardlessOfAuthSingleDeviceAlteredGameIndexRoute
   '/_regardless-of-auth/single-device/default-game/': typeof RegardlessOfAuthSingleDeviceDefaultGameIndexRoute
+  '/_regardless-of-auth/single-device/game/': typeof RegardlessOfAuthSingleDeviceGameIndexRoute
   '/_authenticated-only/multiple-device/altered-game/$gameId/': typeof AuthenticatedOnlyMultipleDeviceAlteredGameGameIdIndexRoute
   '/_authenticated-only/multiple-device/default-game/$gameId/': typeof AuthenticatedOnlyMultipleDeviceDefaultGameGameIdIndexRoute
 }
@@ -161,8 +161,8 @@ export interface FileRouteTypes {
     | '/signup'
     | '/multiple-device/altered-game'
     | '/multiple-device/default-game'
-    | '/single-device/altered-game'
     | '/single-device/default-game'
+    | '/single-device/game'
     | '/multiple-device/altered-game/$gameId'
     | '/multiple-device/default-game/$gameId'
   fileRoutesByTo: FileRoutesByTo
@@ -174,8 +174,8 @@ export interface FileRouteTypes {
     | '/signup'
     | '/multiple-device/altered-game'
     | '/multiple-device/default-game'
-    | '/single-device/altered-game'
     | '/single-device/default-game'
+    | '/single-device/game'
     | '/multiple-device/altered-game/$gameId'
     | '/multiple-device/default-game/$gameId'
   id:
@@ -191,8 +191,8 @@ export interface FileRouteTypes {
     | '/_unauthenticated-only/signup/'
     | '/_authenticated-only/multiple-device/altered-game/'
     | '/_authenticated-only/multiple-device/default-game/'
-    | '/_regardless-of-auth/single-device/altered-game/'
     | '/_regardless-of-auth/single-device/default-game/'
+    | '/_regardless-of-auth/single-device/game/'
     | '/_authenticated-only/multiple-device/altered-game/$gameId/'
     | '/_authenticated-only/multiple-device/default-game/$gameId/'
   fileRoutesById: FileRoutesById
@@ -270,18 +270,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminOnlyAdminIndexRouteImport
       parentRoute: typeof AdminOnlyRouteRoute
     }
+    '/_regardless-of-auth/single-device/game/': {
+      id: '/_regardless-of-auth/single-device/game/'
+      path: '/single-device/game'
+      fullPath: '/single-device/game'
+      preLoaderRoute: typeof RegardlessOfAuthSingleDeviceGameIndexRouteImport
+      parentRoute: typeof RegardlessOfAuthRouteRoute
+    }
     '/_regardless-of-auth/single-device/default-game/': {
       id: '/_regardless-of-auth/single-device/default-game/'
       path: '/single-device/default-game'
       fullPath: '/single-device/default-game'
       preLoaderRoute: typeof RegardlessOfAuthSingleDeviceDefaultGameIndexRouteImport
-      parentRoute: typeof RegardlessOfAuthRouteRoute
-    }
-    '/_regardless-of-auth/single-device/altered-game/': {
-      id: '/_regardless-of-auth/single-device/altered-game/'
-      path: '/single-device/altered-game'
-      fullPath: '/single-device/altered-game'
-      preLoaderRoute: typeof RegardlessOfAuthSingleDeviceAlteredGameIndexRouteImport
       parentRoute: typeof RegardlessOfAuthRouteRoute
     }
     '/_authenticated-only/multiple-device/default-game/': {
@@ -354,15 +354,15 @@ const AuthenticatedOnlyRouteRouteWithChildren =
   )
 
 interface RegardlessOfAuthRouteRouteChildren {
-  RegardlessOfAuthSingleDeviceAlteredGameIndexRoute: typeof RegardlessOfAuthSingleDeviceAlteredGameIndexRoute
   RegardlessOfAuthSingleDeviceDefaultGameIndexRoute: typeof RegardlessOfAuthSingleDeviceDefaultGameIndexRoute
+  RegardlessOfAuthSingleDeviceGameIndexRoute: typeof RegardlessOfAuthSingleDeviceGameIndexRoute
 }
 
 const RegardlessOfAuthRouteRouteChildren: RegardlessOfAuthRouteRouteChildren = {
-  RegardlessOfAuthSingleDeviceAlteredGameIndexRoute:
-    RegardlessOfAuthSingleDeviceAlteredGameIndexRoute,
   RegardlessOfAuthSingleDeviceDefaultGameIndexRoute:
     RegardlessOfAuthSingleDeviceDefaultGameIndexRoute,
+  RegardlessOfAuthSingleDeviceGameIndexRoute:
+    RegardlessOfAuthSingleDeviceGameIndexRoute,
 }
 
 const RegardlessOfAuthRouteRouteWithChildren =

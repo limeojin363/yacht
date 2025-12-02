@@ -21,7 +21,7 @@ const HomePage = () => {
         text="Single Device - Default Game"
       />
       <SelectorItem
-        onClick={() => navigate({ to: "/single-device/altered-game" })}
+        onClick={() => navigate({ to: "/single-device/game" })}
         text="Single Device - Altered Game"
       />
     </S.Root>

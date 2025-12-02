@@ -14,7 +14,7 @@ export const YachtOptionMap = YachtOptionParamList.reduce(
     const name = `YACHT_${curr}` as YachtOptionName;
     acc[name] = {
       description: `YACHT가 ${curr}점이 됨`,
-      handDependencies: [],
+      handDependencies: ["YACHT"],
       onTrigger(gameStatus) {
         gameStatus.updateRowInfo({
           rowName: "YACHT",

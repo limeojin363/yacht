@@ -21,7 +21,14 @@ export const AllNumberBonusMissionOptionMap =
         `ALL_NUMBERS_MISSION_${curr[0]}_${curr[1]}` as AllNumberBonusMissionOptionName;
       acc[name] = {
         description: `NUMBERS 점수의 합이 ${curr[0]}점 이상이면 ${curr[1]}점 획득`,
-        handDependencies: [],
+        handDependencies: [
+          "NUMBERS_1",
+          "NUMBERS_2",
+          "NUMBERS_3",
+          "NUMBERS_4",
+          "NUMBERS_5",
+          "NUMBERS_6",
+        ],
         onTrigger(gameStatus) {
           const isMissionCleared = (
             handInputMap: Record<

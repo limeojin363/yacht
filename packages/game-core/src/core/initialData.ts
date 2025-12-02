@@ -6,8 +6,6 @@ import {
   type PlayerInfoType,
   type UnusableDiceSet,
 } from "./types";
-import { generateAlterOptions } from "../alter-options";
-import generatePlayerColor from "../color";
 
 type PlayerPresetType = Pick<PlayerInfoType, "name" | "color">;
 
@@ -45,8 +43,7 @@ export const getInitialDBPart = (gamePreset: GamePreset): GameDBPart => {
     remainingRoll: 3,
     currentPlayerIdx: 0,
     playerInfoList: gamePreset.playerPresetList.map((playerPreset) => ({
-      name: playerPreset.name,
-      color: playerPreset.color,
+      ...playerPreset,
       handInputMap: getInitialHandInputMap(),
     })),
     alterOptionMetaInfoList: gamePreset.alterOptionMetaList,
