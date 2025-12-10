@@ -24,7 +24,7 @@ export const ChoiceOptionMap = ChoiceOptionParamList.reduce(
     const name = `${curr[0]}-CHOICE_x${curr[1]}` as ChoiceOptionName;
     acc[name] = {
       description: `CHOICE_x${curr[1]}을 ${curr[0]}개 생성`,
-      handDependencies: [],
+      handDependencies: ['CHOICE'],
       onTrigger(gameStatus) {
         for (let i = 0; i < curr[0]; i++) {
           const rowName = `CHOICE_x${curr[1]}_${Postfix[i]}`;

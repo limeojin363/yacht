@@ -36,7 +36,7 @@ export class Game {
   /** Extract eye only from diceSet */
   extractDiceEyes(): DiceEyes {
     if (!this.isDiceSetUsable()) {
-      throw new UnavailableInteractionError("Dice have not been rolled yet");
+      throw new UnavailableInteractionError("Dices have not been rolled yet");
     }
 
     return this.diceSet.map((d) => d!.eye) as DiceEyes;
@@ -44,7 +44,7 @@ export class Game {
 
   toggleDice(diceIndex: number) {
     if (!this.isDiceSetUsable()) {
-      throw new UnavailableInteractionError("Dice have not been rolled yet");
+      throw new UnavailableInteractionError("Dices have not been rolled yet");
     }
 
     const dice = this.diceSet[diceIndex];
@@ -79,6 +79,13 @@ export class Game {
     }
     this.diceSet = newDiceSet;
     this.remainingRoll -= 1;
+  }
+
+  manuallyUpdateDiceEyes(newEyes: DiceEyes) {
+    this.diceSet = this.diceSet.map((dice, idx) => ({
+      eye: newEyes[idx]!,
+      held: dice ? dice.held : false,
+    })) as UsableDiceSet;
   }
 
   hasMoreRoll() {
@@ -176,7 +183,7 @@ export class Game {
       throw new UnavailableInteractionError("Hand is already filled");
 
     if (!this.isDiceSetUsable()) {
-      throw new UnavailableInteractionError("Dice have not been rolled yet");
+      throw new UnavailableInteractionError("Dices have not been rolled yet");
     }
 
     const eyes = this.extractDiceEyes();

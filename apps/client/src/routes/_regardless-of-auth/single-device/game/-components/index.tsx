@@ -9,7 +9,7 @@ import {
 import { useState } from "react";
 import GamePresetComponent from "./GamePresetComponent";
 import { generateRandomColor } from "../../default-game/-components";
-import {useImmer} from "use-immer"
+import { useImmer } from "use-immer";
 import { toast } from "react-toastify";
 
 const toastOnUnavailableInteractionError = (callback: () => void) => {
@@ -22,7 +22,7 @@ const toastOnUnavailableInteractionError = (callback: () => void) => {
     }
     throw error;
   }
-}
+};
 
 const useProps = (preset: GamePreset): GameContextValues => {
   const [game, setGame] = useImmer(new Game(getInitialDBPart(preset)));
@@ -43,6 +43,19 @@ const useProps = (preset: GamePreset): GameContextValues => {
       setGame((prev) => {
         toastOnUnavailableInteractionError(() => {
           prev.toggleDice(diceIndex);
+        });
+      });
+    },
+    onDiceEyeSelect: (idx, eye) => {
+      setGame((prev) => {
+        toastOnUnavailableInteractionError(() => {
+          if (!prev.isDiceSetUsable() ) {
+            prev.manuallyUpdateDiceEyes([eye, eye, eye, eye, eye]);
+          } else {
+            const newEyes = prev.extractDiceEyes();
+            newEyes[idx] = eye;
+            prev.manuallyUpdateDiceEyes(newEyes);
+          }
         });
       });
     },
@@ -76,7 +89,7 @@ const GameMain = ({ preset }: { preset: GamePreset }) => {
   return <GameComponent {...props} />;
 };
 
-const AlteredGame_SingleDevice = () => {
+const Game_SingleDevice = () => {
   const [mode, setMode] = useState<"PRESET" | "MAIN">("PRESET");
   const { preset, setPreset } = usePreset();
 
@@ -93,4 +106,4 @@ const AlteredGame_SingleDevice = () => {
   return <GameMain preset={preset} />;
 };
 
-export default AlteredGame_SingleDevice;
+export default Game_SingleDevice;

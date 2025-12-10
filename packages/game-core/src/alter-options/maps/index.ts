@@ -14,6 +14,7 @@ import { N5TimesOptionName,N5TimesOptionMap } from "./N5";
 import { N6TimesOptionName ,N6TimesOptionMap} from "./N6";
 import { RollLimitOptionName, HoldingLimitOptionName, RollLimitOptionMap, HoldingLimitOptionMap } from "./UserActionLimit";
 import { YachtOptionName } from "./Yacht";
+import { NumbersExodiaMap, SpecialHandsExodiaMap } from "./Exodia";
 import type { Game } from "../../core/main";
 
 export type AlterOptionObject = {
@@ -43,6 +44,8 @@ export const AlterOptionMap: Record<string, AlterOptionObject> = {
   ...ChoiceOptionMap,
   ...N1TimesOptionMap,
   ...N1IfZeroOptionMap,
+  ...NumbersExodiaMap,
+  ...SpecialHandsExodiaMap,
   ...N1EtcOptionMap,
   ...N2TimesOptionMap,
   ...N2EtcOptionMap,

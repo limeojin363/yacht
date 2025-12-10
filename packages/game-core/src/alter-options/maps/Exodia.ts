@@ -1,7 +1,8 @@
 import type { AlterOptionObject } from ".";
+import { DevError } from "../../error";
 
 export const SpecialHandsExodiaMap = {
-  SpecialHandsExodia: {
+  SPECIAL_HAND_EXODIA: {
     description: `STRAIGHT - FULLHOUSE - TRIPLE - FOURCARD - YACHT를 전부 채우면 99999점을 얻고 게임 종료(해당 턴까지 진행후)`,
     handDependencies: ["STRAIGHT", "FULLHOUSE", "TRIPLE", "FOURCARD", "YACHT"],
     onTrigger(gameStatus) {
@@ -27,26 +28,28 @@ export const SpecialHandsExodiaMap = {
         );
       };
 
-      gameStatus.getPlayerTotalScore = ({ playerIdx }) => {
-        const handInputMap = gameStatus.getHandInputMapOf({ playerIdx });
-        if (handInputMap === undefined) throw new Error();
+      gameStatus.getPlayerTotalScore = function ({ playerIdx }) {
+        const handInputMap = this.getHandInputMapOf({ playerIdx });
+        if (handInputMap === undefined) throw new DevError(`No such player: ${playerIdx}`);
 
-        let totalScore = gameStatus.getBasePlayerTotalScore({ playerIdx });
+        let totalScore = this.getBasePlayerTotalScore({ playerIdx });
 
         if (exodia(handInputMap)) {
           totalScore += 99999;
         }
 
+        console.log({playerIdx, handInputMap, totalScore})
+
         return totalScore;
       };
 
-      gameStatus.isFinished = () => {
+      gameStatus.isFinished = function () {
         const isThisTurnEnded =
-          gameStatus.countFilledCells() % gameStatus.countTotalPlayers() === 0;
+          this.countFilledCells() % this.countTotalPlayers() === 0;
 
-        const isExodiaTriggered = gameStatus.playerInfoList.some(
+        const isExodiaTriggered = this.playerInfoList.some(
           (_, playerIdx) => {
-            const handInputMap = gameStatus.getHandInputMapOf({ playerIdx });
+            const handInputMap = this.getHandInputMapOf({ playerIdx });
             if (handInputMap === undefined) throw new Error();
             return exodia(handInputMap);
           }
@@ -59,7 +62,7 @@ export const SpecialHandsExodiaMap = {
 } as const satisfies Record<string, AlterOptionObject>;
 
 export const NumbersExodiaMap = {
-  NumbersExodia: {
+  NUMBERS_EXODIA: {
     handDependencies: [
       "NUMBERS_1",
       "NUMBERS_2",
@@ -113,13 +116,13 @@ export const NumbersExodiaMap = {
         return totalScore;
       };
 
-      gameStatus.isFinished = () => {
+      gameStatus.isFinished = function () {
         const isThisTurnEnded =
-          gameStatus.countFilledCells() % gameStatus.countTotalPlayers() === 0;
+          this.countFilledCells() % this.countTotalPlayers() === 0;
 
-        const isExodiaTriggered = gameStatus.playerInfoList
+        const isExodiaTriggered = this.playerInfoList
           .some((_, playerIdx) => {
-            const handInputMap = gameStatus.getHandInputMapOf({ playerIdx });
+            const handInputMap = this.getHandInputMapOf({ playerIdx });
             if (handInputMap === undefined)
               throw new Error(`No such player: ${playerIdx}`);
 

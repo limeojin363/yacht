@@ -5,6 +5,7 @@ export type GameContextValues = {
   game: Game;
   onClickCell: (handName: string, playerIdx: number) => void;
   onClickDice: (diceIndex: number) => void;
+  onDiceEyeSelect: (idx: number, newEye: number) => void;
   onClickRoll: () => void;
   onExit: () => void;
 };
@@ -21,5 +22,6 @@ export const GameContext = createContext<GameContextValues>({
   onClickCell: () => {},
   onClickDice: () => {},
   onClickRoll: () => {},
+  onDiceEyeSelect: () => {},
   onExit: () => {},
 });
