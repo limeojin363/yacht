@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { use } from "react";
 import { GameContext } from "../../context";
+import { Color, type HexColor } from "@yacht/game-core";
 
 const TotalScoreCell = ({ playerIdx }: { playerIdx: number }) => {
   const { game } = use(GameContext);
@@ -11,8 +12,8 @@ const TotalScoreCell = ({ playerIdx }: { playerIdx: number }) => {
 };
 
 const S = {
-  Root: styled.div<{ playerColor: string }>`
-    flex: 1;
+  Root: styled.div<{ playerColor: HexColor }>`
+    flex: 1.5;
 
     display: flex;
     justify-content: center;
@@ -21,8 +22,9 @@ const S = {
     box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.2);
 
     font-weight: bold;
-    font-size: 1.8rem;
-    background-color: ${({ playerColor }) => playerColor}90;
+    font-size: 2.2rem;
+    background-color: ${({ playerColor }) =>
+      new Color(playerColor).getColor({ lightness: 0.3, alpha: 0.8 })};
   `,
 };
 

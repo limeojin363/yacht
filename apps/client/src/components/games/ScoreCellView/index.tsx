@@ -27,8 +27,8 @@ const ScoreCellView = ({
 
 type HexColor = `#${string}`;
 
-// const fixedSaturation = 0.7;  // 예시 채도 (70%)
-// const fixedLightness = 0.4;  // 예시 명도 (40%)
+// const FIXED_SATURATION = 0.7;  // 예시 채도 (70%)
+// const FIXED_LIGHTNESS = 0.4;  // 예시 명도 (40%)
 
 // // 랜덤 색상을 생성하는 함수
 // function generateRandomColor(): HexColor {
@@ -80,7 +80,7 @@ type HexColor = `#${string}`;
 //   }
 
 //   // 랜덤 색상 값을 최종 결과로 반환
-//   return hslToHex(randomHue, fixedSaturation * 100, fixedLightness * 100);
+//   return hslToHex(randomHue, FIXED_SATURATION * 100, FIXED_LIGHTNESS * 100);
 // }
 
 const getWrapperStyleMap = (

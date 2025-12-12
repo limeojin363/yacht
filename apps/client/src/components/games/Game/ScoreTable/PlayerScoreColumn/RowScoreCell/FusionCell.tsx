@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { GetDefaultScoreOf } from "@yacht/game-core";
+import { GetDefaultScoreOf, type HexColor } from "@yacht/game-core";
 import type { RowScoreCellProps, ViewStatus } from ".";
 import { GameContext } from "../../../context";
 import { use } from "react";
@@ -8,7 +8,7 @@ import { getCellStyle } from "./style";
 const FusionCell = ({ playerIdx: playerIdx, rowName }: RowScoreCellProps) => {
   const { game, onClickCell } = use(GameContext);
 
-  const playerColor = game.getColorOf({ playerIdx });
+  const playerColor: HexColor = game.getColorOf({ playerIdx });
   const isCurrentPlayer = game.currentPlayerIdx === playerIdx;
 
   const [firstNumber, secondNumber] = rowName
@@ -60,9 +60,7 @@ const FusionCell = ({ playerIdx: playerIdx, rowName }: RowScoreCellProps) => {
       firstValue !== null
         ? firstValue
         : firstViewStatus === "SELECTABLE"
-          ? GetDefaultScoreOf[`NUMBERS_${firstNumber}`](
-              game.extractDiceEyes()
-            )
+          ? GetDefaultScoreOf[`NUMBERS_${firstNumber}`](game.extractDiceEyes())
           : null;
 
     const secondViewStatus: ViewStatus =
@@ -76,9 +74,7 @@ const FusionCell = ({ playerIdx: playerIdx, rowName }: RowScoreCellProps) => {
       secondValue !== null
         ? secondValue
         : secondViewStatus === "SELECTABLE"
-          ? GetDefaultScoreOf[`NUMBERS_${secondNumber}`](
-              game.extractDiceEyes()
-            )
+          ? GetDefaultScoreOf[`NUMBERS_${secondNumber}`](game.extractDiceEyes())
           : null;
 
     return (
@@ -106,7 +102,7 @@ export default FusionCell;
 
 const S = {
   CompletedCellContainer: styled.div<{
-    playerColor: string;
+    playerColor: HexColor;
   }>`
     height: 100%;
     width: 100%;
@@ -121,7 +117,7 @@ const S = {
     font-size: 1.3rem;
 
     ${({ playerColor }) =>
-      getCellStyle({ playerColor, viewStatus: "SELECTED" })};
+      getCellStyle({ playerColor, viewStatus: "SELECTED", altered: true })};
   `,
   PiecesWrapper: styled.div`
     height: 100%;
@@ -130,7 +126,7 @@ const S = {
     display: flex;
   `,
   Piece: styled.div<{
-    playerColor: string;
+    playerColor: HexColor;
     viewStatus: ViewStatus;
   }>`
     flex: 1;
@@ -146,6 +142,6 @@ const S = {
     font-size: 1.3rem;
 
     ${({ playerColor, viewStatus }) =>
-      getCellStyle({ playerColor, viewStatus })};
+      getCellStyle({ playerColor, viewStatus, altered: true })};
   `,
 };

@@ -49,7 +49,7 @@ const useProps = (preset: GamePreset): GameContextValues => {
     onDiceEyeSelect: (idx, eye) => {
       setGame((prev) => {
         toastOnUnavailableInteractionError(() => {
-          if (!prev.isDiceSetUsable() ) {
+          if (!prev.isDiceSetUsable()) {
             prev.manuallyUpdateDiceEyes([eye, eye, eye, eye, eye]);
           } else {
             const newEyes = prev.extractDiceEyes();
@@ -73,7 +73,14 @@ const useProps = (preset: GamePreset): GameContextValues => {
 
 export const usePreset = () => {
   const [preset, setPreset] = useState<GamePreset>({
-    alterOptionMetaList: [],
+    alterOptionMetaList: [
+      { name: "NUMBERS_3_3x", revealed: false, turn: 1 },
+      {
+        name: "FUSION_1&2",
+        revealed: false,
+        turn: 1,
+      },
+    ],
     playerPresetList: [
       { name: "PLAYER 1", color: generateRandomColor() },
       { name: "PLAYER 2", color: generateRandomColor() },
@@ -90,7 +97,7 @@ const GameMain = ({ preset }: { preset: GamePreset }) => {
 };
 
 const Game_SingleDevice = () => {
-  const [mode, setMode] = useState<"PRESET" | "MAIN">("PRESET");
+  const [mode, setMode] = useState<"PRESET" | "MAIN">("MAIN");
   const { preset, setPreset } = usePreset();
 
   if (mode === "PRESET") {

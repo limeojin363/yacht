@@ -1,59 +1,95 @@
-const fixedSaturation = 0.7; // 예시 채도 (70%)
-const fixedLightness = 0.4; // 예시 명도 (40%)
+import { FIXED_LIGHTNESS, FIXED_SATURATION, MIN_COLOR_DISTANCE, MIN_HUE_DISTANCE } from "./constants";
+import type { HexColor, HSL } from "./types";
+import { colorDistance, hexToHsl, hslToHex, hueDistance } from "./utils";
 
-type HexColor = `#${string}`;
+export * from "./types";
 
-// HSL 값을 hex로 변환하는 함수
-const hslToHex = (h: number, s: number, l: number): HexColor => {
-  s /= 100;
-  l /= 100;
+type ColorOptions = {
+  lightness?: number; // 0 ~ 1
+  alpha?: number;     // 0 ~ 1
+};
 
-  const c = (1 - Math.abs(2 * l - 1)) * s;
-  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
-  const m = l - c / 2;
+export class Color {
+  private baseColor: HexColor;
 
-  let r: number, g: number, b: number;
-
-  if (h >= 0 && h < 60) {
-    r = c;
-    g = x;
-    b = 0;
-  } else if (h >= 60 && h < 120) {
-    r = x;
-    g = c;
-    b = 0;
-  } else if (h >= 120 && h < 180) {
-    r = 0;
-    g = c;
-    b = x;
-  } else if (h >= 180 && h < 240) {
-    r = 0;
-    g = x;
-    b = c;
-  } else if (h >= 240 && h < 300) {
-    r = x;
-    g = 0;
-    b = c;
-  } else {
-    r = c;
-    g = 0;
-    b = x;
+  constructor(baseColor: HexColor) {
+    this.baseColor = baseColor;
   }
 
-  const rFinal = Math.round((r + m) * 255);
-  const gFinal = Math.round((g + m) * 255);
-  const bFinal = Math.round((b + m) * 255);
+  getBaseColor(): HexColor {
+    return this.baseColor;
+  }
 
-  return `#${((1 << 24) | (rFinal << 16) | (gFinal << 8) | bFinal).toString(16).slice(1).toUpperCase()}`;
-};
+  getColor(options: ColorOptions = {}): string {
+    const { lightness, alpha } = options;
 
-// 랜덤 색상을 생성하는 함수
-const generatePlayerColor = (): HexColor => {
-  // 최우측 원색 팔레트에서 랜덤 색상 각도 (hue) 선택 (0 - 360 사이)
-  const randomHue = Math.floor(Math.random() * 360); // 0부터 360 사이의 랜덤 값
+    let hex = this.baseColor;
 
-  // 랜덤 색상 값을 최종 결과로 반환
-  return hslToHex(randomHue, fixedSaturation * 100, fixedLightness * 100);
-};
+    if (lightness !== undefined) {
+      const { h, s } = hexToHsl(hex);
+      const l = Math.max(0, Math.min(1, lightness));
+      hex = hslToHex(h, s * 100, l * 100);
+    }
 
-export default generatePlayerColor;
+    if (alpha !== undefined) {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+
+      const a = Math.max(0, Math.min(1, alpha));
+
+      return `rgba(${r}, ${g}, ${b}, ${a})`;
+    }
+
+    return hex;
+  }
+}
+
+export class ColorFactory {
+  private static instance: ColorFactory;
+  private colors: Color[] = [];
+  private hslCache: HSL[] = [];
+
+  private constructor() {}
+
+  static getInstance(): ColorFactory {
+    if (!ColorFactory.instance) {
+      ColorFactory.instance = new ColorFactory();
+    }
+    return ColorFactory.instance;
+  }
+
+  generate(): Color {
+    if (this.colors.length >= 4) {
+      return this.colors[this.colors.length % 4]!;
+    }
+
+    let hex: HexColor;
+    let hsl: HSL;
+
+    do {
+      const hue = Math.floor(Math.random() * 360);
+      hex = hslToHex(
+        hue,
+        FIXED_SATURATION * 100,
+        FIXED_LIGHTNESS * 100
+      );
+      hsl = hexToHsl(hex);
+    } while (this.isTooClose(hsl));
+
+    this.hslCache.push(hsl);
+
+    const color = new Color(hex);
+    this.colors.push(color);
+
+    return color;
+  }
+
+  private isTooClose(target: HSL): boolean {
+    return this.hslCache.some(
+      (existing) =>
+        hueDistance(existing.h, target.h) < MIN_HUE_DISTANCE ||
+        colorDistance(existing, target) < MIN_COLOR_DISTANCE
+    );
+  }
+}

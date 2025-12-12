@@ -11,6 +11,7 @@ import type {
 import { AlterOptionMap } from "../alter-options";
 import { immerable } from "immer";
 import { DevError, UnavailableInteractionError } from "../error";
+import type { HexColor } from "../color";
 
 // 유저가 넣는 칸이 hand고, 계산 시 나오는 결과가 row다.
 // 대체로 hand == row이지만 예외가 있다.
@@ -83,8 +84,8 @@ export class Game {
 
   manuallyUpdateDiceEyes(newEyes: DiceEyes) {
     this.diceSet = this.diceSet.map((dice, idx) => ({
-      eye: newEyes[idx]!,
       held: dice ? dice.held : false,
+      eye: newEyes[idx]!,
     })) as UsableDiceSet;
   }
 
@@ -121,7 +122,7 @@ export class Game {
   }
 
   getColorOf({ playerIdx }: { playerIdx: number }) {
-    return this.getPlayerInfoOf({ playerIdx }).color;
+    return this.getPlayerInfoOf({ playerIdx }).color as HexColor;
   }
 
   getHandInputMapOf({ playerIdx }: { playerIdx: number }) {
@@ -248,9 +249,14 @@ export class Game {
     return this.getBasePlayerTotalScore({ playerIdx });
   }
 
+  isThisTurnEnded() {
+    return this.countFilledCells() % this.countTotalPlayers() === 0;
+  }
+
   isFinishedBase() {
-    const totalHands = this.countTotalHand();
-    return this.countFilledCells() >= totalHands * this.countTotalPlayers();
+    return (
+      this.countFilledCells() >= this.getTotalTurn() * this.countTotalPlayers()
+    );
   }
 
   isFinished() {

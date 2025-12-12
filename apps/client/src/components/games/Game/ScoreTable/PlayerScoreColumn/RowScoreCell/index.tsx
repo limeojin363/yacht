@@ -3,10 +3,11 @@ import { GameContext } from "../../../context";
 import { use } from "react";
 import FusionCell from "./FusionCell";
 import { getCellStyle } from "./style";
+import type { HexColor } from "@yacht/game-core";
 
 export type ViewStatus = "EMPTY" | "SELECTED" | "SELECTABLE";
 
-export type StyleProps = { playerColor: string; viewStatus: ViewStatus };
+export type StyleProps = { playerColor: HexColor; viewStatus: ViewStatus; altered: boolean };
 
 export type RowScoreCellProps = {
   rowName: string;
@@ -57,11 +58,14 @@ const SingleCell = ({ playerIdx, rowName }: RowScoreCellProps) => {
     rowName,
   });
 
-  const { onClickCell } = use(GameContext);
+  const { onClickCell, game } = use(GameContext);
+
+  const altered = game.rowInfoMap[rowName].type !== "NORMAL";
 
   // rowName === handName
   return (
     <S.SingleCellContent
+      altered={altered}
       onClick={() => onClickCell(rowName, playerIdx)}
       playerColor={playerColor}
       viewStatus={viewStatus}
@@ -88,8 +92,10 @@ const S = {
     font-weight: bold;
     font-size: 1.3rem;
 
-    ${({ playerColor, viewStatus }) =>
-      getCellStyle({ playerColor, viewStatus })};
+    ${({ playerColor, viewStatus, altered }) =>
+      getCellStyle({ playerColor, viewStatus, altered })};
+
+    transition: background-color 0.2s ease;
   `,
 };
 

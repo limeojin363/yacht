@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import type { usePreset } from "..";
-import { generateRandomColor } from "../../../default-game/-components";
+import { ColorFactory } from "@yacht/game-core";
 
 const PlayerPreset = ({
   preset: { playerPresetList },
@@ -53,7 +53,7 @@ const PlayerPreset = ({
       const nextPlayerPresetList = [...prev.playerPresetList];
       nextPlayerPresetList[idx] = {
         ...nextPlayerPresetList[idx],
-        color: generateRandomColor(),
+        color: ColorFactory.getInstance().generate().getBaseColor(),
       };
 
       return {

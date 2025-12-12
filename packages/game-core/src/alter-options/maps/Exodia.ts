@@ -30,7 +30,8 @@ export const SpecialHandsExodiaMap = {
 
       gameStatus.getPlayerTotalScore = function ({ playerIdx }) {
         const handInputMap = this.getHandInputMapOf({ playerIdx });
-        if (handInputMap === undefined) throw new DevError(`No such player: ${playerIdx}`);
+        if (handInputMap === undefined)
+          throw new DevError(`No such player: ${playerIdx}`);
 
         let totalScore = this.getBasePlayerTotalScore({ playerIdx });
 
@@ -38,24 +39,32 @@ export const SpecialHandsExodiaMap = {
           totalScore += 99999;
         }
 
-        console.log({playerIdx, handInputMap, totalScore})
-
         return totalScore;
       };
 
-      gameStatus.isFinished = function () {
-        const isThisTurnEnded =
-          this.countFilledCells() % this.countTotalPlayers() === 0;
-
-        const isExodiaTriggered = this.playerInfoList.some(
-          (_, playerIdx) => {
+      gameStatus.getTotalTurn = function () {
+        const isExodiaTriggered = (() => {
+          for (const playerIdxStr of Object.keys(this.playerInfoList)) {
+            const playerIdx = Number(playerIdxStr);
             const handInputMap = this.getHandInputMapOf({ playerIdx });
-            if (handInputMap === undefined) throw new Error();
-            return exodia(handInputMap);
-          }
-        );
+            if (handInputMap === undefined)
+              throw new Error(`No such player: ${playerIdx}`);
 
-        return isThisTurnEnded && isExodiaTriggered;
+            if (exodia(handInputMap)) {
+              return true;
+            }
+          }
+          return false;
+        })();
+
+        if (isExodiaTriggered) {
+          if (alteredTurn === null) {
+            alteredTurn = this.getCurrentTurn() - 1;
+          }
+          return alteredTurn;
+        }
+
+        return this.countTotalHand();
       };
     },
   },
@@ -102,12 +111,12 @@ export const NumbersExodiaMap = {
         return numbersScore >= 90;
       };
 
-      gameStatus.getPlayerTotalScore = ({ playerIdx }) => {
-        const handInputMap = gameStatus.getHandInputMapOf({playerIdx});
+      gameStatus.getPlayerTotalScore = function ({ playerIdx }) {
+        const handInputMap = this.getHandInputMapOf({ playerIdx });
         if (handInputMap === undefined)
           throw new Error(`No such player: ${playerIdx}`);
 
-        let totalScore = gameStatus.getBasePlayerTotalScore({ playerIdx });
+        let totalScore = this.getBasePlayerTotalScore({ playerIdx });
 
         if (exodia(handInputMap)) {
           totalScore += 99999;
@@ -116,21 +125,39 @@ export const NumbersExodiaMap = {
         return totalScore;
       };
 
-      gameStatus.isFinished = function () {
-        const isThisTurnEnded =
-          this.countFilledCells() % this.countTotalPlayers() === 0;
-
-        const isExodiaTriggered = this.playerInfoList
-          .some((_, playerIdx) => {
+      gameStatus.getTotalTurn = function () {
+        const isExodiaTriggered = (() => {
+          for (const playerIdxStr of Object.keys(this.playerInfoList)) {
+            const playerIdx = Number(playerIdxStr);
             const handInputMap = this.getHandInputMapOf({ playerIdx });
             if (handInputMap === undefined)
               throw new Error(`No such player: ${playerIdx}`);
 
-            return exodia(handInputMap);
-          });
+            if (exodia(handInputMap)) {
+              return true;
+            }
+          }
+          return false;
+        })();
 
-        return isThisTurnEnded && isExodiaTriggered;
+        if (isExodiaTriggered) {
+          if (alteredTurn === null) {
+            alteredTurn = this.getCurrentTurn() - 1;
+          }
+          return alteredTurn;
+        }
+
+        return this.countTotalHand();
       };
+
+      // gameStatus.isFinished = function () {
+      //   const isThisTurnEnded =
+      //     this.countFilledCells() % this.countTotalPlayers() === 0;
+
+      //   return isThisTurnEnded && this.isFinishedBase();
+      // };
     },
   },
 } as const satisfies Record<string, AlterOptionObject>;
+
+let alteredTurn: null | number = null;

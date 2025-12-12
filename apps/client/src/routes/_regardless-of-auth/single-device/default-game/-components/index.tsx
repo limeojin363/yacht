@@ -16,8 +16,8 @@ import { useNavigate } from "@tanstack/react-router";
 
 type HexColor = `#${string}`;
 
-const fixedSaturation = 0.7; // 예시 채도 (70%)
-const fixedLightness = 0.4; // 예시 명도 (40%)
+const FIXED_SATURATION = 0.7; // 예시 채도 (70%)
+const FIXED_LIGHTNESS = 0.4; // 예시 명도 (40%)
 
 export function generateRandomColor(): HexColor {
   // 최우측 원색 팔레트에서 랜덤 색상 각도 (hue) 선택 (0 - 360 사이)
@@ -68,7 +68,7 @@ export function generateRandomColor(): HexColor {
   }
 
   // 랜덤 색상 값을 최종 결과로 반환
-  return hslToHex(randomHue, fixedSaturation * 100, fixedLightness * 100);
+  return hslToHex(randomHue, FIXED_SATURATION * 100, FIXED_LIGHTNESS * 100);
 }
 
 const useProps = (totalPlayersNum: PlayersNum): DefaultGameContextValues => {

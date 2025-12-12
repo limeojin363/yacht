@@ -3,9 +3,17 @@ import { use } from "react";
 import { GameContext } from "../../context";
 import RowScoreCell from "./RowScoreCell";
 import TotalScoreCell from "./TotalScoreCell";
+import { Color, type HexColor } from "@yacht/game-core";
 
-const PlayerNameCell = ({ playerName }: { playerName: string }) => {
-  return <S.PlayerNameCell>{playerName}</S.PlayerNameCell>;
+const PlayerNameCell = ({ playerIdx }: { playerIdx: number }) => {
+  const { game } = use(GameContext);
+  const playerColor = game.getColorOf({ playerIdx });
+
+  return (
+    <S.PlayerNameCell playerColor={playerColor}>
+      {game.playerInfoList[playerIdx].name}
+    </S.PlayerNameCell>
+  );
 };
 
 const PlayerScoreColumn = ({ playerIdx }: { playerIdx: number }) => {
@@ -13,14 +21,13 @@ const PlayerScoreColumn = ({ playerIdx }: { playerIdx: number }) => {
 
   return (
     <S.Root>
-      <PlayerNameCell playerName={game.playerInfoList[playerIdx].name} />
+      <PlayerNameCell playerIdx={playerIdx} />
       {game.getRowNameList().map((rowName) => (
         <RowScoreCell
           key={`${game.playerInfoList[playerIdx].name}-${rowName}`}
           playerIdx={playerIdx}
           rowName={rowName}
         />
-        
       ))}
       <TotalScoreCell playerIdx={playerIdx} />
     </S.Root>
@@ -35,8 +42,8 @@ const S = {
     flex-direction: column;
     gap: 8px;
   `,
-  PlayerNameCell: styled.div`
-    flex: 1;
+  PlayerNameCell: styled.div<{ playerColor: HexColor }>`
+    flex: 1.5;
 
     display: flex;
     justify-content: center;
@@ -46,6 +53,10 @@ const S = {
 
     font-weight: bold;
     font-size: 1.3rem;
+
+    background-color: ${({ playerColor }) =>
+      new Color(playerColor).getColor({ lightness: 0.3, alpha: 0.3 })};
+    color: #000000;
   `,
 };
 

@@ -29,6 +29,7 @@ const S = {
     justify-content: center;
 
     box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.2);
+    
     background-color: #c2c2c2;
   `,
 };
