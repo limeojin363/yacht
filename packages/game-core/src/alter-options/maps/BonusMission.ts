@@ -1,4 +1,4 @@
-import type { AlterOptionObject } from ".";
+import type { AlterOptionObject } from "./index.js";
 
 const AllNumberBonusMissionOptionParamList = [
   [40, 10],

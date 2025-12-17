@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
 import type { usePreset } from "..";
-import { ColorFactory } from "@yacht/game-core";
 
 const PlayerPreset = ({
   preset: { playerPresetList },
@@ -48,19 +47,19 @@ const PlayerPreset = ({
     });
   };
 
-  const regeneratePlayerColor = (idx: number) => {
-    setPreset((prev) => {
-      const nextPlayerPresetList = [...prev.playerPresetList];
-      nextPlayerPresetList[idx] = {
-        ...nextPlayerPresetList[idx],
-        color: ColorFactory.getInstance().generate().getBaseColor(),
-      };
+  const regeneratePlayerColor = () => {
+    // setPreset((prev) => {
+    //   const nextPlayerPresetList = [...prev.playerPresetList];
+    //   nextPlayerPresetList[idx] = {
+    //     ...nextPlayerPresetList[idx],
+    //     color: ColorFactory.getInstance().generate().getBaseColor(),
+    //   };
 
-      return {
-        ...prev,
-        playerPresetList: nextPlayerPresetList,
-      };
-    });
+    //   return {
+    //     ...prev,
+    //     playerPresetList: nextPlayerPresetList,
+    //   };
+    // });
   };
 
   return (

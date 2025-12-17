@@ -1,17 +1,17 @@
 import _ from "lodash";
-import { getInitialRowInfo } from "../score";
+import { getInitialRowInfo } from "../score/index.js";
 import type {
   DiceEyes,
   DiceSet,
-  GameDBPart,
+  GameCoreInfo,
   RowInfo,
   UnusableDiceSet,
   UsableDiceSet,
-} from "./types";
-import { AlterOptionMap } from "../alter-options";
+} from "./types.js";
+import { AlterOptionMap } from "../alter-options/index.js";
 import { immerable } from "immer";
-import { DevError, UnavailableInteractionError } from "../error";
-import type { HexColor } from "../color";
+import { DevError, UnavailableInteractionError } from "../error/index.js";
+import type { HexColor } from "../color/index.js";
 
 // 유저가 넣는 칸이 hand고, 계산 시 나오는 결과가 row다.
 // 대체로 hand == row이지만 예외가 있다.
@@ -20,11 +20,11 @@ export class Game {
   // To use use-immer in client project
   [immerable] = true;
 
-  diceSet: GameDBPart["diceSet"];
-  remainingRoll: GameDBPart["remainingRoll"];
-  currentPlayerIdx: GameDBPart["currentPlayerIdx"];
-  playerInfoList: GameDBPart["playerInfoList"];
-  alterOptionMetaInfoList: GameDBPart["alterOptionMetaInfoList"];
+  diceSet: GameCoreInfo["diceSet"];
+  remainingRoll: GameCoreInfo["remainingRoll"];
+  currentPlayerIdx: GameCoreInfo["currentPlayerIdx"];
+  playerInfoList: GameCoreInfo["playerInfoList"];
+  alterOptionMetaInfoList: GameCoreInfo["alterOptionMetaInfoList"];
 
   maxHolding: number;
   maxRoll: number;
@@ -271,7 +271,7 @@ export class Game {
   }
 
   /** Extracts the relevant data part from the game status */
-  extractDataPart(): GameDBPart {
+  extractDataPart(): GameCoreInfo {
     return {
       alterOptionMetaInfoList: this.alterOptionMetaInfoList,
       currentPlayerIdx: this.currentPlayerIdx,
@@ -327,7 +327,7 @@ export class Game {
     return [null, null, null, null, null];
   }
 
-  constructor(dbPart: GameDBPart) {
+  constructor(dbPart: GameCoreInfo) {
     this.maxHolding = 5;
     this.maxRoll = 3;
     this.rowInfoMap = getInitialRowInfo();

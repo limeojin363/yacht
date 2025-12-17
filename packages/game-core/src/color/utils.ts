@@ -1,4 +1,4 @@
-import type { HexColor, HSL } from "./types";
+import type { HexColor, HSL } from "./types.js";
 
 export const hueDistance = (a: number, b: number): number => {
   const diff = Math.abs(a - b);

@@ -1,5 +1,5 @@
-import type { AlterOptionObject } from ".";
-import { GetDefaultScoreOf } from "../../score";
+import type { AlterOptionObject } from "./index.js";
+import { GetDefaultScoreOf } from "../../score/index.js";
 
 const N1TimesOptionParamList = [-8, -9, -10, 5, 6, 7, 8] as const;
 
@@ -84,7 +84,7 @@ export const N1IfZeroOptionMap = N1IfZeroParamList.reduce(
   {} as Record<string, AlterOptionObject>
 );
 
-export const N1EtcOptionMap = {
+export const N1EtcOptionMap: Record<string, AlterOptionObject> = {
   NUMBERS_1_SQUARE: {
     description: `NUMBERS_1의 점수를 제곱`,
     handDependencies: [`NUMBERS_1`],
@@ -131,6 +131,6 @@ export const N1EtcOptionMap = {
       });
     },
   },
-} as const satisfies Record<string, AlterOptionObject>;
+};
 
 export type N1EtcOptionName = keyof typeof N1EtcOptionMap;

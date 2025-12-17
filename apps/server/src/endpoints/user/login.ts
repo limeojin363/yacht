@@ -11,6 +11,7 @@ import {
   generateRefreshToken,
 } from "../../auths/token.js";
 import { PrismaClient } from "../../generated/client.js";
+import type z from "zod";
 
 const loginEndpoint = defaultEndpointsFactory.build({
   method: "post",
@@ -48,11 +49,9 @@ const loginEndpoint = defaultEndpointsFactory.build({
       refreshToken,
       user: {
         authorityLevel: AuthorityLevelSchema.parse(authorityLevel),
-        gameId: gameId,
-        gamePlayerId: gamePlayerId,
         id,
-        username: name,
-      },
+        name,
+      } satisfies z.infer<typeof LoginResBodySchema>["user"],
     };
   },
 });

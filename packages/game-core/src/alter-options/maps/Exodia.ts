@@ -1,5 +1,5 @@
-import type { AlterOptionObject } from ".";
-import { DevError } from "../../error";
+import type { AlterOptionObject } from "./index.js";
+import { DevError } from "../../error/index.js";
 
 export const SpecialHandsExodiaMap = {
   SPECIAL_HAND_EXODIA: {

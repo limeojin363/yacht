@@ -1,11 +1,11 @@
 import _ from "lodash";
 import {
   type AlterOptionMetaInfo,
-  type GameDBPart,
+  type GameCoreInfo,
   type HandInputMapType,
   type PlayerInfoType,
   type UnusableDiceSet,
-} from "./types";
+} from "./types.js";
 
 type PlayerPresetType = Pick<PlayerInfoType, "name" | "color">;
 
@@ -37,7 +37,7 @@ export const getInitialDiceSet = (): UnusableDiceSet => [
   null,
 ];
 
-export const getInitialDBPart = (gamePreset: GamePreset): GameDBPart => {
+export const getInitialDBPart = (gamePreset: GamePreset): GameCoreInfo => {
   return {
     diceSet: getInitialDiceSet(),
     remainingRoll: 3,

@@ -1,5 +1,5 @@
-import type { AlterOptionObject } from ".";
-import { GetDefaultScoreOf } from "../../score";
+import type { AlterOptionObject } from "./index.js";
+import { GetDefaultScoreOf } from "../../score/index.js";
 
 const N4TimesOptionParamList = [0.5, 3] as const;
 

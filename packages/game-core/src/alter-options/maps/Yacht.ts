@@ -1,4 +1,4 @@
-import type { AlterOptionObject } from ".";
+import type { AlterOptionObject } from "./index.js";
 
 const YachtOptionParamList = [70, 80, 90, 100] as const;
 

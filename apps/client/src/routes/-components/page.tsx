@@ -13,12 +13,8 @@ const HomePage = () => {
         text="Multiple Device - Default Game"
       />
       <SelectorItem
-        onClick={() => navigate({ to: "/multiple-device/altered-game" })}
+        onClick={() => navigate({ to: "/multiple-device/game" })}
         text="Multiple Device - Altered Game"
-      />
-      <SelectorItem
-        onClick={() => navigate({ to: "/single-device/default-game" })}
-        text="Single Device - Default Game"
       />
       <SelectorItem
         onClick={() => navigate({ to: "/single-device/game" })}

@@ -3,7 +3,7 @@ import { userCheckMiddleWare } from "../../auths/middleware.js";
 import z from "zod";
 import {
   GetGameListResBodySchema,
-  type GetGameListResBody,
+  type GameMetaItem,
 } from "@yacht/communications";
 import { PrismaClient } from "../../generated/client.js";
 
@@ -24,12 +24,14 @@ export const gameListEndpoint = defaultEndpointsFactory
         },
       });
 
-      const gameList: GetGameListResBody = {
-        games: gamesFromDB.map(({ id, name, players }) => ({
-          id,
-          name,
-          players: players.map(({ id, name }) => ({ id, name })),
-        })),
+      const gameList: z.infer<typeof GetGameListResBodySchema> = {
+        list: gamesFromDB.map(
+          ({ id, name, players }): z.infer<typeof GameMetaItem> => ({
+            id,
+            name,
+            playersMeta: { current: players.length, total: 4 },
+          })
+        ),
       };
 
       return gameList;

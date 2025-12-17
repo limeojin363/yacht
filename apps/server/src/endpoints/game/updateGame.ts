@@ -4,7 +4,7 @@ import {
   UpdateGameReqBodySchema,
   UpdateGameResBodySchema,
 } from "@yacht/communications";
-import { GameStatusSchema, getInitialGameStatus } from "@yacht/default-game";
+// import { GameStatusSchema, getInitialGameStatus } from "@yacht/default-game";
 import { PrismaClient } from "../../generated/client.js";
 
 export const updateGameEndpoint = defaultEndpointsFactory
@@ -13,7 +13,7 @@ export const updateGameEndpoint = defaultEndpointsFactory
     input: UpdateGameReqBodySchema,
     output: UpdateGameResBodySchema,
     method: "patch",
-    handler: async ({ input: { id, name, totalPlayersNum } }) => {
+    handler: async ({ input: { id, name } }) => {
       const prismaClient = new PrismaClient();
       const game = await prismaClient.game.findUnique({
         where: { id },
@@ -29,22 +29,20 @@ export const updateGameEndpoint = defaultEndpointsFactory
         );
       }
 
-      const { gameStatus: rawGameStatus } = await prismaClient.game.update({
+      const { gameCoreInfo: rawGameStatus } = await prismaClient.game.update({
         where: { id },
         data: {
           name,
-          gameStatus: JSON.stringify(getInitialGameStatus(totalPlayersNum)),
+          gameCoreInfo: JSON.stringify({}
+            // getInitialGameStatus(totalPlayersNum)
+          ),
         },
       });
-
-      const nextGameStatus = GameStatusSchema.parse(
-        JSON.parse(rawGameStatus as string),
-      );
 
       return {
         id,
         name,
-        gameStatus: nextGameStatus,
+        gameCoreInfo: {} as any,
         progressType: 0 as const,
       };
     },

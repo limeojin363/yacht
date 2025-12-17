@@ -1,4 +1,4 @@
-import type { AlterOptionObject } from ".";
+import type { AlterOptionObject } from "./index.js";
 
 const RollLimitOptionParamList = [1, 2, 4, 5] as const;
 

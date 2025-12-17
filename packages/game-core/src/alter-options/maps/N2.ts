@@ -1,5 +1,5 @@
-import type { AlterOptionObject } from ".";
-import { GetDefaultScoreOf } from "../../score";
+import type { AlterOptionObject } from "./index.js";
+import { GetDefaultScoreOf } from "../../score/index.js";
 
 const N2TimesOptionParamList = [-1, -2, 0.5, 3, 4, 5] as const;
 

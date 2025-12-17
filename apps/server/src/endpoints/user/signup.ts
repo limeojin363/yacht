@@ -37,9 +37,7 @@ const signupEndpoint = defaultEndpointsFactory.build({
       refreshToken,
       user: {
         authorityLevel: 2 as const,
-        username,
-        gameId: null,
-        gamePlayerId: null,
+        name: username,
         id,
       },
     };

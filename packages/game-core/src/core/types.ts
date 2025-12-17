@@ -86,8 +86,7 @@ export const PlayerInfoSchema =
     handInputMap: HandInputMapSchema,
   });
 
-export const GameStatusDataSchema = z.object({
-  // 나중에고민: array -> object 왜 했지? 롤백?
+export const GameCoreInfoSchema = z.object({
   diceSet: DicesetSchema,
   remainingRoll: z.number(),
   playerInfoList: z.array(PlayerInfoSchema),
@@ -106,7 +105,7 @@ export type UnusableDiceSet = z.infer<typeof UnusableDiceSetSchema>;
 export type DiceSet = z.infer<typeof DicesetSchema>;
 
 // GameStatus에서 DB에 저장되는 부분
-export type GameDBPart = z.infer<typeof GameStatusDataSchema>;
+export type GameCoreInfo = z.infer<typeof GameCoreInfoSchema>;
 
 export type RowInfo = {
   getScoreFrom: ({

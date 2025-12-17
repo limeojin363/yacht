@@ -23,16 +23,14 @@ const myInfoEndpoint = defaultEndpointsFactory
         throw new Error("User not found");
       }
 
-      const { authorityLevel, gameId, gamePlayerId, name: username } = user;
+      const { authorityLevel, name } = user;
 
       const parsedAuthorityLevel = AuthorityLevelSchema.parse(authorityLevel);
 
       return {
         id,
         authorityLevel: parsedAuthorityLevel,
-        gameId,
-        gamePlayerId,
-        username,
+        name,
       };
     },
   });

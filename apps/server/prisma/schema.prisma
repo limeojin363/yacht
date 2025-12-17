@@ -11,8 +11,9 @@ datasource db {
 model Game {
   id        Int     @id @default(autoincrement())
   name        String
-  gameStatus Json
+  gameCoreInfo Json @map("gameStatus")
   progressType Int
+  playerUpperLimit Int
   players     User[]
 }
 

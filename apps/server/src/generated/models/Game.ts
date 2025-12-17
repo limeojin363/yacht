@@ -29,30 +29,35 @@ export type AggregateGame = {
 export type GameAvgAggregateOutputType = {
   id: number | null
   progressType: number | null
+  playerUpperLimit: number | null
 }
 
 export type GameSumAggregateOutputType = {
   id: number | null
   progressType: number | null
+  playerUpperLimit: number | null
 }
 
 export type GameMinAggregateOutputType = {
   id: number | null
   name: string | null
   progressType: number | null
+  playerUpperLimit: number | null
 }
 
 export type GameMaxAggregateOutputType = {
   id: number | null
   name: string | null
   progressType: number | null
+  playerUpperLimit: number | null
 }
 
 export type GameCountAggregateOutputType = {
   id: number
   name: number
-  gameStatus: number
+  gameCoreInfo: number
   progressType: number
+  playerUpperLimit: number
   _all: number
 }
 
@@ -60,30 +65,35 @@ export type GameCountAggregateOutputType = {
 export type GameAvgAggregateInputType = {
   id?: true
   progressType?: true
+  playerUpperLimit?: true
 }
 
 export type GameSumAggregateInputType = {
   id?: true
   progressType?: true
+  playerUpperLimit?: true
 }
 
 export type GameMinAggregateInputType = {
   id?: true
   name?: true
   progressType?: true
+  playerUpperLimit?: true
 }
 
 export type GameMaxAggregateInputType = {
   id?: true
   name?: true
   progressType?: true
+  playerUpperLimit?: true
 }
 
 export type GameCountAggregateInputType = {
   id?: true
   name?: true
-  gameStatus?: true
+  gameCoreInfo?: true
   progressType?: true
+  playerUpperLimit?: true
   _all?: true
 }
 
@@ -176,8 +186,9 @@ export type GameGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type GameGroupByOutputType = {
   id: number
   name: string
-  gameStatus: runtime.JsonValue
+  gameCoreInfo: runtime.JsonValue
   progressType: number
+  playerUpperLimit: number
   _count: GameCountAggregateOutputType | null
   _avg: GameAvgAggregateOutputType | null
   _sum: GameSumAggregateOutputType | null
@@ -206,16 +217,18 @@ export type GameWhereInput = {
   NOT?: Prisma.GameWhereInput | Prisma.GameWhereInput[]
   id?: Prisma.IntFilter<"Game"> | number
   name?: Prisma.StringFilter<"Game"> | string
-  gameStatus?: Prisma.JsonFilter<"Game">
+  gameCoreInfo?: Prisma.JsonFilter<"Game">
   progressType?: Prisma.IntFilter<"Game"> | number
+  playerUpperLimit?: Prisma.IntFilter<"Game"> | number
   players?: Prisma.UserListRelationFilter
 }
 
 export type GameOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  gameStatus?: Prisma.SortOrder
+  gameCoreInfo?: Prisma.SortOrder
   progressType?: Prisma.SortOrder
+  playerUpperLimit?: Prisma.SortOrder
   players?: Prisma.UserOrderByRelationAggregateInput
 }
 
@@ -225,16 +238,18 @@ export type GameWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.GameWhereInput[]
   NOT?: Prisma.GameWhereInput | Prisma.GameWhereInput[]
   name?: Prisma.StringFilter<"Game"> | string
-  gameStatus?: Prisma.JsonFilter<"Game">
+  gameCoreInfo?: Prisma.JsonFilter<"Game">
   progressType?: Prisma.IntFilter<"Game"> | number
+  playerUpperLimit?: Prisma.IntFilter<"Game"> | number
   players?: Prisma.UserListRelationFilter
 }, "id">
 
 export type GameOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  gameStatus?: Prisma.SortOrder
+  gameCoreInfo?: Prisma.SortOrder
   progressType?: Prisma.SortOrder
+  playerUpperLimit?: Prisma.SortOrder
   _count?: Prisma.GameCountOrderByAggregateInput
   _avg?: Prisma.GameAvgOrderByAggregateInput
   _max?: Prisma.GameMaxOrderByAggregateInput
@@ -248,87 +263,100 @@ export type GameScalarWhereWithAggregatesInput = {
   NOT?: Prisma.GameScalarWhereWithAggregatesInput | Prisma.GameScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Game"> | number
   name?: Prisma.StringWithAggregatesFilter<"Game"> | string
-  gameStatus?: Prisma.JsonWithAggregatesFilter<"Game">
+  gameCoreInfo?: Prisma.JsonWithAggregatesFilter<"Game">
   progressType?: Prisma.IntWithAggregatesFilter<"Game"> | number
+  playerUpperLimit?: Prisma.IntWithAggregatesFilter<"Game"> | number
 }
 
 export type GameCreateInput = {
   name: string
-  gameStatus: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  gameCoreInfo: Prisma.JsonNullValueInput | runtime.InputJsonValue
   progressType: number
+  playerUpperLimit: number
   players?: Prisma.UserCreateNestedManyWithoutGameInput
 }
 
 export type GameUncheckedCreateInput = {
   id?: number
   name: string
-  gameStatus: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  gameCoreInfo: Prisma.JsonNullValueInput | runtime.InputJsonValue
   progressType: number
+  playerUpperLimit: number
   players?: Prisma.UserUncheckedCreateNestedManyWithoutGameInput
 }
 
 export type GameUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gameStatus?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  gameCoreInfo?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   progressType?: Prisma.IntFieldUpdateOperationsInput | number
+  playerUpperLimit?: Prisma.IntFieldUpdateOperationsInput | number
   players?: Prisma.UserUpdateManyWithoutGameNestedInput
 }
 
 export type GameUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gameStatus?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  gameCoreInfo?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   progressType?: Prisma.IntFieldUpdateOperationsInput | number
+  playerUpperLimit?: Prisma.IntFieldUpdateOperationsInput | number
   players?: Prisma.UserUncheckedUpdateManyWithoutGameNestedInput
 }
 
 export type GameCreateManyInput = {
   id?: number
   name: string
-  gameStatus: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  gameCoreInfo: Prisma.JsonNullValueInput | runtime.InputJsonValue
   progressType: number
+  playerUpperLimit: number
 }
 
 export type GameUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gameStatus?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  gameCoreInfo?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   progressType?: Prisma.IntFieldUpdateOperationsInput | number
+  playerUpperLimit?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type GameUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gameStatus?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  gameCoreInfo?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   progressType?: Prisma.IntFieldUpdateOperationsInput | number
+  playerUpperLimit?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type GameCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  gameStatus?: Prisma.SortOrder
+  gameCoreInfo?: Prisma.SortOrder
   progressType?: Prisma.SortOrder
+  playerUpperLimit?: Prisma.SortOrder
 }
 
 export type GameAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
   progressType?: Prisma.SortOrder
+  playerUpperLimit?: Prisma.SortOrder
 }
 
 export type GameMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   progressType?: Prisma.SortOrder
+  playerUpperLimit?: Prisma.SortOrder
 }
 
 export type GameMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   progressType?: Prisma.SortOrder
+  playerUpperLimit?: Prisma.SortOrder
 }
 
 export type GameSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   progressType?: Prisma.SortOrder
+  playerUpperLimit?: Prisma.SortOrder
 }
 
 export type GameNullableScalarRelationFilter = {
@@ -366,15 +394,17 @@ export type GameUpdateOneWithoutPlayersNestedInput = {
 
 export type GameCreateWithoutPlayersInput = {
   name: string
-  gameStatus: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  gameCoreInfo: Prisma.JsonNullValueInput | runtime.InputJsonValue
   progressType: number
+  playerUpperLimit: number
 }
 
 export type GameUncheckedCreateWithoutPlayersInput = {
   id?: number
   name: string
-  gameStatus: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  gameCoreInfo: Prisma.JsonNullValueInput | runtime.InputJsonValue
   progressType: number
+  playerUpperLimit: number
 }
 
 export type GameCreateOrConnectWithoutPlayersInput = {
@@ -395,15 +425,17 @@ export type GameUpdateToOneWithWhereWithoutPlayersInput = {
 
 export type GameUpdateWithoutPlayersInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gameStatus?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  gameCoreInfo?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   progressType?: Prisma.IntFieldUpdateOperationsInput | number
+  playerUpperLimit?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type GameUncheckedUpdateWithoutPlayersInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gameStatus?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  gameCoreInfo?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   progressType?: Prisma.IntFieldUpdateOperationsInput | number
+  playerUpperLimit?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 
@@ -440,8 +472,9 @@ export type GameCountOutputTypeCountPlayersArgs<ExtArgs extends runtime.Types.Ex
 export type GameSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
-  gameStatus?: boolean
+  gameCoreInfo?: boolean
   progressType?: boolean
+  playerUpperLimit?: boolean
   players?: boolean | Prisma.Game$playersArgs<ExtArgs>
   _count?: boolean | Prisma.GameCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["game"]>
@@ -449,25 +482,28 @@ export type GameSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
 export type GameSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
-  gameStatus?: boolean
+  gameCoreInfo?: boolean
   progressType?: boolean
+  playerUpperLimit?: boolean
 }, ExtArgs["result"]["game"]>
 
 export type GameSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
-  gameStatus?: boolean
+  gameCoreInfo?: boolean
   progressType?: boolean
+  playerUpperLimit?: boolean
 }, ExtArgs["result"]["game"]>
 
 export type GameSelectScalar = {
   id?: boolean
   name?: boolean
-  gameStatus?: boolean
+  gameCoreInfo?: boolean
   progressType?: boolean
+  playerUpperLimit?: boolean
 }
 
-export type GameOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "gameStatus" | "progressType", ExtArgs["result"]["game"]>
+export type GameOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "gameCoreInfo" | "progressType" | "playerUpperLimit", ExtArgs["result"]["game"]>
 export type GameInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   players?: boolean | Prisma.Game$playersArgs<ExtArgs>
   _count?: boolean | Prisma.GameCountOutputTypeDefaultArgs<ExtArgs>
@@ -483,8 +519,9 @@ export type $GamePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     name: string
-    gameStatus: runtime.JsonValue
+    gameCoreInfo: runtime.JsonValue
     progressType: number
+    playerUpperLimit: number
   }, ExtArgs["result"]["game"]>
   composites: {}
 }
@@ -911,8 +948,9 @@ export interface Prisma__GameClient<T, Null = never, ExtArgs extends runtime.Typ
 export interface GameFieldRefs {
   readonly id: Prisma.FieldRef<"Game", 'Int'>
   readonly name: Prisma.FieldRef<"Game", 'String'>
-  readonly gameStatus: Prisma.FieldRef<"Game", 'Json'>
+  readonly gameCoreInfo: Prisma.FieldRef<"Game", 'Json'>
   readonly progressType: Prisma.FieldRef<"Game", 'Int'>
+  readonly playerUpperLimit: Prisma.FieldRef<"Game", 'Int'>
 }
     
 

@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "@yacht/communications": ["packages/communications/src/index.ts"],
+      "@yacht/game-core": ["packages/game-core/src/index.ts"],
+    },
+
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  }
+}

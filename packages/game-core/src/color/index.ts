@@ -1,8 +1,8 @@
-import { FIXED_LIGHTNESS, FIXED_SATURATION, MIN_COLOR_DISTANCE, MIN_HUE_DISTANCE } from "./constants";
-import type { HexColor, HSL } from "./types";
-import { colorDistance, hexToHsl, hslToHex, hueDistance } from "./utils";
+import { FIXED_LIGHTNESS, FIXED_SATURATION, MIN_COLOR_DISTANCE, MIN_HUE_DISTANCE } from "./constants.js";
+import type { HexColor, HSL } from "./types.js";
+import { colorDistance, hexToHsl, hslToHex, hueDistance } from "./utils.js";
 
-export * from "./types";
+export * from "./types.js";
 
 type ColorOptions = {
   lightness?: number; // 0 ~ 1
@@ -46,18 +46,10 @@ export class Color {
 }
 
 export class ColorFactory {
-  private static instance: ColorFactory;
   private colors: Color[] = [];
   private hslCache: HSL[] = [];
 
-  private constructor() {}
-
-  static getInstance(): ColorFactory {
-    if (!ColorFactory.instance) {
-      ColorFactory.instance = new ColorFactory();
-    }
-    return ColorFactory.instance;
-  }
+  constructor() {}
 
   generate(): Color {
     if (this.colors.length >= 4) {

@@ -1,6 +1,7 @@
 import GameComponent from "../../../../../components/games/Game";
 import type { GameContextValues } from "../../../../../components/games/Game/context";
 import {
+  ColorFactory,
   Game,
   getInitialDBPart,
   UnavailableInteractionError,
@@ -8,7 +9,6 @@ import {
 } from "@yacht/game-core";
 import { useState } from "react";
 import GamePresetComponent from "./GamePresetComponent";
-import { generateRandomColor } from "../../default-game/-components";
 import { useImmer } from "use-immer";
 import { toast } from "react-toastify";
 
@@ -72,6 +72,8 @@ const useProps = (preset: GamePreset): GameContextValues => {
 };
 
 export const usePreset = () => {
+  const colorFactory = new ColorFactory();
+
   const [preset, setPreset] = useState<GamePreset>({
     alterOptionMetaList: [
       { name: "NUMBERS_3_3x", revealed: false, turn: 1 },
@@ -82,8 +84,8 @@ export const usePreset = () => {
       },
     ],
     playerPresetList: [
-      { name: "PLAYER 1", color: generateRandomColor() },
-      { name: "PLAYER 2", color: generateRandomColor() },
+      { name: "PLAYER 1", color: colorFactory.generate().getBaseColor() },
+      { name: "PLAYER 2", color: colorFactory.generate().getBaseColor() },
     ],
   });
 

@@ -13,12 +13,10 @@ import { generateGameEndpoint } from "./endpoints/game/generateGame.js";
 import myInfoEndpoint from "./endpoints/user/myInfo.js";
 import { deleteGameEndpoint } from "./endpoints/game/deleteGame.js";
 import { updateGameEndpoint } from "./endpoints/game/updateGame.js";
-import { registerSocket } from "./sockets/index.js";
 import z from "zod";
 import { createHashedPassword, createSalt } from "./auths/hash.js";
 import refreshEndpoint from "./endpoints/user/refresh.js";
 import { PrismaClient } from "./generated/client.js";
-
 
 const routing: Routing = {
   "get /": defaultEndpointsFactory.build({
@@ -63,7 +61,7 @@ dotenv.config();
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   const expressServer = app.listen(3000);
-  registerSocket(expressServer);
+  // registerSocket(expressServer);
 
   console.log("Server is running on http://localhost:3000");
 })();

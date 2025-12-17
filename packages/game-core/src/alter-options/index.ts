@@ -1,2 +1,2 @@
-export * from "./generate"
-export * from "./maps"
+export * from "./generate/index.js";
+export * from "./maps/index.js"

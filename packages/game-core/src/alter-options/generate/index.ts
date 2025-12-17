@@ -1,5 +1,5 @@
-import type { AlterOptionMetaInfo } from "../../core";
-import { AlterOptionMap } from "../maps";
+import type { AlterOptionMetaInfo } from "../../core/index.js";
+import { AlterOptionMap } from "../maps/index.js";
 
 const getRandomItemFromArray = <T>(arr: T[]) => {
   if (arr.length === 0) {

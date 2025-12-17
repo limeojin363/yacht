@@ -1,28 +1,14 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "target": "ES2022",
-
-    "strict": true,
-    "esModuleInterop": true,
-
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "sourceMap": true,
-
-    "skipLibCheck": true,
-
-    "composite": true,
-
-    "paths": {
-      "@yacht/communications": ["../../packages/communications/src"],  
-      "@yacht/game-core": ["../../packages/game-core/src"]  
-    }
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true
   },
-  "references": [
-    { "path": "../../packages/communications" },
-    { "path": "../../packages/game-core" }
-  ],
-  "include": ["src/**/*"]
+
+  "include": [
+    "src",
+    "../../packages/communications/src",
+    "../../packages/game-core/src"
+  ]
 }

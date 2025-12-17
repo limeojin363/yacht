@@ -1,5 +1,5 @@
-import type { AlterOptionObject } from ".";
-import { GetDefaultScoreOf } from "../../score";
+import type { AlterOptionObject } from "./index.js";
+import { GetDefaultScoreOf } from "../../score/index.js";
 
 const N6TimesOptionParamList = [2, 3, 0.5] as const;
 
