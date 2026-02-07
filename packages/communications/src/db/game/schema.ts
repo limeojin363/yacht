@@ -19,6 +19,7 @@ export const GameRowSchema = z.object({
   id: z.number(),
   name: z.string(),
   gameCoreInfo: GameCoreInfoSchema,
+  playerUpperLimit: z.number(),
   progressType: ProgressTypeSchema,
   players: PlayerSchema.array(),
 });

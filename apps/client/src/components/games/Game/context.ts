@@ -1,27 +1,20 @@
-import { Game, getInitialDBPart } from "@yacht/game-core";
-import { createContext } from "react";
+import type { GameViewData } from "@yacht/game-core";
+import { createContext, useContext } from "react";
 
-export type GameContextValues = {
-  game: Game;
-  onClickCell: (handName: string, playerIdx: number) => void;
-  onClickDice: (diceIndex: number) => void;
-  onDiceEyeSelect: (idx: number, newEye: number) => void;
-  onClickRoll: () => void;
-  onExit: () => void;
-};
+export type GameContextValue = GameViewData & { meIdx: number };
 
-const dummyGame = new Game(
-  getInitialDBPart({
-    alterOptionMetaList: [],
-    playerPresetList: [],
-  })
+const GameContext = createContext<GameContextValue | null>(
+  null,
 );
 
-export const GameContext = createContext<GameContextValues>({
-  game: dummyGame,
-  onClickCell: () => {},
-  onClickDice: () => {},
-  onClickRoll: () => {},
-  onDiceEyeSelect: () => {},
-  onExit: () => {},
-});
+export const GameProvider = GameContext.Provider;
+
+export const useGameContext = () => {
+  const ctx = useContext(GameContext);
+
+  if (!ctx) {
+    throw new Error("useGameContext must be used within a GameProvider");
+  }
+
+  return ctx;
+};

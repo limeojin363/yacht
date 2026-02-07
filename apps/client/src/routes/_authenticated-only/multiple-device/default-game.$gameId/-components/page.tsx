@@ -14,7 +14,7 @@ import { io } from "socket.io-client";
 import { useAuth } from "../../../../../auth";
 import DefaultGame, {
   type DefaultGameContextValues,
-} from "../../../../../components/games/DefaultGame";
+} from "../../../../../components/games/__DEPRECATED__DefaultGame";
 import { toast } from "react-toastify";
 
 const socketUrl =

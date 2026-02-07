@@ -1,5 +1,5 @@
-import GameComponent from "../../../../../components/games/Game";
-import type { GameContextValues } from "../../../../../components/games/Game/context";
+import GameComponent from "../../../../../components/games/__DEPRECATED__Game";
+import type { GameContextValues } from "../../../../../components/games/__DEPRECATED__Game/context";
 import {
   ColorFactory,
   Game,

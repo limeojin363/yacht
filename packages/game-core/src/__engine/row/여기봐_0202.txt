@@ -1,0 +1,20 @@
+FieldInfoBase에서 view 정보를 얻는 방법도 알려주는게 좋겠다.
+base.types.ts에서 작업 진행중.
+
+getScore와 getView는 context를 어디까지 알아야 하나
+hand관련 정보는 context로 주입?
+
+FieldInfo 생성기 자체를 Engine 내부로 낑겨 넣는게 맞을지도 모르겠다.
+아 어렵다 굉장히 어렵다
+
+
+!
+view 정보는 메타 + content 데이터가 조합된 정보.
+FieldInfo와 같이 정적으로 제공하는건 적합하지 않다.
+그럼 새 계층을 만들어야하나?
+
+FieldInfo는 계산뿐만 아니라 각 필드가 핸드를 몇 개 가지는지도 알고 있도록 설계해야한다?
+그럼 정적 데이터 제공보다는 초기화 기계에 더 가까워지긴 한다. 그 방향이 맞나?
+
+
+
